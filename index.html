@@ -2,113 +2,264 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SwarmBet - Gaming Portal</title>
+    <title>Golden Stake - Fixed & Secure</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a1a; color: white; text-align: center; }
-        .container { max-width: 600px; margin: auto; }
-        .game-box { background: #2a2a2a; border: 2px solid #444; padding: 20px; border-radius: 15px; margin-top: 20px; }
-        .mine-grid { display: grid; grid-template-columns: repeat(5, 50px); gap: 10px; justify-content: center; margin-top: 20px; }
-        .cell { width: 50px; height: 50px; background: #444; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 5px; font-size: 20px; }
-        .cell.revealed { background: #555; cursor: default; }
-        input { padding: 8px; border-radius: 5px; border: none; width: 60px; margin-right: 10px; }
-        button { padding: 10px 20px; border-radius: 8px; border: none; background: #ffcc00; color: black; font-weight: bold; cursor: pointer; }
-        button:disabled { background: #666; cursor: not-allowed; }
-        h1 { color: #ffcc00; letter-spacing: 2px; }
+        :root { --gold: #d4af37; --bg: #0a0a0a; --card: #161616; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; }
+        .container { width: 500px; background: var(--card); border: 3px solid var(--gold); border-radius: 20px; padding: 20px; margin: 20px; box-shadow: 0 0 40px rgba(0,0,0,1); }
+        
+        .nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 15px 0; }
+        button { background: #222; color: white; border: 1px solid var(--gold); padding: 8px; border-radius: 5px; cursor: pointer; font-size: 11px; transition: 0.1s; }
+        button:hover:not(:disabled) { background: var(--gold); color: black; }
+        button:disabled { opacity: 0.4; cursor: not-allowed; border-color: #555; }
+
+        .game-section { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; min-height: 250px; text-align: center; border: 1px solid #333; }
+        .hidden { display: none !important; }
+        
+        .mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px auto; width: 280px; }
+        .mine-tile { width: 50px; height: 50px; background: #333; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 1px solid #444; }
+        .mine-tile.revealed { cursor: default; }
+        .mine-tile.gem { background: #27ae60; border-color: #2ecc71; box-shadow: 0 0 10px #27ae60; animation: pop 0.2s; }
+        .mine-tile.bomb { background: #c0392b; border-color: #e74c3c; animation: shake 0.3s; }
+
+        @keyframes pop { 0% {transform: scale(0.8);} 100% {transform: scale(1);} }
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+
+        input { background: #000; color: var(--gold); border: 1px solid var(--gold); padding: 8px; border-radius: 5px; outline: none; text-align: center; }
+        #admin-panel { border: 1px dashed red; padding: 10px; margin-top: 20px; background: rgba(255,0,0,0.05); }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>🐝 SwarmBet</h1>
-        
-        <div class="game-box">
-            <h2>💣 Miny (5x5)</h2>
-            <p>Maximálně 24 min!</p>
-            <input type="number" id="mine-count" value="3" min="1" max="24">
-            <button id="mine-start-btn" onclick="startMines()">Hrát</button>
-            <button id="mine-cashout-btn" onclick="cashOutMines()" disabled>Vybrat výhru</button>
-            
-            <div class="mine-grid" id="mine-grid">
-                </div>
-        </div>
+<div class="container">
+    <div id="loading" style="text-align:center; padding: 50px;"><h2>Načítání...</h2></div>
+
+    <div id="auth-ui" class="hidden">
+        <h2 style="text-align:center; color:var(--gold);">GOLDEN STAKE</h2>
+        <input type="text" id="user" placeholder="Jméno" style="width:90%; margin-bottom:10px;"><br>
+        <input type="password" id="pass" placeholder="Heslo" style="width:90%; margin-bottom:10px;"><br>
+        <button onclick="auth('login')" style="width:45%">LOGIN</button>
+        <button onclick="auth('reg')" style="width:45%; background:#444;">REGISTRACE</button>
     </div>
 
-    <script>
-        let minesLocations = [];
-        let isMinesPlaying = false;
-        const GRID_SIZE = 25; // 5x5
+    <div id="game-ui" class="hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px;">
+            <b id="display-name" style="color:var(--gold)"></b>
+            <span style="font-size:22px; color:var(--gold);">💰 <span id="display-chips">0</span></span>
+        </div>
 
-        function startMines() {
-            let input = document.getElementById('mine-count');
-            let count = parseInt(input.value);
+        <div class="nav">
+            <button onclick="tab('mines')">Mines</button>
+            <button onclick="tab('dice')">Dice</button>
+            <button onclick="tab('bj')">Blackjack</button>
+            <button onclick="logout()" style="color:red">Log out</button>
+        </div>
 
-            // FIX: Validace proti lagu a nesmyslům
-            if (isNaN(count) || count < 1) count = 1;
-            if (count >= GRID_SIZE) count = GRID_SIZE - 1; // Musí zůstat aspoň 1 diamant
-            input.value = count; 
+        <div id="status" style="color:var(--gold); text-align:center; font-weight:bold; margin:10px; height:20px;"></div>
 
-            // Reset hry
-            minesLocations = [];
-            isMinesPlaying = true;
-            document.getElementById('mine-grid').innerHTML = '';
-            document.getElementById('mine-start-btn').disabled = true;
-            document.getElementById('mine-cashout-btn').disabled = false;
+        <div id="sec-mines" class="game-section">
+            <div style="margin-bottom:10px;">
+                Miny: <input type="number" id="mine-count" value="3" min="1" max="24" style="width:40px;">
+                Sázka: <input type="number" id="mine-bet" value="10" style="width:70px;">
+                <button id="btn-mines-start" onclick="startMines()">HRÁT</button>
+            </div>
+            <div class="mines-grid" id="mines-board"></div>
+            <button id="mines-cashout" class="hidden" onclick="cashoutMines()" style="background:#27ae60; color:white; font-weight:bold; width:100%; padding:10px;">VYBRAT VÝHRU</button>
+        </div>
 
-            // Náhodné rozmístění min (bezpečná logika)
-            while(minesLocations.length < count) {
-                let r = Math.floor(Math.random() * GRID_SIZE);
-                if(minesLocations.indexOf(r) === -1) minesLocations.push(r);
-            }
+        <div id="sec-dice" class="game-section hidden">
+            <h3>Dice</h3>
+            Tipni (1-6): <input type="number" id="dice-num" min="1" max="6" value="1" style="width:40px;">
+            Sázka: <input type="number" id="dice-bet" value="10" style="width:70px;">
+            <button id="btn-dice-start" onclick="playDice()">HODIT</button>
+            <h1 id="dice-result" style="font-size:60px; margin:20px;">🎲</h1>
+        </div>
 
-            // Vytvoření políček
-            for (let i = 0; i < GRID_SIZE; i++) {
-                let cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.id = 'cell-' + i;
-                cell.innerText = '?';
-                cell.onclick = () => clickCell(i);
-                document.getElementById('mine-grid').appendChild(cell);
-            }
-            console.log("Hra SwarmBet Miny začala s " + count + " minami.");
+        <div id="sec-bj" class="game-section hidden">
+            <h3>Blackjack</h3>
+            <p>V přípravě...</p>
+        </div>
+
+        <div id="admin-panel" class="hidden">
+            <input type="text" id="admin-cmd" placeholder="/give jméno částka" style="width:90%" onkeypress="adminKey(event)">
+        </div>
+    </div>
+</div>
+
+<script>
+    const DB_URL = "https://casbss-c75a0-default-rtdb.europe-west1.firebasedatabase.app/users";
+    let currentUser = localStorage.getItem('casino_user');
+    let userData = null;
+
+    // --- ZVUKY (FIXED LINKS) ---
+    const snd = {
+        click: new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_783856af68.mp3'),
+        win: new Audio('https://cdn.pixabay.com/audio/2021/08/04/audio_bbdec37924.mp3'),
+        lose: new Audio('https://cdn.pixabay.com/audio/2021/08/04/audio_062569ec9c.mp3'),
+        boom: new Audio('https://cdn.pixabay.com/audio/2022/03/10/audio_af2049633e.mp3'),
+        gem: new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_29107149a4.mp3')
+    };
+
+    function play(s) { snd[s].currentTime = 0; snd[s].play().catch(()=>{}); }
+
+    // --- AUTH ---
+    window.onload = async () => {
+        if(currentUser) {
+            const r = await fetch(`${DB_URL}/${currentUser}.json`);
+            userData = await r.json();
+            if(userData) loginSuccess(); else showAuth();
+        } else showAuth();
+    };
+
+    function showAuth() { 
+        document.getElementById('loading').classList.add('hidden'); 
+        document.getElementById('auth-ui').classList.remove('hidden'); 
+    }
+
+    async function auth(type) {
+        play('click');
+        const u = document.getElementById('user').value.trim();
+        const p = document.getElementById('pass').value;
+        if(!u || !p) return;
+        const res = await fetch(DB_URL + ".json");
+        const users = await res.json() || {};
+
+        if(type === 'reg') {
+            if(users[u]) return alert("Jméno existuje!");
+            userData = { password: p, chips: 100 };
+            await fetch(`${DB_URL}/${u}.json`, { method: 'PUT', body: JSON.stringify(userData) });
+            alert("OK! Přihlas se.");
+        } else {
+            if(users[u] && users[u].password === p) {
+                currentUser = u; userData = users[u];
+                localStorage.setItem('casino_user', u);
+                loginSuccess();
+            } else alert("Chyba!");
         }
+    }
 
-        function clickCell(index) {
-            if (!isMinesPlaying) return;
-            let cell = document.getElementById('cell-' + index);
-            if (cell.classList.contains('revealed')) return;
+    function loginSuccess() {
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('auth-ui').classList.add('hidden');
+        document.getElementById('game-ui').classList.remove('hidden');
+        document.getElementById('display-name').innerText = currentUser;
+        if(currentUser === "skibiditoilet") document.getElementById('admin-panel').classList.remove('hidden');
+        updateUI();
+    }
 
-            cell.classList.add('revealed');
+    async function updateUI() {
+        document.getElementById('display-chips').innerText = userData.chips;
+        await fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) });
+    }
 
-            if (minesLocations.includes(index)) {
-                cell.innerText = '💥';
-                cell.style.background = 'red';
-                gameOver(false);
+    function tab(name) {
+        play('click');
+        document.querySelectorAll('.game-section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('sec-' + name).classList.remove('hidden');
+    }
+
+    function logout() { localStorage.removeItem('casino_user'); location.reload(); }
+
+    // --- MINES (FIXED) ---
+    let minesActive = false, mBoard = [], mMult = 1, mBet = 0, mRev = 0;
+
+    function startMines() {
+        mBet = parseInt(document.getElementById('mine-bet').value);
+        let count = parseInt(document.getElementById('mine-count').value);
+        if(mBet > userData.chips || mBet <= 0) return alert("Máš málo!");
+
+        // ZAMKNUTÍ HRY
+        document.getElementById('btn-mines-start').disabled = true;
+        document.getElementById('mine-count').disabled = true;
+        document.getElementById('mine-bet').disabled = true;
+
+        userData.chips -= mBet; updateUI();
+        minesActive = true; mRev = 0; mMult = 1;
+        document.getElementById('mines-board').innerHTML = '';
+        document.getElementById('status').innerText = "Hra běží...";
+
+        mBoard = new Array(25).fill(false);
+        let m = 0; while(m < count) { let r = Math.floor(Math.random()*25); if(!mBoard[r]){mBoard[r]=true; m++;} }
+
+        for(let i=0; i<25; i++) {
+            let t = document.createElement('div'); t.className = 'mine-tile';
+            t.onclick = () => {
+                if(!minesActive || t.classList.contains('revealed')) return;
+                t.classList.add('revealed');
+                if(mBoard[i]) {
+                    t.innerHTML = '💣'; t.classList.add('bomb');
+                    minesActive = false; play('boom');
+                    resetMinesUI("BOOM!");
+                } else {
+                    t.innerHTML = '💎'; t.classList.add('gem');
+                    mRev++; play('gem');
+                    mMult *= (1 + (count / (25 - mRev)));
+                    document.getElementById('status').innerText = `${mMult.toFixed(2)}x`;
+                    document.getElementById('mines-cashout').classList.remove('hidden');
+                }
+            };
+            document.getElementById('mines-board').appendChild(t);
+        }
+    }
+
+    function cashoutMines() {
+        if(!minesActive) return;
+        let win = Math.floor(mBet * mMult);
+        userData.chips += win; updateUI(); play('win');
+        resetMinesUI("Výhra: " + win);
+    }
+
+    function resetMinesUI(msg) {
+        minesActive = false;
+        document.getElementById('status').innerText = msg;
+        document.getElementById('mines-cashout').classList.add('hidden');
+        document.getElementById('btn-mines-start').disabled = false;
+        document.getElementById('mine-count').disabled = false;
+        document.getElementById('mine-bet').disabled = false;
+    }
+
+    // --- DICE (FIXED) ---
+    function playDice() {
+        let b = parseInt(document.getElementById('dice-bet').value);
+        let n = parseInt(document.getElementById('dice-num').value);
+        if(b > userData.chips) return alert("Máš málo!");
+
+        document.getElementById('btn-dice-start').disabled = true;
+        userData.chips -= b; updateUI();
+        document.getElementById('dice-result').innerText = "⏳";
+        
+        setTimeout(() => {
+            let r = Math.floor(Math.random()*6)+1;
+            document.getElementById('dice-result').innerText = r;
+            if(r === n) {
+                userData.chips += b * 6; play('win');
+                document.getElementById('status').innerText = "WIN!";
             } else {
-                cell.innerText = '💎';
-                cell.style.background = '#28a745';
-                // Tady by se mohla přičítat násobitelná výhra
+                play('lose');
+                document.getElementById('status').innerText = "LOSE";
             }
-        }
+            updateUI();
+            document.getElementById('btn-dice-start').disabled = false;
+        }, 800);
+    }
 
-        function cashOutMines() {
-            if (!isMinesPlaying) return;
-            alert("💰 Výhra vybrána na SwarmBet!");
-            gameOver(true);
+    // --- ADMIN ---
+    async function adminKey(e) {
+        if(e.key === 'Enter') {
+            const p = e.target.value.split(' ');
+            if(p[0] === '/give' && p.length === 3) {
+                const res = await fetch(DB_URL + ".json");
+                const users = await res.json();
+                if(users[p[1]]) {
+                    users[p[1]].chips += parseInt(p[2]);
+                    await fetch(`${DB_URL}/${p[1]}.json`, { method: 'PUT', body: JSON.stringify(users[p[1]]) });
+                    alert("Hotovo!");
+                    if(p[1] === currentUser) { userData.chips = users[p[1]].chips; updateUI(); }
+                }
+            }
+            e.target.value = '';
         }
-
-        function gameOver(win) {
-            isMinesPlaying = false;
-            document.getElementById('mine-start-btn').disabled = false;
-            document.getElementById('mine-cashout-btn').disabled = true;
-            
-            // Ukázat, kde byly ostatní miny
-            minesLocations.forEach(loc => {
-                let c = document.getElementById('cell-' + loc);
-                if (c.innerText !== '💥') c.innerText = '💣';
-            });
-
-            if(!win) alert("BUM! Příště to na SwarmBet vyjde.");
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
