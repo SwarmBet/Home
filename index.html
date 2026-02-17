@@ -1,63 +1,39 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <title>JS Karetní Simulátor</title>
-    <style>
-        body { font-family: sans-serif; background: #2d5a27; color: white; text-align: center; }
-        .table { border: 5px solid #1a3a17; border-radius: 50px; padding: 20px; width: 80%; margin: 50px auto; background: #254d21; }
-        .card-area { display: flex; justify-content: center; min-height: 150px; margin: 20px; }
-        .card { 
-            width: 80px; height: 120px; background: white; color: black; 
-            border-radius: 8px; margin: 5px; display: flex; 
-            align-items: center; justify-content: center; font-size: 24px; font-weight: bold;
-            animation: deal 0.5s ease-out;
-        }
-        @keyframes deal { from { transform: translateY(-200px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        button { padding: 10px 20px; font-size: 18px; cursor: pointer; background: #e67e22; border: none; color: white; border-radius: 5px; }
-        #status { font-size: 24px; margin: 20px; font-weight: bold; }
-    </style>
-</head>
-<body>
+import random
 
-    <h1>Virtuální Karetní Hra</h1>
-    <div class="table">
-        <div id="status">Skóre: 0</div>
-        <div id="player-cards" class="card-area"></div>
-        <button onclick="hit()">Líznout kartu</button>
-        <button onclick="resetGame()" style="background:#c0392b">Nová hra</button>
-    </div>
+def blackjack():
+    print("\n--- Vítej v Black Jacku! ---")
+    # Tady bude tvoje logika pro Blackjack
+    print("Hráč dostal: [10, 7]. Dealer má: [9].")
+    print("Zatím jen ukázka... vracím tě do menu.")
 
-    <script>
-        let score = 0;
-        const cardArea = document.getElementById('player-cards');
-        const statusText = document.getElementById('status');
+def roulette():
+    print("\n--- Vítej u Rulety! ---")
+    # Tady bude tvoje logika pro Ruletu
+    cislo = random.randint(0, 36)
+    barva = "Červená" if cislo % 2 == 0 else "Černá" # Zjednodušeně
+    print(f"Padlo číslo {cislo} ({barva}).")
+    print("Vracím tě do menu.")
 
-        function hit() {
-            if (score >= 21) return;
+def main_menu():
+    while True:
+        print("\n======================")
+        print("   GAMES DASHBOARD")
+        print("======================")
+        print("1. Hrát Black Jack")
+        print("2. Hrát Ruletu")
+        print("3. Konec")
+        
+        volba = input("\nVyber si hru (1-3): ")
 
-            const cardValue = Math.floor(Math.random() * 11) + 1;
-            score += cardValue;
+        if volba == '1':
+            blackjack()
+        elif volba == '2':
+            roulette()
+        elif volba == '3':
+            print("Díky za hraní! Čau.")
+            break
+        else:
+            print("Neplatná volba, zkus to znova.")
 
-            const cardDiv = document.createElement('div');
-            cardDiv.className = 'card';
-            cardDiv.innerText = cardValue;
-            cardArea.appendChild(cardDiv);
-
-            if (score > 21) {
-                statusText.innerText = `Bust! Součet: ${score} - Prohrál jsi (virtuálně)`;
-            } else if (score === 21) {
-                statusText.innerText = "Blackjack! Vyhráváš!";
-            } else {
-                statusText.innerText = `Součet: ${score}`;
-            }
-        }
-
-        function resetGame() {
-            score = 0;
-            cardArea.innerHTML = '';
-            statusText.innerText = 'Skóre: 0';
-        }
-    </script>
-</body>
-</html>
+if __name__ == "__main__":
+    main_menu()
