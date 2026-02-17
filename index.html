@@ -2,28 +2,31 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>Golden Stake - MultiAccount Edition</title>
+    <title>Golden Stake - Admin skibiditoilet</title>
     <style>
         body { background: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; margin: 0; }
-        .game-container { width: 450px; background: #1a1a1a; border: 4px solid #d4af37; border-radius: 20px; padding: 20px; margin-top: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .game-container { width: 450px; background: #1a1a1a; border: 4px solid #d4af37; border-radius: 20px; padding: 20px; margin-top: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
         
         /* Auth System */
         #auth-box { text-align: center; padding: 20px; }
-        input { background: #000; color: #ffd700; border: 1px solid #d4af37; padding: 10px; margin: 5px; border-radius: 5px; width: 80%; }
-        .btn-gold { background: #d4af37; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; color: black; }
-        
+        input { background: #000; color: #ffd700; border: 1px solid #d4af37; padding: 10px; margin: 5px; border-radius: 5px; width: 85%; }
+        .btn-gold { background: #d4af37; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; color: black; transition: 0.2s; }
+        .btn-gold:hover { background: #fff; }
+        .btn-gold:disabled { background: #555; color: #888; cursor: not-allowed; }
+
         /* Game UI */
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
         .balance { font-size: 24px; color: #ffd700; font-weight: bold; }
         .hidden { display: none !important; }
         
-        /* Admin Console */
-        #admin-console { background: #000; border: 1px solid red; padding: 10px; margin-top: 10px; border-radius: 5px; font-family: monospace; }
-        #admin-input { width: 90%; border: none; outline: none; background: transparent; color: #0f0; }
+        /* Admin Console - Tajná */
+        #admin-panel { margin-top: 20px; padding: 10px; border: 2px dashed #00ff00; background: rgba(0, 255, 0, 0.05); border-radius: 10px; }
+        #admin-input { width: 90%; border: none; outline: none; background: #000; color: #0f0; padding: 8px; font-family: monospace; }
         
-        .card-area { display: flex; justify-content: center; gap: 5px; min-height: 80px; margin: 10px 0; }
-        .card { width: 50px; height: 75px; background: white; color: black; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .status { text-align: center; color: #ffd700; margin: 10px 0; font-weight: bold; }
+        /* Blackjack Visuals */
+        .card-area { display: flex; justify-content: center; gap: 8px; min-height: 100px; margin: 10px 0; }
+        .card { width: 60px; height: 90px; background: white; color: black; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
+        .status { text-align: center; color: #ffd700; margin: 10px 0; font-weight: bold; min-height: 24px; }
     </style>
 </head>
 <body>
@@ -31,66 +34,69 @@
 <div class="game-container">
     <div id="auth-box">
         <h2 style="color: #d4af37;">GOLDEN STAKE</h2>
-        <div id="auth-msg">Přihlas se nebo se registruj</div>
-        <input type="text" id="username" placeholder="Jméno">
+        <div id="auth-msg" style="margin-bottom:10px;">Přihlas se nebo vytvoř účet</div>
+        <input type="text" id="username" placeholder="Uživatelské jméno">
         <input type="password" id="password" placeholder="Heslo">
         <br><br>
-        <button class="btn-gold" onclick="handleAuth('login')">Login</button>
-        <button class="btn-gold" style="background:#555; color:white;" onclick="handleAuth('register')">Registrace</button>
+        <button class="btn-gold" onclick="handleAuth('login')">PŘIHLÁSIT</button>
+        <button class="btn-gold" style="background:#444; color:white;" onclick="handleAuth('register')">REGISTROVAT</button>
     </div>
 
     <div id="game-box" class="hidden">
         <div class="header">
-            <div id="user-display" style="color:#888"></div>
+            <div id="user-display" style="color:#aaa; font-weight:bold;"></div>
             <div class="balance">💰 <span id="chips-val">0</span></div>
-            <button onclick="logout()" style="background:none; border:none; color:red; cursor:pointer;">Odhlásit</button>
+            <button onclick="logout()" style="background:none; border:none; color:#ff4444; cursor:pointer; font-weight:bold;">Odhlásit</button>
         </div>
 
-        <div class="status" id="msg">Vítej zpět!</div>
+        <div class="status" id="msg">Připraven ke hře?</div>
 
         <div id="bj-ui">
-            <div style="text-align:center">
-                Sázka: <input type="number" id="bj-bet" value="10" style="width:60px">
-                <button class="btn-gold" id="bj-start" onclick="bjStart()">Hrát</button>
+            <div id="bj-setup" style="text-align:center">
+                Sázka: <input type="number" id="bj-bet" value="10" style="width:70px; display:inline-block;">
+                <button class="btn-gold" id="bj-start" onclick="bjStart()">ROZDAT</button>
             </div>
+
             <div id="cards-ui" class="hidden">
-                <p>Dealer: <span id="d-val">?</span></p>
-                <div class="card-area" id="d-cards"></div>
-                <p>Ty: <span id="p-val">0</span></p>
-                <div class="card-area" id="p-cards"></div>
-                <div style="text-align:center">
-                    <button class="btn-gold" onclick="bjPlay('hit')">HIT</button>
-                    <button class="btn-gold" style="background:#ddd" onclick="bjPlay('stand')">STAND</button>
+                <div style="text-align:center;">
+                    <p>Dealer: <span id="d-val" style="color:#ff4444">?</span></p>
+                    <div class="card-area" id="d-cards"></div>
+                    <p>Ty: <span id="p-val" style="color:#44ff44">0</span></p>
+                    <div class="card-area" id="p-cards"></div>
+                </div>
+                
+                <div id="bj-actions" class="hidden" style="text-align:center; margin-top:15px;">
+                    <button class="btn-gold" onclick="bjPlay('hit')">DALŠÍ KARTU (HIT)</button>
+                    <button class="btn-gold" style="background:#eee" onclick="bjPlay('stand')">STÁT (STAND)</button>
                 </div>
             </div>
         </div>
 
         <div id="admin-panel" class="hidden">
-            <div id="admin-console">
-                <div style="color:red; font-size:10px;">ADMIN CONSOLE: /give [jméno] [částka]</div>
-                <input type="text" id="admin-input" placeholder="Zadej příkaz..." onkeypress="checkAdminCommand(event)">
-            </div>
+            <div style="color:#0f0; font-size:12px; margin-bottom:5px; font-weight:bold;">🚽 ADMIN PANEL (skibiditoilet)</div>
+            <input type="text" id="admin-input" placeholder="příkaz: /give jméno částka" onkeypress="checkAdminCommand(event)">
         </div>
     </div>
 </div>
 
 <script>
-    // --- KONFIGURACE ---
-    const ADMIN_NAME = "Admin"; // Změň si na své jméno
+    // --- KONFIGURACE A DATA ---
+    const ADMIN_NAME = "skibiditoilet"; 
     let currentUser = null;
-    let users = JSON.parse(localStorage.getItem('casino_users')) || {};
+    let users = JSON.parse(localStorage.getItem('casino_db')) || {};
 
-    // --- AUTH SYSTÉM ---
+    // --- SYSTÉM ÚČTŮ ---
     function handleAuth(type) {
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value;
 
-        if(!u || !p) return alert("Vyplň údaje!");
+        if(!u || !p) return alert("Zadej jméno a heslo!");
 
         if(type === 'register') {
-            if(users[u]) return alert("Uživatel už existuje!");
+            if(users[u]) return alert("Tento uživatel už existuje!");
             users[u] = { password: p, chips: 0 };
-            alert("Registrace úspěšná! Nyní se přihlas.");
+            saveData();
+            alert("Registrace úspěšná! Teď se přihlas.");
         } else {
             if(users[u] && users[u].password === p) {
                 currentUser = u;
@@ -99,16 +105,18 @@
                 alert("Špatné jméno nebo heslo!");
             }
         }
-        saveData();
     }
 
     function loginSuccess() {
         document.getElementById('auth-box').classList.add('hidden');
         document.getElementById('game-box').classList.remove('hidden');
-        document.getElementById('user-display').innerText = currentUser;
+        document.getElementById('user-display').innerText = "Hráč: " + currentUser;
         
+        // Zobrazení admin panelu pouze pro skibiditoilet
         if(currentUser === ADMIN_NAME) {
             document.getElementById('admin-panel').classList.remove('hidden');
+        } else {
+            document.getElementById('admin-panel').classList.add('hidden');
         }
         updateUI();
     }
@@ -117,11 +125,12 @@
         currentUser = null;
         document.getElementById('auth-box').classList.remove('hidden');
         document.getElementById('game-box').classList.add('hidden');
-        document.getElementById('admin-panel').classList.add('hidden');
+        document.getElementById('username').value = "";
+        document.getElementById('password').value = "";
     }
 
     function saveData() {
-        localStorage.setItem('casino_users', JSON.stringify(users));
+        localStorage.setItem('casino_db', JSON.stringify(users));
     }
 
     function updateUI() {
@@ -144,21 +153,23 @@
                     users[target].chips += amount;
                     saveData();
                     updateUI();
-                    alert(`Dáno ${amount} žetonů uživateli ${target}`);
+                    alert(`Úspěch! Přidáno ${amount} žetonů uživateli ${target}.`);
                 } else {
-                    alert("Uživatel nenalezen nebo špatná částka!");
+                    alert("Chyba: Uživatel neexistuje nebo špatná částka.");
                 }
+            } else {
+                alert("Použij formát: /give jméno částka");
             }
             document.getElementById('admin-input').value = '';
         }
     }
 
-    // --- BLACKJACK LOGIC (Z tvého kódu) ---
+    // --- BLACKJACK LOGIC (FIXED) ---
     let playing = false, curBet = 0, deck = [], pHand = [], dHand = [];
 
-    function bjStart() {
+    async function bjStart() {
         curBet = parseInt(document.getElementById('bj-bet').value);
-        if(curBet > users[currentUser].chips || curBet <= 0) return alert("Máš málo žetonů!");
+        if(curBet > users[currentUser].chips || curBet <= 0) return alert("Nemáš dost žetonů!");
         
         users[currentUser].chips -= curBet;
         playing = true;
@@ -167,6 +178,8 @@
 
         document.getElementById('bj-start').disabled = true;
         document.getElementById('cards-ui').classList.remove('hidden');
+        document.getElementById('bj-actions').classList.add('hidden');
+        document.getElementById('msg').innerText = "Hra o " + curBet;
         
         deck = []; 
         ['♠','♥','♦','♣'].forEach(s => ['2','3','4','5','6','7','8','9','10','J','Q','K','A'].forEach(v => deck.push({v,s})));
@@ -174,51 +187,77 @@
 
         pHand = [deck.pop(), deck.pop()];
         dHand = [deck.pop(), deck.pop()];
-        renderBJ(false);
+        
+        await renderBJ(false);
+
+        if(getVal(pHand) === 21) {
+            bjEnd(true, "BLACKJACK! 💰");
+        } else {
+            document.getElementById('bj-actions').classList.remove('hidden');
+        }
     }
 
-    function renderBJ(all) {
+    async function renderBJ(all) {
         const p = document.getElementById('p-cards'), d = document.getElementById('d-cards');
         p.innerHTML = ''; d.innerHTML = '';
+        
         pHand.forEach(c => p.innerHTML += `<div class="card">${c.v}${c.s}</div>`);
-        dHand.forEach((c, i) => d.innerHTML += `<div class="card" style="${!all && i===1 ? 'background:black':''}">${!all && i===1 ? '':c.v+c.s}</div>`);
+        dHand.forEach((c, i) => {
+            d.innerHTML += `<div class="card" style="${!all && i===1 ? 'background:#333; color:#333':''}">${!all && i===1 ? '?':c.v+c.s}</div>`;
+        });
+
         document.getElementById('p-val').innerText = getVal(pHand);
         document.getElementById('d-val').innerText = all ? getVal(dHand) : "?";
     }
 
     function getVal(h) {
         let s = 0, a = 0;
-        h.forEach(c => { if(['J','Q','K'].includes(c.v)) s += 10; else if(c.v === 'A') { s += 11; a++; } else s += parseInt(c.v); });
+        h.forEach(c => { 
+            if(['J','Q','K'].includes(c.v)) s += 10; 
+            else if(c.v === 'A') { s += 11; a++; } 
+            else s += parseInt(c.v); 
+        });
         while(s > 21 && a > 0) { s -= 10; a--; }
         return s;
     }
 
     async function bjPlay(a) {
         if(!playing) return;
+
         if(a === 'hit') {
             pHand.push(deck.pop());
-            renderBJ(false);
-            if(getVal(pHand) > 21) bjEnd(false, "BUST!");
+            await renderBJ(false);
+            if(getVal(pHand) > 21) {
+                document.getElementById('bj-actions').classList.add('hidden'); // OKAMŽITĚ SCHOVAT
+                bjEnd(false, "PŘETÁHL JSI (BUST)!");
+            }
         } else {
-            renderBJ(true);
+            document.getElementById('bj-actions').classList.add('hidden');
+            await renderBJ(true);
+            
             while(getVal(dHand) < 17) {
                 await new Promise(r => setTimeout(r, 600));
                 dHand.push(deck.pop());
-                renderBJ(true);
+                await renderBJ(true);
             }
+            
             let ps = getVal(pHand), ds = getVal(dHand);
-            if(ds > 21 || ps > ds) bjEnd(true, "WIN!");
-            else if(ps < ds) bjEnd(false, "LOSE");
-            else bjEnd('draw', "PUSH");
+            if(ds > 21 || ps > ds) bjEnd(true, "VÝHRA!");
+            else if(ps < ds) bjEnd(false, "PROHRÁL JSI");
+            else bjEnd('draw', "REMIZA (PUSH)");
         }
     }
 
     function bjEnd(res, m) {
         playing = false;
+        document.getElementById('bj-actions').classList.add('hidden');
         document.getElementById('bj-start').disabled = false;
+
         if(res === true) users[currentUser].chips += curBet * 2;
         if(res === 'draw') users[currentUser].chips += curBet;
-        saveData(); updateUI();
+        
+        saveData();
+        updateUI();
         document.getElementById('msg').innerText = m;
     }
 </script>
