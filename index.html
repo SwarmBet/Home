@@ -2,84 +2,80 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SwarmBet - Hexagon Edition</title>
+    <title>SwarmBet - Star Edition</title>
     <style>
-        :root { --orange: #ff9900; --dark: #111; --gray: #222; }
+        :root { --orange: #ff9900; --dark: #0a0a0a; }
         body { 
             background-color: var(--dark);
-            /* Hexagonální pozadí */
             background-image:  
-                radial-gradient(circle at center, rgba(255, 153, 0, 0.05) 0%, transparent 70%),
+                radial-gradient(circle at center, rgba(255, 153, 0, 0.03) 0%, transparent 70%),
                 linear-gradient(30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
                 linear-gradient(-30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
-                linear-gradient(30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
-                linear-gradient(-30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
-                linear-gradient(60deg, #151515 25%, transparent 25.5%, transparent 75%, #151515 75%, #151515),
-                linear-gradient(60deg, #151515 25%, transparent 25.5%, transparent 75%, #151515 75%, #151515);
-            background-size: 80px 140px;
+                linear-gradient(60deg, #121212 25%, transparent 25.5%, transparent 75%, #121212 75%, #121212);
+            background-size: 60px 105px;
             color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center;
         }
         .container { 
-            width: 480px; background: rgba(20, 20, 20, 0.95); border: 3px solid var(--orange); 
-            border-radius: 15px; padding: 20px; margin: 20px; box-shadow: 0 0 30px rgba(255,153,0,0.2);
+            width: 480px; background: rgba(15, 15, 15, 0.98); border: 2px solid var(--orange); 
+            border-radius: 20px; padding: 25px; margin: 20px; box-shadow: 0 0 40px rgba(255,153,0,0.15);
         }
-        .brand { text-align: center; color: var(--orange); font-size: 32px; font-weight: 900; margin-bottom: 15px; }
-        .nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 15px; }
-        button { background: #333; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        button:hover:not(:disabled) { background: var(--orange); color: black; }
-        button:disabled { opacity: 0.3; }
-        .btn-main { background: var(--orange); color: black; }
-        .game-section { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px; text-align: center; min-height: 300px; }
-        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px auto; width: 300px; }
-        .tile { width: 52px; height: 52px; background: #222; border: 2px solid #333; border-radius: 6px; cursor: pointer; font-size: 24px; display: flex; align-items: center; justify-content: center; }
-        .tile:hover { border-color: var(--orange); }
-        .tile.revealed { background: #000; border-color: #444; }
+        .brand { text-align: center; color: var(--orange); font-size: 36px; font-weight: 900; letter-spacing: -1px; margin-bottom: 20px; }
+        .nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+        button { background: #1a1a1a; color: white; border: 1px solid #333; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; font-size: 11px; }
+        button:hover:not(:disabled) { border-color: var(--orange); background: #222; box-shadow: 0 0 10px rgba(255,153,0,0.2); }
+        button:disabled { opacity: 0.2; cursor: not-allowed; }
+        .btn-main { background: var(--orange); color: black; border: none; }
+        .game-section { background: rgba(255,255,255,0.02); border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #222; }
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px auto; width: 310px; }
+        .tile { width: 54px; height: 54px; background: #111; border: 2px solid #222; border-radius: 8px; cursor: pointer; font-size: 26px; display: flex; align-items: center; justify-content: center; transition: 0.1s; }
+        .tile:hover { background: #1a1a1a; border-color: var(--orange); }
+        .tile.rev { background: #000; border-color: #333; pointer-events: none; }
         .hidden { display: none !important; }
-        input { background: #000; color: var(--orange); border: 1px solid var(--orange); padding: 8px; border-radius: 5px; text-align: center; width: 80px; }
-        #status { color: var(--orange); margin-bottom: 10px; font-weight: bold; }
+        input { background: #000; color: var(--orange); border: 1px solid #333; padding: 10px; border-radius: 8px; text-align: center; width: 85px; font-weight: bold; }
+        #status { color: var(--orange); margin-bottom: 15px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
-<body onclick="initAudio()">
+<body onclick="unlockAudio()">
 
 <div class="container">
     <div id="auth-ui">
         <div class="brand">SWARM<span>BET</span></div>
-        <input type="text" id="user" placeholder="Jméno" style="width:90%; margin-bottom:10px;"><br>
-        <input type="password" id="pass" placeholder="Heslo" style="width:90%; margin-bottom:10px;"><br>
-        <button class="btn-main" onclick="auth('login')" style="width:45%">LOGIN</button>
-        <button onclick="auth('reg')" style="width:45%">REGISTRACE</button>
+        <input type="text" id="user" placeholder="Jméno" style="width:90%; margin-bottom:12px;"><br>
+        <input type="password" id="pass" placeholder="Heslo" style="width:90%; margin-bottom:12px;"><br>
+        <button class="btn-main" onclick="auth('login')" style="width:45%; font-size:14px;">LOGIN</button>
+        <button onclick="auth('reg')" style="width:45%; font-size:14px;">REGISTRACE</button>
     </div>
 
     <div id="game-ui" class="hidden">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="brand" style="font-size:20px;">SWARMBET</div>
-            <div style="font-size:22px; color:var(--orange);">💰 <span id="display-chips">0</span></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <div class="brand" style="font-size:22px; margin:0;">SWARMBET</div>
+            <div style="font-size:24px; color:var(--orange); font-weight:bold;">⭐ <span id="display-chips">0</span></div>
         </div>
-        <div id="status">Připraven ke hře</div>
+        <div id="status">PŘIPRAVEN</div>
         <div class="nav">
             <button onclick="tab('mines')">MINES</button>
             <button onclick="tab('dice')">DICE</button>
             <button onclick="tab('bj')">BJ</button>
-            <button onclick="logout()">LOGOUT</button>
+            <button onclick="logout()" style="color:#ff4444;">LOGOUT</button>
         </div>
 
         <div id="sec-mines" class="game-section">
-            Miny: <input type="number" id="m-count" value="3" min="1" max="24">
+            💣 <input type="number" id="m-count" value="3" min="1" max="24">
             Sázka: <input type="number" id="m-bet" value="10">
-            <button id="m-start" class="btn-main" onclick="startMines()">HRÁT</button>
+            <button id="m-start" class="btn-main" onclick="startMines()" style="margin-left:5px;">HRÁT</button>
             <div class="grid" id="m-board"></div>
-            <button id="m-cash" class="hidden" onclick="cashoutMines()" style="width:100%; background: #00ff00; color:black;">CASHOUT</button>
+            <button id="m-cash" class="hidden" onclick="cashoutMines()" style="width:100%; background: #2ecc71; color:black; font-size:16px;">VYBRAT ⭐</button>
         </div>
 
         <div id="sec-dice" class="game-section hidden">
             <h3>DICE</h3>
-            <input type="number" id="d-num" value="1" min="1" max="6">
+            Tipni: <input type="number" id="d-num" value="1" min="1" max="6">
             Sázka: <input type="number" id="d-bet" value="10">
             <button id="d-start" class="btn-main" onclick="playDice()">HODIT</button>
-            <h1 id="d-res" style="font-size:60px;">🎲</h1>
+            <h1 id="d-res" style="font-size:70px; margin:20px;">🎲</h1>
         </div>
 
-        <div id="sec-bj" class="game-section hidden">V přípravě (BJ)...</div>
+        <div id="sec-bj" class="game-section hidden">V PŘÍPRAVĚ...</div>
     </div>
 </div>
 
@@ -87,20 +83,19 @@
     const DB_URL = "https://casbss-c75a0-default-rtdb.europe-west1.firebasedatabase.app/users";
     let currentUser = localStorage.getItem('swarm_user');
     let userData = null;
-    let audioReady = false;
 
-    // --- NOVÉ KRÁTKÉ ZVUKY ---
+    // --- AUDIO FIX ---
     const sfx = {
-        click: new Audio("https://www.soundjay.com/button/button-16.mp3"),
-        win: new Audio("https://www.soundjay.com/button/button-3.mp3"), // Krátké cinknutí
-        lose: new Audio("https://www.myinstants.com/media/sounds/buzzer_x.mp3"), // Krátké bzučení pro miny
-        gem: new Audio("https://www.soundjay.com/button/button-50.mp3") 
+        click: new Audio("https://actions.google.com/sounds/v1/foley/button_click.ogg"),
+        win: new Audio("https://actions.google.com/sounds/v1/foley/beeps_and_boops.ogg"),
+        lose: new Audio("https://actions.google.com/sounds/v1/foley/wrong_way.ogg"),
+        gem: new Audio("https://actions.google.com/sounds/v1/foley/pop.ogg")
     };
 
-    function initAudio() { if(!audioReady){ for(let key in sfx) sfx[key].load(); audioReady=true; } }
+    function unlockAudio() { for(let s in sfx) { sfx[s].play().then(()=>sfx[s].pause()).catch(()=>{}); } }
     function play(n) { if(sfx[n]) { sfx[n].currentTime = 0; sfx[n].play().catch(()=>{}); } }
 
-    // --- LOGIKA ---
+    // --- SYSTÉM ---
     window.onload = async () => { if(currentUser) { const r = await fetch(`${DB_URL}/${currentUser}.json`); userData = await r.json(); if(userData) loginSuccess(); } };
     
     async function auth(type) {
@@ -122,7 +117,7 @@
 
     function loginSuccess() { document.getElementById('auth-ui').classList.add('hidden'); document.getElementById('game-ui').classList.remove('hidden'); updateUI(); }
     function updateUI() { document.getElementById('display-chips').innerText = userData.chips; fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) }); }
-    function tab(n) { document.querySelectorAll('.game-section').forEach(s=>s.classList.add('hidden')); document.getElementById('sec-'+n).classList.remove('hidden'); }
+    function tab(n) { play('click'); document.querySelectorAll('.game-section').forEach(s=>s.classList.add('hidden')); document.getElementById('sec-'+n).classList.remove('hidden'); }
     function logout() { localStorage.removeItem('swarm_user'); location.reload(); }
 
     // --- MINES ---
@@ -130,18 +125,28 @@
     function startMines() {
         mBet = parseInt(document.getElementById('m-bet').value);
         let count = parseInt(document.getElementById('m-count').value);
-        if(mBet > userData.chips || mBet <= 0) return alert("Málo žetonů!");
+        if(mBet > userData.chips || mBet <= 0) return alert("Málo ⭐!");
         mActive = true; mRev = 0; mMult = 1; userData.chips -= mBet; updateUI();
         document.getElementById('m-start').disabled = true;
         document.getElementById('m-board').innerHTML = '';
+        document.getElementById('status').innerText = "HLEDÁNÍ...";
         mBoard = new Array(25).fill(false);
         let m = 0; while(m < count) { let r = Math.floor(Math.random()*25); if(!mBoard[r]){mBoard[r]=true; m++;} }
         for(let i=0; i<25; i++) {
             let t = document.createElement('div'); t.className = 'tile';
             t.onclick = () => {
                 if(!mActive || t.innerHTML !== "") return;
-                if(mBoard[i]) { t.innerHTML = '💣'; t.classList.add('revealed'); play('lose'); mActive = false; document.getElementById('m-start').disabled = false; document.getElementById('m-cash').classList.add('hidden'); }
-                else { t.innerHTML = '💎'; t.classList.add('revealed'); play('gem'); mRev++; mMult *= (1 + (count/(25-mRev))); document.getElementById('status').innerText = mMult.toFixed(2)+"x"; document.getElementById('m-cash').classList.remove('hidden'); }
+                if(mBoard[i]) { 
+                    t.innerHTML = '💥'; t.classList.add('rev'); play('lose'); 
+                    mActive = false; document.getElementById('m-start').disabled = false; 
+                    document.getElementById('m-cash').classList.add('hidden');
+                    document.getElementById('status').innerText = "PROHRA";
+                } else { 
+                    t.innerHTML = '⭐'; t.classList.add('rev'); play('gem'); 
+                    mRev++; mMult *= (1 + (count/(25-mRev))); 
+                    document.getElementById('status').innerText = mMult.toFixed(2)+"X"; 
+                    document.getElementById('m-cash').classList.remove('hidden'); 
+                }
             };
             document.getElementById('m-board').appendChild(t);
         }
@@ -150,7 +155,8 @@
         if(!mActive) return;
         let win = Math.floor(mBet * mMult); userData.chips += win; play('win');
         mActive = false; document.getElementById('m-start').disabled = false;
-        document.getElementById('m-cash').classList.add('hidden'); document.getElementById('status').innerText = "Vyhrál jsi "+win; updateUI();
+        document.getElementById('m-cash').classList.add('hidden'); 
+        document.getElementById('status').innerText = "VÝHRA: ⭐ " + win; updateUI();
     }
 
     // --- DICE ---
@@ -159,11 +165,13 @@
         let n = parseInt(document.getElementById('d-num').value);
         if(b > userData.chips) return;
         document.getElementById('d-start').disabled = true; userData.chips -= b; updateUI();
+        document.getElementById('d-res').innerText = "⏳";
         setTimeout(() => {
             let r = Math.floor(Math.random()*6)+1; document.getElementById('d-res').innerText = r;
-            if(r === n) { userData.chips += b*6; play('win'); } else play('lose');
+            if(r === n) { userData.chips += b*6; play('win'); document.getElementById('status').innerText = "VÝHRA!"; } 
+            else { play('lose'); document.getElementById('status').innerText = "PROHRA"; }
             updateUI(); document.getElementById('d-start').disabled = false;
-        }, 600);
+        }, 700);
     }
 </script>
 </body>
