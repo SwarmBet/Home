@@ -2,13 +2,13 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SwarmBet - Star Premium Fixed</title>
+    <title>SwarmBet - Star Premium Footer Edition</title>
     <style>
         :root { --orange: #ff9900; --dark: #0a0a0a; --panel: #151515; }
         body { 
             background-color: var(--dark);
             background-image: radial-gradient(circle at center, rgba(255, 153, 0, 0.03) 0%, transparent 80%);
-            color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow-x: hidden;
+            color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh;
         }
 
         /* Navbar */
@@ -32,7 +32,7 @@
         }
         .user-section:hover .logout-btn { display: block; }
 
-        .container { width: 850px; margin: 30px auto; }
+        .container { width: 850px; margin: 30px auto; flex: 1; }
         .card { background: var(--panel); border: 1px solid #222; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .brand-big { font-size: 45px; font-weight: 900; color: var(--orange); text-align: center; }
         .hidden { display: none !important; }
@@ -46,6 +46,15 @@
         .btn-play { background: var(--orange); color: black; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 900; cursor: pointer; transition: 0.2s; }
         #status-bar { color: var(--orange); text-align: center; font-weight: bold; margin-bottom: 10px; height: 20px; text-transform: uppercase; }
         input { background: #000; color: var(--orange); border: 1px solid #333; padding: 10px; border-radius: 8px; width: 80px; text-align: center; font-weight: bold; }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #555;
+            font-size: 11px;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body onclick="forceAudioInit()">
@@ -53,7 +62,7 @@
 <div id="auth-screen" style="display:flex; justify-content:center; align-items:center; height: 100vh;">
     <div class="card" style="width: 320px; text-align: center; border: 2px solid var(--orange);">
         <div class="brand-big">SWARM<span>BET</span></div>
-        <p style="color:#888; font-size: 13px; margin-bottom: 20px;">⭐ KLIKNI PRO ZVUK ⭐</p>
+        <p style="color:#888; font-size: 13px; margin-bottom: 20px;">⭐ SBÍREJ HVĚZDY ⭐</p>
         <input type="text" id="user" placeholder="Jméno"><br><br>
         <input type="password" id="pass" placeholder="Heslo"><br><br>
         <button class="btn-play" onclick="auth('login')" style="width:100%">PŘIHLÁSIT</button>
@@ -79,8 +88,8 @@
 
     <div class="container">
         <div id="page-home" class="card">
-            <h1>Úl je připraven! 🐝</h1>
-            <p>Klikni na HRY a vyzkoušej nové zvuky z Robloxu.</p>
+            <h1>Vítej v úlu! 🐝</h1>
+            <p>Hraješ za fiktivní hvězdy. Užij si to!</p>
         </div>
 
         <div id="page-games" class="hidden">
@@ -108,6 +117,12 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        © 2026 Swarmbet<br>
+        Terms & Conditions<br>
+        For entertainment purposes only. No real money involved.
+    </footer>
 </div>
 
 <script>
@@ -116,22 +131,19 @@
     let userData = null;
     let audioReady = false;
 
-    // --- OPRAVENÉ ZDROJE ZVUKŮ ---
     const sounds = {
-        // Tento zvuk odpovídá tvému videu (Roblox Button Click/Uip)
         gem: new Audio("https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3"),
         click: new Audio("https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3"),
         win: new Audio("https://www.myinstants.com/media/sounds/correct_2.mp3"),
         boom: new Audio("https://www.myinstants.com/media/sounds/explosion.mp3"),
         roll: new Audio("https://www.myinstants.com/media/sounds/dice-roll.mp3")
     };
-
     sounds.boom.volume = 0.3;
 
     function forceAudioInit() {
         if(audioReady) return;
         for(let s in sounds) {
-            sounds[s].play().then(() => { sounds[s].pause(); sounds[s].currentTime = 0; }).catch(e => console.log("Audio block", e));
+            sounds[s].play().then(() => { sounds[s].pause(); sounds[s].currentTime = 0; }).catch(()=>{});
         }
         audioReady = true;
     }
@@ -140,12 +152,10 @@
         if(sounds[n]) {
             sounds[n].pause();
             sounds[n].currentTime = 0;
-            // Malý delay pro jistotu
             setTimeout(() => { sounds[n].play().catch(() => {}); }, 10);
         }
     }
 
-    // --- SYSTÉM ---
     window.onload = async () => { if(currentUser) { const r = await fetch(`${DB_URL}/${currentUser}.json`); userData = await r.json(); if(userData) loginSuccess(); } };
     
     async function auth(type) {
@@ -180,7 +190,6 @@
     function selectGame(g) { play('click'); document.getElementById('game-mines').classList.add('hidden'); document.getElementById('game-dice').classList.add('hidden'); document.getElementById('game-' + g).classList.remove('hidden'); }
     function logout() { localStorage.removeItem('swarm_user'); location.reload(); }
 
-    // --- MINES LOGIC ---
     let mActive = false, mMult = 1, mBet = 0, mRev = 0, mBoard = [];
     function startMines() {
         mBet = parseInt(document.getElementById('m-bet').value);
@@ -196,8 +205,7 @@
                 if(!mActive || t.innerHTML !== "") return;
                 if(mBoard[i]) { t.innerHTML = '💥'; play('boom'); mActive = false; document.getElementById('m-cash').classList.add('hidden'); }
                 else { 
-                    t.innerHTML = '⭐'; 
-                    play('gem'); // TADY SE SPOUŠTÍ TEN ZVUK Z VIDEA
+                    t.innerHTML = '⭐'; play('gem'); 
                     mRev++; mMult *= (1 + (count/(25-mRev))); 
                     document.getElementById('status-bar').innerText = mMult.toFixed(2)+"X"; 
                     document.getElementById('m-cash').classList.remove('hidden'); 
