@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SwarmBet - Star Premium Footer Edition</title>
+    <title>SwarmBet - Star Premium</title>
     <style>
         :root { --orange: #ff9900; --dark: #0a0a0a; --panel: #151515; }
         body { 
@@ -11,7 +11,6 @@
             color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        /* Navbar */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 40px; background: #000; border-bottom: 2px solid var(--orange);
@@ -21,7 +20,6 @@
         .nav-links span { cursor: pointer; font-weight: bold; color: #888; transition: 0.3s; }
         .nav-links span:hover, .nav-links span.active { color: var(--orange); }
 
-        /* User Menu */
         .user-section { position: relative; cursor: pointer; padding: 5px 10px; }
         .user-info { display: flex; flex-direction: column; align-items: flex-end; }
         .user-name { font-weight: 900; color: var(--orange); }
@@ -37,7 +35,6 @@
         .brand-big { font-size: 45px; font-weight: 900; color: var(--orange); text-align: center; }
         .hidden { display: none !important; }
 
-        /* Mines */
         .grid { display: grid; grid-template-columns: repeat(5, 60px); gap: 10px; margin: 20px auto; width: 340px; }
         .tile { width: 60px; height: 60px; background: #000; border: 1px solid #333; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 28px; transition: 0.1s; }
         .tile:hover { border-color: var(--orange); transform: scale(1.05); }
@@ -47,13 +44,13 @@
         #status-bar { color: var(--orange); text-align: center; font-weight: bold; margin-bottom: 10px; height: 20px; text-transform: uppercase; }
         input { background: #000; color: var(--orange); border: 1px solid #333; padding: 10px; border-radius: 8px; width: 80px; text-align: center; font-weight: bold; }
 
-        /* FOOTER */
         footer {
             text-align: center;
             padding: 20px;
             color: #555;
             font-size: 11px;
             line-height: 1.6;
+            margin-top: auto;
         }
     </style>
 </head>
@@ -89,7 +86,7 @@
     <div class="container">
         <div id="page-home" class="card">
             <h1>Vítej v úlu! 🐝</h1>
-            <p>Hraješ za fiktivní hvězdy. Užij si to!</p>
+            <p>Design zůstává pevný, zvuky jsou vyladěné. Hodně štěstí!</p>
         </div>
 
         <div id="page-games" class="hidden">
@@ -168,7 +165,7 @@
         if(type === 'reg') {
             userData = { password: p, chips: 500 };
             await fetch(`${DB_URL}/${u}.json`, { method: 'PUT', body: JSON.stringify(userData) });
-            alert("Hotovo!");
+            alert("Registrace OK!");
         } else {
             if(users[u] && users[u].password === p) { currentUser=u; userData=users[u]; localStorage.setItem('swarm_user', u); loginSuccess(); }
         }
@@ -204,12 +201,7 @@
             t.onclick = () => {
                 if(!mActive || t.innerHTML !== "") return;
                 if(mBoard[i]) { t.innerHTML = '💥'; play('boom'); mActive = false; document.getElementById('m-cash').classList.add('hidden'); }
-                else { 
-                    t.innerHTML = '⭐'; play('gem'); 
-                    mRev++; mMult *= (1 + (count/(25-mRev))); 
-                    document.getElementById('status-bar').innerText = mMult.toFixed(2)+"X"; 
-                    document.getElementById('m-cash').classList.remove('hidden'); 
-                }
+                else { t.innerHTML = '⭐'; play('gem'); mRev++; mMult *= (1 + (count/(25-mRev))); document.getElementById('status-bar').innerText = mMult.toFixed(2)+"X"; document.getElementById('m-cash').classList.remove('hidden'); }
                 t.classList.add('rev');
             };
             document.getElementById('m-board').appendChild(t);
@@ -229,7 +221,7 @@
         userData.chips -= b; updateUI(); play('roll');
         setTimeout(() => {
             let r = Math.floor(Math.random()*6)+1; document.getElementById('d-res').innerText = r;
-            if(r === n) { userData.chips += b*6; play('win'); } else play('boom');
+            if(r === n) { userData.chips += b*6; play('win'); } else { play('boom'); }
             updateUI();
         }, 1000);
     }
