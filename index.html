@@ -82,7 +82,7 @@
     <div class="container">
         <div id="page-home" class="card">
             <h1>Vítej v SwarmBet! 🐝</h1>
-            <p>Zkus novou Ruletu s násobitelem až 40x!</p>
+            <p>Opraveno cinkání hvězd v Minách! Zkus si jich nasbírat co nejvíc.</p>
         </div>
 
         <div id="page-games" class="hidden">
@@ -96,9 +96,9 @@
                     <div id="status-bar">VYBER HRU</div>
                     
                     <div id="game-mines" class="hidden">
-                        <input type="number" id="m-bet" value="10"> <button class="btn-play" onclick="startMines()">START</button>
+                        Sázka: <input type="number" id="m-bet" value="10"> <button class="btn-play" id="m-start-btn" onclick="startMines()">START</button>
                         <div class="grid" id="m-board" style="display:grid; grid-template-columns: repeat(5, 50px); gap: 5px; margin-top:20px;"></div>
-                        <button id="m-cash" class="hidden" onclick="cashoutMines()" style="width:100%; margin-top:10px; background:#2ecc71; border:none; border-radius:5px; padding:10px; font-weight:bold;">CASH OUT</button>
+                        <button id="m-cash" class="hidden" onclick="cashoutMines()" style="width:100%; margin-top:10px; background:#2ecc71; border:none; border-radius:5px; padding:10px; font-weight:bold; color:black; cursor:pointer;">CASH OUT</button>
                     </div>
 
                     <div id="game-dice" class="hidden" style="text-align:center;">
@@ -131,34 +131,81 @@
     let userData = null;
     let audioReady = false;
 
-    const sounds = {
-        gem: new Audio("https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3"),
-        click: new Audio("https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3"),
-        win: new Audio("https://www.myinstants.com/media/sounds/correct_2.mp3"),
-        boom: new Audio("https://www.myinstants.com/media/sounds/explosion.mp3"),
-        roll: new Audio("https://www.myinstants.com/media/sounds/dice-roll.mp3")
+    // URL ZVUKŮ
+    const SOUND_URLS = {
+        star: "https://www.myinstants.com/media/sounds/super-mario-coin.mp3", // Cinknutí mince/hvězdy
+        click: "https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3",
+        win: "https://www.myinstants.com/media/sounds/correct_2.mp3",
+        boom: "https://www.myinstants.com/media/sounds/explosion.mp3",
+        roll: "https://www.myinstants.com/media/sounds/dice-roll.mp3"
     };
-    sounds.boom.volume = 0.3;
 
-    function forceAudioInit() { if(!audioReady) { for(let s in sounds) { sounds[s].play().then(()=> {sounds[s].pause(); sounds[s].currentTime=0;}).catch(()=>{}); } audioReady = true; } }
-    function play(n) { if(sounds[n]) { sounds[n].pause(); sounds[n].currentTime=0; setTimeout(()=>sounds[n].play(), 10); } }
+    function forceAudioInit() { audioReady = true; }
+
+    // Funkce, která pokaždé vytvoří nový zvukový objekt, aby se přehrál i při rychlém klikání
+    function playSound(type) {
+        if(!audioReady) return;
+        const a = new Audio(SOUND_URLS[type]);
+        if(type === 'boom') a.volume = 0.3;
+        a.play().catch(()=>{});
+    }
 
     window.onload = async () => { if(currentUser) { const r = await fetch(`${DB_URL}/${currentUser}.json`); userData = await r.json(); if(userData) loginSuccess(); } buildRoulette(); };
     async function auth(t) { forceAudioInit(); const u=document.getElementById('user').value, p=document.getElementById('pass').value; if(!u||!p) return; const r=await fetch(DB_URL+".json"), us=await r.json()||{}; if(t==='reg'){ userData={password:p,chips:500}; await fetch(`${DB_URL}/${u}.json`,{method:'PUT',body:JSON.stringify(userData)}); alert("OK"); } else if(us[u]&&us[u].password===p){ currentUser=u; userData=us[u]; localStorage.setItem('swarm_user',u); loginSuccess(); } }
     function loginSuccess() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('main-app').classList.remove('hidden'); document.getElementById('display-name').innerText = currentUser; updateUI(); }
     function updateUI() { document.getElementById('display-chips').innerText = Math.floor(userData.chips); fetch(`${DB_URL}/${currentUser}.json`,{method:'PUT',body:JSON.stringify(userData)}); }
-    function showPage(p) { play('click'); document.querySelectorAll('.container > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); }
-    function selectGame(g) { play('click'); document.getElementById('game-mines').classList.add('hidden'); document.getElementById('game-dice').classList.add('hidden'); document.getElementById('game-roulette').classList.add('hidden'); document.getElementById('game-'+g).classList.remove('hidden'); }
+    function showPage(p) { playSound('click'); document.querySelectorAll('.container > div').forEach(d=>d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); }
+    function selectGame(g) { playSound('click'); document.getElementById('game-mines').classList.add('hidden'); document.getElementById('game-dice').classList.add('hidden'); document.getElementById('game-roulette').classList.add('hidden'); document.getElementById('game-'+g).classList.remove('hidden'); }
     function logout() { localStorage.removeItem('swarm_user'); location.reload(); }
+
+    // MINES LOGIC
+    let mActive = false, mMult = 1, mBet = 0, mRev = 0, mBoard = [];
+    function startMines() {
+        mBet = parseInt(document.getElementById('m-bet').value);
+        if(mBet > userData.chips || mBet <= 0) return alert("Málo ⭐!");
+        mActive = true; mRev = 0; mMult = 1; userData.chips -= mBet; updateUI();
+        document.getElementById('m-start-btn').disabled = true;
+        const b = document.getElementById('m-board'); b.innerHTML = ''; mBoard = new Array(25).fill(false);
+        let m = 0; while(m<3){ let r=Math.floor(Math.random()*25); if(!mBoard[r]){mBoard[r]=true; m++;}}
+        for(let i=0; i<25; i++) {
+            let t = document.createElement('div'); t.style = "width:50px;height:50px;background:#222;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:24px;";
+            t.onclick = () => {
+                if(!mActive || t.innerHTML !== "") return;
+                if(mBoard[i]) { 
+                    t.innerHTML = '💥'; playSound('boom'); mActive = false; 
+                    document.getElementById('m-cash').classList.add('hidden');
+                    document.getElementById('m-start-btn').disabled = false;
+                } else { 
+                    t.innerHTML = '⭐'; 
+                    playSound('star'); // <--- TADY TO TEĎ BUDE CINKAT PŘI KAŽDÉ HVĚZDĚ
+                    mRev++; mMult *= 1.25; 
+                    document.getElementById('status-bar').innerText = mMult.toFixed(2) + "X";
+                    document.getElementById('m-cash').classList.remove('hidden'); 
+                }
+            };
+            b.appendChild(t);
+        }
+    }
+    function cashoutMines() { if(!mActive) return; userData.chips += Math.floor(mBet * mMult); playSound('win'); mActive = false; updateUI(); document.getElementById('m-cash').classList.add('hidden'); document.getElementById('m-start-btn').disabled = false; }
+
+    // DICE LOGIC
+    function playDice() {
+        let b = parseInt(document.getElementById('d-bet').value), n = parseInt(document.getElementById('d-num').value);
+        if(b > userData.chips) return; userData.chips -= b; updateUI(); playSound('roll');
+        setTimeout(() => {
+            let r = Math.floor(Math.random()*6)+1; document.getElementById('d-res').innerText = r;
+            if(r === n) { userData.chips += b*6; playSound('win'); } else playSound('boom');
+            updateUI();
+        }, 1000);
+    }
 
     // ROULETTE LOGIC
     let rBetTarget = null;
-    const rColors = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]; // 0 red, 1 black
     function buildRoulette() {
         const board = document.getElementById('r-board'); board.innerHTML = '<div class="r-cell r-green" onclick="setRBet(\'num0\')">0</div>';
         for(let i=1; i<=36; i++) {
             let cl = (i%2===0) ? 'r-black' : 'r-red';
-            board.innerHTML += `<div id="rcell-${i}" class="r-cell ${cl}" onclick="setRBet('num${i}')">${i}</div>`;
+            board.innerHTML += `<div class="r-cell ${cl}" onclick="setRBet('num${i}')">${i}</div>`;
         }
         board.innerHTML += `<div class="r-cell r-red" style="grid-column: span 3" onclick="setRBet('red')">RED (2x)</div>`;
         board.innerHTML += `<div class="r-cell r-black" style="grid-column: span 3" onclick="setRBet('black')">BLACK (2x)</div>`;
@@ -168,11 +215,11 @@
         board.innerHTML += `<div class="r-cell" style="grid-column: span 4; background:#555" onclick="setRBet('2nd')">2nd 12 (3x)</div>`;
         board.innerHTML += `<div class="r-cell" style="grid-column: span 5; background:#555" onclick="setRBet('3rd')">3rd 12 (3x)</div>`;
     }
-    function setRBet(t) { rBetTarget = t; play('click'); document.querySelectorAll('.r-cell').forEach(c=>c.classList.remove('r-active')); event.target.classList.add('r-active'); }
+    function setRBet(t) { rBetTarget = t; playSound('click'); document.querySelectorAll('.r-cell').forEach(c=>c.classList.remove('r-active')); event.currentTarget.classList.add('r-active'); }
     function spinRoulette() {
         const b = parseInt(document.getElementById('r-bet').value);
         if(!rBetTarget || b > userData.chips) return alert("Vyber sázku!");
-        userData.chips -= b; updateUI(); play('roll');
+        userData.chips -= b; updateUI(); playSound('roll');
         let res = Math.floor(Math.random()*37);
         setTimeout(() => {
             document.getElementById('r-result').innerText = "Padlo: " + res;
@@ -185,39 +232,9 @@
             else if(rBetTarget === '1st' && res >= 1 && res <= 12) win = b * 3;
             else if(rBetTarget === '2nd' && res >= 13 && res <= 24) win = b * 3;
             else if(rBetTarget === '3rd' && res >= 25 && res <= 36) win = b * 3;
-            
-            if(win > 0) { userData.chips += win; play('win'); } else { play('boom'); }
+            if(win > 0) { userData.chips += win; playSound('win'); } else { playSound('boom'); }
             updateUI();
         }, 1500);
-    }
-
-    // MINES & DICE (Beze změny, přidán win sound)
-    let mActive = false, mMult = 1, mBet = 0, mRev = 0, mBoard = [];
-    function startMines() {
-        mBet = parseInt(document.getElementById('m-bet').value);
-        if(mBet > userData.chips || mBet <= 0) return;
-        mActive = true; mRev = 0; mMult = 1; userData.chips -= mBet; updateUI();
-        const b = document.getElementById('m-board'); b.innerHTML = ''; mBoard = new Array(25).fill(false);
-        let m = 0; while(m<3){ let r=Math.floor(Math.random()*25); if(!mBoard[r]){mBoard[r]=true; m++;}}
-        for(let i=0; i<25; i++) {
-            let t = document.createElement('div'); t.style = "width:50px;height:50px;background:#222;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:5px;";
-            t.onclick = () => {
-                if(!mActive || t.innerHTML !== "") return;
-                if(mBoard[i]) { t.innerHTML = '💥'; play('boom'); mActive = false; document.getElementById('m-cash').classList.add('hidden'); }
-                else { t.innerHTML = '⭐'; play('gem'); mRev++; mMult *= 1.2; document.getElementById('m-cash').classList.remove('hidden'); }
-            };
-            b.appendChild(t);
-        }
-    }
-    function cashoutMines() { if(!mActive) return; userData.chips += Math.floor(mBet * mMult); play('win'); mActive = false; updateUI(); document.getElementById('m-cash').classList.add('hidden'); }
-    function playDice() {
-        let b = parseInt(document.getElementById('d-bet').value), n = parseInt(document.getElementById('d-num').value);
-        if(b > userData.chips) return; userData.chips -= b; updateUI(); play('roll');
-        setTimeout(() => {
-            let r = Math.floor(Math.random()*6)+1; document.getElementById('d-res').innerText = r;
-            if(r === n) { userData.chips += b*6; play('win'); } else play('boom');
-            updateUI();
-        }, 1000);
     }
 </script>
 </body>
