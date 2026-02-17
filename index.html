@@ -1,123 +1,63 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Casino – Nepravé peníze</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #222, #000);
-      color: #fff;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #111;
-      padding: 20px;
-      font-size: 28px;
-      font-weight: bold;
-    }
-    .balance {
-      margin: 20px;
-      font-size: 22px;
-    }
-    .games {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .game {
-      background: #1a1a1a;
-      border-radius: 12px;
-      padding: 20px;
-      width: 260px;
-      box-shadow: 0 0 15px rgba(255,215,0,0.2);
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: gold;
-      color: #000;
-      font-weight: bold;
-    }
-    button:hover {
-      background: orange;
-    }
-    .result {
-      margin-top: 10px;
-      min-height: 24px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>JS Karetní Simulátor</title>
+    <style>
+        body { font-family: sans-serif; background: #2d5a27; color: white; text-align: center; }
+        .table { border: 5px solid #1a3a17; border-radius: 50px; padding: 20px; width: 80%; margin: 50px auto; background: #254d21; }
+        .card-area { display: flex; justify-content: center; min-height: 150px; margin: 20px; }
+        .card { 
+            width: 80px; height: 120px; background: white; color: black; 
+            border-radius: 8px; margin: 5px; display: flex; 
+            align-items: center; justify-content: center; font-size: 24px; font-weight: bold;
+            animation: deal 0.5s ease-out;
+        }
+        @keyframes deal { from { transform: translateY(-200px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; background: #e67e22; border: none; color: white; border-radius: 5px; }
+        #status { font-size: 24px; margin: 20px; font-weight: bold; }
+    </style>
 </head>
 <body>
-  <header>🎰 Fake Casino 🎰</header>
 
-  <div class="balance">Zůstatek: <span id="money">1000</span> 💰</div>
-
-  <div class="games">
-    <div class="game">
-      <h2>🎲 Kostka</h2>
-      <p>Sázka: 100</p>
-      <button onclick="playDice()">Hrát</button>
-      <div class="result" id="diceResult"></div>
+    <h1>Virtuální Karetní Hra</h1>
+    <div class="table">
+        <div id="status">Skóre: 0</div>
+        <div id="player-cards" class="card-area"></div>
+        <button onclick="hit()">Líznout kartu</button>
+        <button onclick="resetGame()" style="background:#c0392b">Nová hra</button>
     </div>
 
-    <div class="game">
-      <h2>🍒 Automat</h2>
-      <p>Sázka: 50</p>
-      <button onclick="playSlot()">Točit</button>
-      <div class="result" id="slotResult"></div>
-    </div>
-  </div>
+    <script>
+        let score = 0;
+        const cardArea = document.getElementById('player-cards');
+        const statusText = document.getElementById('status');
 
-  <script>
-    let money = 1000;
+        function hit() {
+            if (score >= 21) return;
 
-    function updateMoney() {
-      document.getElementById('money').innerText = money;
-    }
+            const cardValue = Math.floor(Math.random() * 11) + 1;
+            score += cardValue;
 
-    function playDice() {
-      if (money < 100) {
-        alert('Nemáš dost peněz');
-        return;
-      }
-      money -= 100;
-      const roll = Math.floor(Math.random() * 6) + 1;
-      if (roll >= 4) {
-        money += 200;
-        document.getElementById('diceResult').innerText = 'Vyhrál jsi! Padlo ' + roll;
-      } else {
-        document.getElementById('diceResult').innerText = 'Prohrál jsi 😢 Padlo ' + roll;
-      }
-      updateMoney();
-    }
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card';
+            cardDiv.innerText = cardValue;
+            cardArea.appendChild(cardDiv);
 
-    function playSlot() {
-      if (money < 50) {
-        alert('Nemáš dost peněz');
-        return;
-      }
-      money -= 50;
-      const symbols = ['🍒','🍋','⭐','💎'];
-      const a = symbols[Math.floor(Math.random()*symbols.length)];
-      const b = symbols[Math.floor(Math.random()*symbols.length)];
-      const c = symbols[Math.floor(Math.random()*symbols.length)];
+            if (score > 21) {
+                statusText.innerText = `Bust! Součet: ${score} - Prohrál jsi (virtuálně)`;
+            } else if (score === 21) {
+                statusText.innerText = "Blackjack! Vyhráváš!";
+            } else {
+                statusText.innerText = `Součet: ${score}`;
+            }
+        }
 
-      if (a === b && b === c) {
-        money += 300;
-        document.getElementById('slotResult').innerText = a + ' ' + b + ' ' + c + ' — JACKPOT!';
-      } else {
-        document.getElementById('slotResult').innerText = a + ' ' + b + ' ' + c + ' — smůla';
-      }
-      updateMoney();
-    }
-  </script>
+        function resetGame() {
+            score = 0;
+            cardArea.innerHTML = '';
+            statusText.innerText = 'Skóre: 0';
+        }
+    </script>
 </body>
 </html>
