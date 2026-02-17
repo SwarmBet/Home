@@ -2,258 +2,189 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SwarmBet - Pro Roulette Edition</title>
+    <title>SwarmBet - Star Premium</title>
     <style>
-        :root { --orange: #ff9900; --dark: #0a0a0a; --panel: #151515; --green: #27ae60; --red: #e74c3c; --black: #2c3e50; }
+        :root { --orange: #ff9900; --dark: #0a0a0a; --panel: #151515; --green: #27ae60; }
         body { 
             background-color: var(--dark);
-            background-image: radial-gradient(circle at center, rgba(255, 153, 0, 0.03) 0%, transparent 80%);
             color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 40px; background: #000; border-bottom: 2px solid var(--orange); position: sticky; top: 0; z-index: 100; }
-        .nav-links span { cursor: pointer; font-weight: bold; color: #888; margin-left: 20px; transition: 0.3s; }
-        .nav-links span.active, .nav-links span:hover { color: var(--orange); }
-
-        .container { width: 900px; margin: 30px auto; flex: 1; }
-        .card { background: var(--panel); border: 1px solid #222; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 40px; background: #000; border-bottom: 2px solid var(--orange); }
+        .container { width: 950px; margin: 20px auto; flex: 1; }
+        .card { background: var(--panel); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .hidden { display: none !important; }
 
-        /* ROULETTE STYLING */
-        .roulette-container { position: relative; width: 100%; overflow: hidden; background: #111; border-radius: 10px; margin-bottom: 20px; border: 2px solid #333; height: 80px; }
-        .roulette-slider { display: flex; position: absolute; left: 0; transition: left 4s cubic-bezier(0.1, 0, 0.1, 1); will-change: left; align-items: center; height: 100%; }
-        .r-item { min-width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; border: 1px solid rgba(0,0,0,0.2); }
-        .r-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--orange); z-index: 5; transform: translateX(-50%); box-shadow: 0 0 15px var(--orange); }
+        /* ROULETTE SLIDER */
+        .r-slider-wrap { position: relative; width: 100%; height: 100px; background: #111; border: 2px solid #333; overflow: hidden; border-radius: 10px; margin-bottom: 20px; }
+        .r-slider-inner { display: flex; position: absolute; left: 0; transition: left 4s cubic-bezier(0.1, 0, 0.1, 1); align-items: center; height: 100%; }
+        .r-num { min-width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); }
+        .r-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--orange); z-index: 10; transform: translateX(-50%); box-shadow: 0 0 15px var(--orange); }
 
-        .roulette-grid { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 5px; margin: 20px 0; }
-        .cell { height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border-radius: 4px; transition: 0.2s; border: 2px solid transparent; }
-        .cell:hover:not(.disabled) { border-color: white; transform: scale(1.02); }
-        .cell.disabled { cursor: not-allowed; opacity: 0.6; }
-        .nula { background: var(--green); grid-row: span 3; height: 160px; font-size: 24px; }
-        .red { background: var(--red); }
-        .black { background: var(--black); }
-        .active-bet { border-color: var(--orange) !important; box-shadow: 0 0 15px var(--orange); }
+        /* ROULETTE BOARD */
+        .r-grid { display: grid; grid-template-columns: 100px repeat(12, 1fr); gap: 6px; margin-top: 20px; }
+        .cell { height: 55px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border-radius: 4px; border: 2px solid transparent; transition: 0.1s; }
+        .cell.nula { background: var(--green); grid-row: span 3; height: 177px; font-size: 28px; }
+        .cell.red { background: #e74c3c; }
+        .cell.black { background: #2c3e50; }
+        .cell.active { border-color: white !important; box-shadow: 0 0 10px #fff; }
+        .disabled { pointer-events: none; opacity: 0.6; }
 
-        .controls { display: grid; grid-template-columns: repeat(3, 1fr) repeat(4, 1fr); gap: 5px; margin-top: 10px; }
-        .ctrl-btn { height: 45px; background: #333; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; font-size: 13px; font-weight: bold; }
-
-        .btn-main { background: var(--orange); color: black; border: none; padding: 15px 30px; border-radius: 8px; font-weight: 900; cursor: pointer; width: 100%; font-size: 18px; margin-top: 15px; }
-        .btn-main:disabled { background: #555; cursor: not-allowed; }
-
+        .btn-main { background: var(--orange); color: black; border: none; padding: 12px 25px; border-radius: 6px; font-weight: 900; cursor: pointer; }
+        input { background: #000; border: 1px solid #333; color: var(--orange); padding: 10px; border-radius: 6px; font-weight: bold; }
+        
         footer { text-align: center; padding: 20px; color: #555; font-size: 11px; margin-top: auto; }
     </style>
 </head>
-<body onclick="forceAudioInit()">
+<body onclick="initAudio()">
 
-<div id="auth-screen" style="display:flex; justify-content:center; align-items:center; height: 100vh;">
-    <div class="card" style="width: 320px; text-align: center; border: 2px solid var(--orange);">
-        <h1 style="color:var(--orange); margin:0;">SWARMBET</h1>
-        <p style="color:#666; font-size:12px; margin-bottom:20px;">PREMIUM ENTERTAINMENT</p>
-        <input type="text" id="user" placeholder="Jméno" style="width:80%; padding:10px; margin-bottom:10px; background:#000; border:1px solid #333; color:white;"><br>
-        <input type="password" id="pass" placeholder="Heslo" style="width:80%; padding:10px; margin-bottom:20px; background:#000; border:1px solid #333; color:white;"><br>
-        <button class="btn-main" onclick="auth('login')">VSTOUPIT</button>
-    </div>
-</div>
-
-<div id="main-app" class="hidden">
+<div id="main-app">
     <nav class="navbar">
-        <div style="font-size:24px; font-weight:900; color:var(--orange);">S<span>B</span></div>
-        <div class="nav-links">
-            <span onclick="showPage('home')">DOMŮ</span>
-            <span class="active" onclick="showPage('games')">HRY</span>
-        </div>
+        <div style="font-size:24px; font-weight:900; color:var(--orange);">SWARMBET</div>
         <div style="text-align:right">
-            <div style="font-weight:bold; color:var(--orange);" id="display-name">---</div>
-            <div style="font-size:12px; color:#aaa;">⭐ <span id="display-chips">0</span></div>
+            <div id="display-name" style="font-weight:bold;">Hráč</div>
+            <div style="color:#aaa;">⭐ <span id="display-chips">500</span></div>
         </div>
     </nav>
 
     <div class="container">
-        <div id="page-games" class="card">
-            <div id="status-bar" style="color:var(--orange); font-weight:bold; text-align:center; margin-bottom:15px; height:20px;">RULETA PŘIPRAVENA</div>
+        <div class="card">
+            <div id="status-line" style="text-align:center; color:var(--orange); font-weight:bold; margin-bottom:10px;">PŘIPRAVEN KE HŘE</div>
             
-            <div class="roulette-container">
+            <div class="r-slider-wrap">
                 <div class="r-pointer"></div>
-                <div id="r-slider" class="roulette-slider"></div>
+                <div id="r-slider" class="r-slider-inner"></div>
             </div>
 
-            <div class="roulette-grid" id="betting-grid">
-                </div>
+            <div class="r-grid" id="r-board"></div>
 
-            <div class="controls" id="extra-bets">
-                <div class="ctrl-btn" onclick="setBet('1st')">1ST 12</div>
-                <div class="ctrl-btn" onclick="setBet('2nd')">2ND 12</div>
-                <div class="ctrl-btn" onclick="setBet('3rd')">3ST 12</div>
-                <div class="ctrl-btn" style="background:var(--red)" onclick="setBet('red')">RED</div>
-                <div class="ctrl-btn" style="background:var(--black)" onclick="setBet('black')">BLACK</div>
-                <div class="ctrl-btn" onclick="setBet('even')">EVEN</div>
-                <div class="ctrl-btn" onclick="setBet('odd')">ODD</div>
-            </div>
-
-            <div style="display:flex; gap:10px; margin-top:20px; align-items:center;">
-                <span style="font-weight:bold;">SÁZKA:</span>
-                <input type="number" id="bet-amount" value="50" style="background:#000; border:1px solid #333; color:var(--orange); padding:10px; border-radius:5px; width:100px;">
-                <button id="spin-btn" class="btn-main" style="margin:0;" onclick="spin()">SPIN</button>
+            <div style="display:flex; gap:10px; margin-top:20px; justify-content: center; align-items: center;">
+                SÁZKA: <input type="number" id="bet-amt" value="50">
+                <button class="btn-main" id="spin-btn" onclick="spin()">SPIN</button>
             </div>
         </div>
     </div>
 
     <footer>
-        © 2026 Swarmbet | Terms & Conditions | For entertainment purposes only. No real money involved.
+        © 2026 Swarmbet<br>Terms & Conditions<br>For entertainment purposes only. No real money involved.
     </footer>
 </div>
 
 <script>
-    const DB_URL = "https://casbss-c75a0-default-rtdb.europe-west1.firebasedatabase.app/users";
-    let currentUser = localStorage.getItem('swarm_user');
-    let userData = null;
-    let isSpinning = false;
+    const DB_URL = "https://casbss-c75a0-default-rtdb.europe-west1.firebasedatabase.app/users/testUser.json";
+    let chips = 500;
+    let audioReady = false;
     let selectedBet = null;
+    let isSpinning = false;
 
-    // AUDIO SYSTEM
-    const sounds = {
-        uip: "https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3",
-        win: "https://www.myinstants.com/media/sounds/correct_2.mp3",
+    // Zvuky - Každé volání vytvoří nový objekt = 100% jistota přehrání
+    const sfx = {
+        star: "https://www.myinstants.com/media/sounds/super-mario-coin.mp3",
         boom: "https://www.myinstants.com/media/sounds/explosion.mp3",
-        tick: "https://www.myinstants.com/media/sounds/tick.mp3"
+        win: "https://www.myinstants.com/media/sounds/correct_2.mp3",
+        click: "https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3"
     };
 
-    function play(type) {
-        let a = new Audio(sounds[type]);
-        if(type === 'boom') a.volume = 0.3;
-        a.play().catch(()=>{});
+    function play(name) {
+        if(!audioReady) return;
+        const a = new Audio(sfx[name]);
+        a.volume = name === 'boom' ? 0.2 : 0.5;
+        a.play().catch(e => console.log("Audio block:", e));
+        // Automatické smazání z paměti po dohrání
+        a.onended = () => a.remove();
     }
 
-    function forceAudioInit() { play('uip'); }
+    function initAudio() { audioReady = true; }
 
-    // ROULETTE SETUP
     const rOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
-    function getCol(n) { if(n===0) return 'var(--green)'; return rOrder.indexOf(n)%2===0 ? 'var(--black)' : 'var(--red)'; }
 
-    function initBoard() {
+    function build() {
+        // Slider
         const slider = document.getElementById('r-slider');
-        const grid = document.getElementById('betting-grid');
-        
-        // Pás čísel (opakujeme 10x pro efekt točení)
-        let html = "";
-        for(let i=0; i<10; i++) {
+        let slideHtml = "";
+        for(let i=0; i<15; i++) {
             rOrder.forEach(n => {
-                html += `<div class="r-item" style="background:${getCol(n)}">${n}</div>`;
+                let color = n === 0 ? 'var(--green)' : (rOrder.indexOf(n)%2===0 ? '#2c3e50' : '#e74c3c');
+                slideHtml += `<div class="r-num" style="background:${color}">${n}</div>`;
             });
         }
-        slider.innerHTML = html;
+        slider.innerHTML = slideHtml;
 
-        // Plátno
-        let gridHtml = `<div class="cell nula" onclick="setBet('n0')">0</div>`;
-        for(let row=3; row>=1; row--) {
+        // Board
+        const board = document.getElementById('r-board');
+        let boardHtml = `<div class="cell nula" onclick="setBet('n0', this)">0</div>`;
+        for(let r=3; r>=1; r--) {
             for(let i=1; i<=12; i++) {
-                let num = (i-1)*3 + row;
-                let c = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(num) ? 'red' : 'black';
-                gridHtml += `<div class="cell ${c}" onclick="setBet('n${num}')">${num}</div>`;
+                let n = (i-1)*3 + r;
+                let c = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(n) ? 'red' : 'black';
+                boardHtml += `<div class="cell ${c}" onclick="setBet('n${n}', this)">${n}</div>`;
             }
         }
-        grid.innerHTML = gridHtml;
+        board.innerHTML = boardHtml;
     }
 
-    function setBet(id) {
+    function setBet(val, el) {
         if(isSpinning) return;
-        play('uip');
-        selectedBet = id;
-        document.querySelectorAll('.cell, .ctrl-btn').forEach(el => el.classList.remove('active-bet'));
-        event.currentTarget.classList.add('active-bet');
+        play('click');
+        selectedBet = val;
+        document.querySelectorAll('.cell').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
     }
 
     function spin() {
-        const amt = parseInt(document.getElementById('bet-amount').value);
-        if(isSpinning || !selectedBet || amt > userData.chips || amt <= 0) return;
+        const amt = parseInt(document.getElementById('bet-amt').value);
+        if(isSpinning || !selectedBet || amt > chips) return;
 
         isSpinning = true;
-        userData.chips -= amt;
+        chips -= amt;
         updateUI();
         
         document.getElementById('spin-btn').disabled = true;
-        document.querySelectorAll('.cell, .ctrl-btn').forEach(el => el.classList.add('disabled'));
-        document.getElementById('status-bar').innerText = "SÁZKY UZAVŘENY...";
+        document.getElementById('r-board').classList.add('disabled');
+        document.getElementById('status-line').innerText = "TOCÍ SE...";
 
         const slider = document.getElementById('r-slider');
-        const itemWidth = 60;
-        const winningNum = rOrder[Math.floor(Math.random() * rOrder.length)];
+        const winNum = rOrder[Math.floor(Math.random() * rOrder.length)];
+        const itemWidth = 70;
         
-        // Výpočet pozice (náhodný "konec" v páté sadě čísel pro dostatečnou délku točení)
-        const baseIndex = rOrder.length * 5; 
-        const targetIndex = baseIndex + rOrder.indexOf(winningNum);
-        const offset = (targetIndex * itemWidth) - (450 - itemWidth/2); // 450 je polovina containeru
-
+        // Animace na náhodnou pozici v dálce
+        const targetPos = (rOrder.length * 8 + rOrder.indexOf(winNum)) * itemWidth - (475 - itemWidth/2);
         slider.style.transition = "left 4s cubic-bezier(0.1, 0, 0.1, 1)";
-        slider.style.left = `-${offset}px`;
+        slider.style.left = `-${targetPos}px`;
 
         setTimeout(() => {
-            checkWin(winningNum, amt);
+            checkWin(winNum, amt);
             isSpinning = false;
             document.getElementById('spin-btn').disabled = false;
-            document.querySelectorAll('.cell, .ctrl-btn').forEach(el => el.classList.remove('disabled'));
-            // Reset slideru (tichý)
+            document.getElementById('r-board').classList.remove('disabled');
+            
+            // Tichý reset pozice
             slider.style.transition = "none";
-            const resetPos = (rOrder.indexOf(winningNum) * itemWidth) - (450 - itemWidth/2);
+            const resetPos = rOrder.indexOf(winNum) * itemWidth - (475 - itemWidth/2);
             slider.style.left = `-${resetPos + (rOrder.length * 2 * itemWidth)}px`;
         }, 4100);
     }
 
     function checkWin(res, bet) {
         let win = 0;
-        const isRed = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(res);
-        
         if(selectedBet === 'n'+res) win = bet * (res === 0 ? 40 : 36);
-        else if(selectedBet === 'red' && res !== 0 && isRed) win = bet * 2;
-        else if(selectedBet === 'black' && res !== 0 && !isRed) win = bet * 2;
-        else if(selectedBet === 'even' && res !== 0 && res%2===0) win = bet * 2;
-        else if(selectedBet === 'odd' && res !== 0 && res%2!==0) win = bet * 2;
-        else if(selectedBet === '1st' && res >= 1 && res <= 12) win = bet * 3;
-        else if(selectedBet === '2nd' && res >= 13 && res <= 24) win = bet * 3;
-        else if(selectedBet === '3rd' && res >= 25 && res <= 36) win = bet * 3;
-
+        
         if(win > 0) {
-            userData.chips += win;
+            chips += win;
             play('win');
-            document.getElementById('status-bar').innerText = `VÝHRA: ${win} ⭐ (PADLO ${res})`;
+            document.getElementById('status-line').innerText = `VÝHRA! Padlo ${res}`;
         } else {
             play('boom');
-            document.getElementById('status-bar').innerText = `PROHRA (PADLO ${res})`;
+            document.getElementById('status-line').innerText = `PROHRA. Padlo ${res}`;
         }
         updateUI();
     }
 
-    // AUTH & CORE
-    async function auth(t) {
-        const u = document.getElementById('user').value.trim();
-        const p = document.getElementById('pass').value;
-        if(!u || !p) return;
-        const res = await fetch(DB_URL + ".json");
-        const users = await res.json() || {};
-        if(users[u] && users[u].password === p) {
-            currentUser = u; userData = users[u];
-            localStorage.setItem('swarm_user', u);
-            loginSuccess();
-        } else { alert("Chyba přihlášení"); }
-    }
-
-    function loginSuccess() {
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('main-app').classList.remove('hidden');
-        document.getElementById('display-name').innerText = currentUser;
-        updateUI();
-        initBoard();
-    }
-
     function updateUI() {
-        document.getElementById('display-chips').innerText = Math.floor(userData.chips);
-        fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) });
+        document.getElementById('display-chips').innerText = chips;
     }
 
-    function showPage(p) { play('uip'); }
-    function logout() { localStorage.removeItem('swarm_user'); location.reload(); }
-
-    window.onload = async () => { if(currentUser) { const r = await fetch(`${DB_URL}/${currentUser}.json`); userData = await r.json(); if(userData) loginSuccess(); } };
+    window.onload = build;
 </script>
 </body>
 </html>
