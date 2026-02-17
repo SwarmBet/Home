@@ -1,110 +1,226 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<title>Mini Casino</title>
-<style>
-body{margin:0;font-family:Arial;background:#0b3d2e;color:white}
-header{background:#06251c;padding:15px;font-size:24px}
-nav button{margin:5px;padding:10px 20px;font-size:16px}
-#balance{float:right}
-.game{display:none;padding:20px}
-.active{display:block}
-.card{font-size:28px;margin:5px}
-</style>
+    <meta charset="UTF-8">
+    <title>Golden Stake - MultiAccount Edition</title>
+    <style>
+        body { background: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; margin: 0; }
+        .game-container { width: 450px; background: #1a1a1a; border: 4px solid #d4af37; border-radius: 20px; padding: 20px; margin-top: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        
+        /* Auth System */
+        #auth-box { text-align: center; padding: 20px; }
+        input { background: #000; color: #ffd700; border: 1px solid #d4af37; padding: 10px; margin: 5px; border-radius: 5px; width: 80%; }
+        .btn-gold { background: #d4af37; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; color: black; }
+        
+        /* Game UI */
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .balance { font-size: 24px; color: #ffd700; font-weight: bold; }
+        .hidden { display: none !important; }
+        
+        /* Admin Console */
+        #admin-console { background: #000; border: 1px solid red; padding: 10px; margin-top: 10px; border-radius: 5px; font-family: monospace; }
+        #admin-input { width: 90%; border: none; outline: none; background: transparent; color: #0f0; }
+        
+        .card-area { display: flex; justify-content: center; gap: 5px; min-height: 80px; margin: 10px 0; }
+        .card { width: 50px; height: 75px; background: white; color: black; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .status { text-align: center; color: #ffd700; margin: 10px 0; font-weight: bold; }
+    </style>
 </head>
 <body>
 
-<header>
-🎰 Mini Casino
-<span id="balance">Balance: 1000</span>
-</header>
+<div class="game-container">
+    <div id="auth-box">
+        <h2 style="color: #d4af37;">GOLDEN STAKE</h2>
+        <div id="auth-msg">Přihlas se nebo se registruj</div>
+        <input type="text" id="username" placeholder="Jméno">
+        <input type="password" id="password" placeholder="Heslo">
+        <br><br>
+        <button class="btn-gold" onclick="handleAuth('login')">Login</button>
+        <button class="btn-gold" style="background:#555; color:white;" onclick="handleAuth('register')">Registrace</button>
+    </div>
 
-<nav>
-<button onclick="showGame('home')">Home</button>
-<button onclick="showGame('baccarat')">Baccarat</button>
-<button onclick="showGame('plinko')">Plinko</button>
-</nav>
+    <div id="game-box" class="hidden">
+        <div class="header">
+            <div id="user-display" style="color:#888"></div>
+            <div class="balance">💰 <span id="chips-val">0</span></div>
+            <button onclick="logout()" style="background:none; border:none; color:red; cursor:pointer;">Odhlásit</button>
+        </div>
 
-<div id="home" class="game active">
-<h2>Vítej v kasinu</h2>
-<p>Vyber si hru nahoře.</p>
-</div>
+        <div class="status" id="msg">Vítej zpět!</div>
 
-<div id="baccarat" class="game">
-<h2>Baccarat</h2>
-<button onclick="betBaccarat('player')">Player</button>
-<button onclick="betBaccarat('banker')">Banker</button>
-<button onclick="betBaccarat('tie')">Tie</button>
+        <div id="bj-ui">
+            <div style="text-align:center">
+                Sázka: <input type="number" id="bj-bet" value="10" style="width:60px">
+                <button class="btn-gold" id="bj-start" onclick="bjStart()">Hrát</button>
+            </div>
+            <div id="cards-ui" class="hidden">
+                <p>Dealer: <span id="d-val">?</span></p>
+                <div class="card-area" id="d-cards"></div>
+                <p>Ty: <span id="p-val">0</span></p>
+                <div class="card-area" id="p-cards"></div>
+                <div style="text-align:center">
+                    <button class="btn-gold" onclick="bjPlay('hit')">HIT</button>
+                    <button class="btn-gold" style="background:#ddd" onclick="bjPlay('stand')">STAND</button>
+                </div>
+            </div>
+        </div>
 
-<div>
-Player: <span id="pCards"></span> (<span id="pScore">0</span>)<br>
-Banker: <span id="bCards"></span> (<span id="bScore">0</span>)
-</div>
-
-<div id="bResult"></div>
-</div>
-
-<div id="plinko" class="game">
-<h2>Plinko</h2>
-<button onclick="playPlinko()">Drop</button>
-<div id="plinkoResult"></div>
+        <div id="admin-panel" class="hidden">
+            <div id="admin-console">
+                <div style="color:red; font-size:10px;">ADMIN CONSOLE: /give [jméno] [částka]</div>
+                <input type="text" id="admin-input" placeholder="Zadej příkaz..." onkeypress="checkAdminCommand(event)">
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-let balance=1000
+    // --- KONFIGURACE ---
+    const ADMIN_NAME = "Admin"; // Změň si na své jméno
+    let currentUser = null;
+    let users = JSON.parse(localStorage.getItem('casino_users')) || {};
 
-function updateBalance(){
-document.getElementById("balance").textContent="Balance: "+balance
-}
+    // --- AUTH SYSTÉM ---
+    function handleAuth(type) {
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value;
 
-function showGame(id){
-document.querySelectorAll(".game").forEach(g=>g.classList.remove("active"))
-document.getElementById(id).classList.add("active")
-}
+        if(!u || !p) return alert("Vyplň údaje!");
 
-function draw(){return Math.floor(Math.random()*10)}
-function score(a,b){return (a+b)%10}
+        if(type === 'register') {
+            if(users[u]) return alert("Uživatel už existuje!");
+            users[u] = { password: p, chips: 0 };
+            alert("Registrace úspěšná! Nyní se přihlas.");
+        } else {
+            if(users[u] && users[u].password === p) {
+                currentUser = u;
+                loginSuccess();
+            } else {
+                alert("Špatné jméno nebo heslo!");
+            }
+        }
+        saveData();
+    }
 
-function betBaccarat(choice){
-let p1=draw(),p2=draw()
-let b1=draw(),b2=draw()
+    function loginSuccess() {
+        document.getElementById('auth-box').classList.add('hidden');
+        document.getElementById('game-box').classList.remove('hidden');
+        document.getElementById('user-display').innerText = currentUser;
+        
+        if(currentUser === ADMIN_NAME) {
+            document.getElementById('admin-panel').classList.remove('hidden');
+        }
+        updateUI();
+    }
 
-let ps=score(p1,p2)
-let bs=score(b1,b2)
+    function logout() {
+        currentUser = null;
+        document.getElementById('auth-box').classList.remove('hidden');
+        document.getElementById('game-box').classList.add('hidden');
+        document.getElementById('admin-panel').classList.add('hidden');
+    }
 
-let win="tie"
-if(ps>bs)win="player"
-if(bs>ps)win="banker"
+    function saveData() {
+        localStorage.setItem('casino_users', JSON.stringify(users));
+    }
 
-document.getElementById("pCards").textContent=p1+" "+p2
-document.getElementById("bCards").textContent=b1+" "+b2
-document.getElementById("pScore").textContent=ps
-document.getElementById("bScore").textContent=bs
+    function updateUI() {
+        if(currentUser) {
+            document.getElementById('chips-val').innerText = users[currentUser].chips;
+        }
+    }
 
-if(choice===win){
-balance+=100
-document.getElementById("bResult").textContent="Výhra!"
-}else{
-balance-=100
-document.getElementById("bResult").textContent="Prohra!"
-}
+    // --- ADMIN GIVE SYSTÉM ---
+    function checkAdminCommand(e) {
+        if(e.key === 'Enter') {
+            const val = document.getElementById('admin-input').value;
+            const parts = val.split(' '); // /give jmeno 100
 
-updateBalance()
-}
+            if(parts[0] === '/give' && parts.length === 3) {
+                const target = parts[1];
+                const amount = parseInt(parts[2]);
 
-function playPlinko(){
-let r=Math.random()
-let win=0
-if(r<0.5)win=0
-else if(r<0.8)win=50
-else win=200
+                if(users[target] && !isNaN(amount)) {
+                    users[target].chips += amount;
+                    saveData();
+                    updateUI();
+                    alert(`Dáno ${amount} žetonů uživateli ${target}`);
+                } else {
+                    alert("Uživatel nenalezen nebo špatná částka!");
+                }
+            }
+            document.getElementById('admin-input').value = '';
+        }
+    }
 
-balance+=win-50
-document.getElementById("plinkoResult").textContent="Výhra: "+win
-updateBalance()
-}
+    // --- BLACKJACK LOGIC (Z tvého kódu) ---
+    let playing = false, curBet = 0, deck = [], pHand = [], dHand = [];
+
+    function bjStart() {
+        curBet = parseInt(document.getElementById('bj-bet').value);
+        if(curBet > users[currentUser].chips || curBet <= 0) return alert("Máš málo žetonů!");
+        
+        users[currentUser].chips -= curBet;
+        playing = true;
+        updateUI();
+        saveData();
+
+        document.getElementById('bj-start').disabled = true;
+        document.getElementById('cards-ui').classList.remove('hidden');
+        
+        deck = []; 
+        ['♠','♥','♦','♣'].forEach(s => ['2','3','4','5','6','7','8','9','10','J','Q','K','A'].forEach(v => deck.push({v,s})));
+        deck.sort(() => Math.random() - 0.5);
+
+        pHand = [deck.pop(), deck.pop()];
+        dHand = [deck.pop(), deck.pop()];
+        renderBJ(false);
+    }
+
+    function renderBJ(all) {
+        const p = document.getElementById('p-cards'), d = document.getElementById('d-cards');
+        p.innerHTML = ''; d.innerHTML = '';
+        pHand.forEach(c => p.innerHTML += `<div class="card">${c.v}${c.s}</div>`);
+        dHand.forEach((c, i) => d.innerHTML += `<div class="card" style="${!all && i===1 ? 'background:black':''}">${!all && i===1 ? '':c.v+c.s}</div>`);
+        document.getElementById('p-val').innerText = getVal(pHand);
+        document.getElementById('d-val').innerText = all ? getVal(dHand) : "?";
+    }
+
+    function getVal(h) {
+        let s = 0, a = 0;
+        h.forEach(c => { if(['J','Q','K'].includes(c.v)) s += 10; else if(c.v === 'A') { s += 11; a++; } else s += parseInt(c.v); });
+        while(s > 21 && a > 0) { s -= 10; a--; }
+        return s;
+    }
+
+    async function bjPlay(a) {
+        if(!playing) return;
+        if(a === 'hit') {
+            pHand.push(deck.pop());
+            renderBJ(false);
+            if(getVal(pHand) > 21) bjEnd(false, "BUST!");
+        } else {
+            renderBJ(true);
+            while(getVal(dHand) < 17) {
+                await new Promise(r => setTimeout(r, 600));
+                dHand.push(deck.pop());
+                renderBJ(true);
+            }
+            let ps = getVal(pHand), ds = getVal(dHand);
+            if(ds > 21 || ps > ds) bjEnd(true, "WIN!");
+            else if(ps < ds) bjEnd(false, "LOSE");
+            else bjEnd('draw', "PUSH");
+        }
+    }
+
+    function bjEnd(res, m) {
+        playing = false;
+        document.getElementById('bj-start').disabled = false;
+        if(res === true) users[currentUser].chips += curBet * 2;
+        if(res === 'draw') users[currentUser].chips += curBet;
+        saveData(); updateUI();
+        document.getElementById('msg').innerText = m;
+    }
 </script>
-
 </body>
 </html>
