@@ -1,53 +1,70 @@
-# Definice "náhodných" výsledků, aby program nepotřeboval import random
-NAHODNA_CISLA = [7, 21, 14, 3, 33, 0, 18, 25, 12, 5]
-INDEX = 0
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Moje Mini Hry</title>
+    <style>
+        body { font-family: sans-serif; background: #222; color: white; text-align: center; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; cursor: pointer; font-size: 16px; }
+        #log { background: #000; padding: 20px; border: 2px solid #444; min-height: 100px; margin-top: 20px; }
+    </style>
+</head>
+<body>
 
-def ziskej_cislo():
-    global INDEX
-    cislo = NAHODNA_CISLA[INDEX % len(NAHODNA_CISLA)]
-    INDEX += 1
-    return cislo
-
-def blackjack():
-    print("\n--- BLACKJACK (Demo verze) ---")
-    moje_karta = ziskej_cislo()
-    dealer_karta = ziskej_cislo()
+    <h1>🎮 Herní Menu</h1>
+    <p>Vyber si hru:</p>
     
-    print("Tvoje karta:", moje_karta)
-    print("Dealerova karta:", dealer_karta)
-    
-    if moje_karta > dealer_karta:
-        print("Vyhral jsi!")
-    else:
-        print("Dealer vyhral.")
+    <button onclick="hrajBlackjack()">Hrát Black Jack</button>
+    <button onclick="hrajRuletu()">Hrát Ruletu</button>
+    <button onclick="vymazLog()" style="background: #551111; color: white;">Vymazat plochu</button>
 
-def ruleta():
-    print("\n--- RULETA ---")
-    sazka = input("Napis barvu (cervena/cerna): ")
-    vysledek = ziskej_cislo()
-    
-    barva = "cervena" if vysledek % 2 == 0 else "cerna"
-    print("Padlo cislo:", vysledek, "Barva:", barva)
-    
-    if sazka == barva:
-        print("Vyhra!")
-    else:
-        print("Prohra.")
+    <div id="log">Zde se zobrazí průběh hry...</div>
 
-def menu():
-    while True:
-        print("\n--- MENU ---")
-        print("1. Blackjack")
-        print("2. Ruleta")
-        print("3. Konec")
-        volba = input("Vyber: ")
-        
-        if volba == "1":
-            blackjack()
-        elif volba == "2":
-            ruleta()
-        elif volba == "3":
-            break
+    <script>
+        const logDiv = document.getElementById('log');
 
-# Spusteni
-menu()
+        function vypis(text) {
+            logDiv.innerHTML += text + "<br>";
+        }
+
+        function vymazLog() {
+            logDiv.innerHTML = "Plocha vymazána. Vyber si hru.";
+        }
+
+        function hrajBlackjack() {
+            vypis("--- BLACK JACK ---");
+            let mojeKarta = Math.floor(Math.random() * 10) + 2;
+            let dealerKarta = Math.floor(Math.random() * 10) + 2;
+            
+            vypis("Tvoje karta: " + mojeKarta);
+            vypis("Dealerova karta: " + dealerKarta);
+            
+            if (mojeKarta > dealerKarta) {
+                vypis("<strong>Vyhrál jsi!</strong>");
+            } else if (mojeKarta < dealerKarta) {
+                vypis("Prohrál jsi.");
+            } else {
+                vypis("Remíza.");
+            }
+            vypis("------------------");
+        }
+
+        function hrajRuletu() {
+            vypis("--- RULETA ---");
+            let barva = prompt("Vsaď na barvu (cervena/cerna):");
+            let cislo = Math.floor(Math.random() * 37);
+            let vysledekBarva = (cislo % 2 === 0 && cislo !== 0) ? "cervena" : "cerna";
+            if (cislo === 0) vysledekBarva = "zelena";
+
+            vypis("Padlo číslo: " + cislo + " (" + vysledekBarva + ")");
+            
+            if (barva === vysledekBarva) {
+                vypis("<strong>Trefa! Vyhráváš!</strong>");
+            } else {
+                vypis("Smůla, nevyšlo to.");
+            }
+            vypis("------------------");
+        }
+    </script>
+</body>
+</html>
