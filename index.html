@@ -2,319 +2,256 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SwarmBet - Star Premium 2026</title>
+    <title>SwarmBet - Ultra Roulette</title>
     <style>
         :root { --orange: #ff9900; --dark: #0a0a0a; --panel: #151515; --green: #27ae60; --red: #e74c3c; --black: #2c3e50; }
-        body { 
-            background-color: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; 
-            display: flex; flex-direction: column; min-height: 100vh;
-            background-image: radial-gradient(circle at center, rgba(255, 153, 0, 0.03) 0%, transparent 80%);
-        }
-
-        /* NAVIGATION & AUTH */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 40px; background: #000; border-bottom: 2px solid var(--orange); position: sticky; top: 0; z-index: 100; }
-        .nav-links span { cursor: pointer; font-weight: bold; color: #888; margin-left: 20px; transition: 0.3s; }
-        .nav-links span.active, .nav-links span:hover { color: var(--orange); }
-
-        .user-section { position: relative; cursor: pointer; padding: 5px 10px; }
-        .user-info { display: flex; flex-direction: column; align-items: flex-end; }
+        body { background-color: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 40px; background: #000; border-bottom: 2px solid var(--orange); }
         .user-name { font-weight: 900; color: var(--orange); }
-        .logout-btn {
-            position: absolute; top: 100%; right: 0; background: #ff4444; color: white;
-            border: none; padding: 8px 15px; border-radius: 5px; font-size: 12px;
-            display: none; cursor: pointer; margin-top: 5px; width: 100px; font-weight: bold;
-        }
-        .user-section:hover .logout-btn { display: block; }
-
-        .container { width: 950px; margin: 30px auto; flex: 1; }
-        .card { background: var(--panel); border: 1px solid #222; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .container { width: 1000px; margin: 20px auto; flex: 1; }
+        .card { background: var(--panel); border: 1px solid #222; border-radius: 15px; padding: 20px; }
         .hidden { display: none !important; }
 
-        /* GAMES CLASSICS GRID */
-        .section-title { font-size: 20px; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .section-title::before { content: ''; width: 4px; height: 20px; background: #3498db; border-radius: 2px; }
-
-        .games-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 100%; }
-        .game-card { 
-            background: #111; border-radius: 12px; padding: 20px 10px; text-align: center; 
-            transition: 0.3s; cursor: pointer; border: 1px solid #222;
-        }
-        .game-card:hover { transform: translateY(-5px); background: #181818; border-color: #444; }
-        
-        .icon-box { 
-            width: 50px; height: 50px; background: rgba(0,0,0,0.3); border-radius: 10px; 
-            margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; 
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .game-card h3 { margin: 5px 0; font-size: 16px; color: white; }
-        .game-card p { color: #666; font-size: 11px; margin-bottom: 15px; }
-        
-        .btn-card-play { 
-            background: #222; color: var(--orange); border: 1px solid #333; padding: 6px 0; 
-            width: 100%; border-radius: 6px; font-size: 12px; font-weight: bold; transition: 0.2s;
-        }
-        .game-card:hover .btn-card-play { background: var(--orange); color: black; border-color: var(--orange); }
-
-        /* GAME UI DESIGN */
-        .btn-back { background: #333; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
-        .btn-back:hover { background: #444; }
-
-        .m-grid { display: grid; grid-template-columns: repeat(5, 60px); gap: 10px; justify-content: center; margin-top: 20px; }
-        .tile { width: 60px; height: 60px; background: #000; border: 1px solid #333; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 28px; transition: 0.1s; }
-        .tile:hover { background: #111; }
-        
-        .r-slider-wrap { position: relative; width: 100%; height: 85px; background: #111; border: 2px solid #333; overflow: hidden; border-radius: 10px; margin-bottom: 20px; }
+        /* RULETA SLIDER */
+        .r-slider-wrap { position: relative; width: 100%; height: 100px; background: #050505; overflow: hidden; border: 2px solid #333; margin-bottom: 20px; border-radius: 10px; }
         .r-slider-inner { display: flex; position: absolute; left: 0; transition: left 4s cubic-bezier(0.1, 0, 0.1, 1); align-items: center; height: 100%; }
-        .r-num { min-width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid rgba(0,0,0,0.2); font-size: 20px; }
+        .r-num-box { min-width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid rgba(255,255,255,0.1); font-size: 20px; margin: 0 2px; border-radius: 5px; }
         .r-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--orange); z-index: 10; transform: translateX(-50%); box-shadow: 0 0 15px var(--orange); }
 
-        .r-grid { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 5px; }
-        .cell { height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border-radius: 4px; border: 2px solid transparent; transition: 0.1s; }
-        .cell.nula { background: var(--green); grid-row: span 3; height: 160px; font-size: 24px; }
-        .cell.red { background: var(--red); }
-        .cell.black { background: var(--black); }
-        .cell.active { border-color: white !important; box-shadow: 0 0 12px #fff; }
+        /* SÁZECÍ PLÁTNO */
+        .betting-table { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 5px; margin-top: 20px; }
+        .cell { height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border-radius: 4px; border: 2px solid #333; position: relative; font-size: 18px; transition: 0.2s; }
+        .cell:hover { border-color: #777; }
+        .cell.active-bet { border-color: var(--orange) !important; box-shadow: inset 0 0 10px var(--orange); }
+        .bet-amount { position: absolute; top: 2px; right: 2px; font-size: 10px; color: var(--orange); background: rgba(0,0,0,0.7); padding: 1px 3px; border-radius: 3px; }
 
-        .btn-play { background: var(--orange); color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; }
-        input { background: #000; border: 1px solid #333; color: var(--orange); padding: 10px; border-radius: 8px; text-align: center; }
+        .zero { grid-row: span 3; height: 190px; background: var(--green); }
+        .red { background: var(--red); }
+        .black { background: var(--black); }
         
-        /* FOOTER CENTERED */
-        footer { text-align: center; padding: 40px 20px; color: #555; font-size: 13px; line-height: 1.6; }
-        .footer-terms { color: #888; font-weight: bold; cursor: pointer; text-decoration: none; }
+        .special-bets { display: grid; grid-template-columns: 80px repeat(3, 1fr); gap: 5px; margin-top: 5px; }
+        .bottom-bets { display: grid; grid-template-columns: 80px repeat(6, 1fr); gap: 5px; margin-top: 5px; }
+        .special-cell { background: #222; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border-radius: 4px; border: 2px solid #333; font-size: 14px; }
+
+        .controls { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 30px; background: #000; padding: 20px; border-radius: 10px; }
+        .btn-spin { background: var(--orange); color: black; border: none; padding: 15px 40px; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 18px; }
+        .btn-clear { background: #444; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+        input { background: #111; border: 1px solid #444; color: var(--orange); padding: 12px; border-radius: 8px; text-align: center; font-size: 18px; width: 120px; }
+        
+        footer { text-align: center; padding: 40px; color: #555; font-size: 13px; margin-top: auto; }
     </style>
 </head>
 <body onclick="initAudio()">
 
-<div id="auth-screen" style="display:flex; justify-content:center; align-items:center; height: 100vh;">
-    <div class="card" style="width: 320px; text-align: center; border: 2px solid var(--orange);">
-        <h1 style="color:var(--orange); margin:0;">SWARMBET</h1>
-        <p style="color:#555; font-size:12px; margin-bottom:20px;">EST. 2026</p>
-        <input type="text" id="user" placeholder="Jméno" style="width:80%; margin-bottom:10px;"><br>
-        <input type="password" id="pass" placeholder="Heslo" style="width:80%; margin-bottom:20px;"><br>
-        <button class="btn-play" onclick="auth('login')" style="width:100%; margin-bottom:10px;">PŘIHLÁSIT</button>
-        <button class="btn-play" onclick="auth('reg')" style="width:100%; background:#222; color:white;">REGISTRACE</button>
-    </div>
-</div>
-
-<div id="main-app" class="hidden">
+<div id="main-app">
     <nav class="navbar">
-        <div style="font-size:24px; font-weight:900; color:var(--orange);">S<span>B</span></div>
-        <div class="nav-links">
-            <span id="link-home" onclick="showPage('home')">DOMŮ</span>
-            <span id="link-games" class="active" onclick="showPage('games')">HRY</span>
-            <span onclick="window.open('https://discord.gg/invite','_blank')">DISCORD</span>
-        </div>
-        <div class="user-section">
-            <div class="user-info">
-                <span class="user-name" id="display-name">---</span>
-                <span style="font-size:12px; color:#aaa;">⭐ <span id="display-chips">0</span></span>
-            </div>
-            <button class="logout-btn" onclick="logout()">ODHLÁSIT</button>
+        <div style="font-size:24px; font-weight:900; color:var(--orange);">SWARMBET</div>
+        <div style="text-align:right;">
+            <span class="user-name" id="display-name">HRÁČ</span><br>
+            <span>⭐ <span id="display-chips">500</span></span>
         </div>
     </nav>
 
     <div class="container">
-        <div id="page-home" class="card hidden">
-            <h1>Vítej zpět!</h1>
-            <p>Dnes máš štěstí na své straně.</p>
-        </div>
-
-        <div id="page-games">
-            <div id="selection-menu">
-                <div class="section-title">CLASSICS</div>
-                <div class="games-grid">
-                    <div class="game-card" onclick="selectGame('mines')">
-                        <div class="icon-box" style="color:#e91e63;">💣</div>
-                        <h3>Mines</h3>
-                        <p>avoid the bombs</p>
-                        <button class="btn-card-play">Play</button>
-                    </div>
-                    <div class="game-card" onclick="selectGame('dice')">
-                        <div class="icon-box" style="color:#3498db;">🎲</div>
-                        <h3>Dice Roll</h3>
-                        <p>roll dice vs robot</p>
-                        <button class="btn-card-play">Play</button>
-                    </div>
-                    <div class="game-card" onclick="selectGame('roulette')">
-                        <div class="icon-box" style="color:#1abc9c;">🔘</div>
-                        <h3>Roulette</h3>
-                        <p>spin the wheel</p>
-                        <button class="btn-card-play">Play</button>
-                    </div>
-                    <div class="game-card">
-                        <div class="icon-box" style="color:#f1c40f;">🪙</div>
-                        <h3>Coin Flip</h3>
-                        <p>flip a coin</p>
-                        <button class="btn-card-play">Play</button>
-                    </div>
-                </div>
+        <div class="card">
+            <div id="r-status" style="text-align:center; color:var(--orange); font-weight:bold; margin-bottom:10px;">PLACE YOUR BETS</div>
+            <div class="r-slider-wrap">
+                <div class="r-pointer"></div>
+                <div id="r-slider" class="r-slider-inner"></div>
             </div>
 
-            <div id="game-active-page" class="hidden">
-                <button class="btn-back" onclick="backToMenu()">← ZPĚT DO MENU</button>
-                <div class="card" style="background:#0c0c0c;">
-                    
-                    <div id="game-mines" class="hidden">
-                        <div style="text-align:center;">
-                            <h2 style="color:#e91e63;">MINES</h2>
-                            Sázka: <input type="number" id="m-bet" value="50"> 
-                            <button class="btn-play" id="m-start" onclick="startMines()">START</button>
-                            <button id="m-cash" class="hidden btn-play" style="background:#2ecc71;" onclick="cashoutMines()">CASH OUT</button>
-                        </div>
-                        <div class="m-grid" id="m-board"></div>
-                    </div>
-
-                    <div id="game-dice" class="hidden" style="text-align:center;">
-                        <h2 style="color:#3498db;">DICE ROLL</h2>
-                        Tip (1-6): <input type="number" id="d-num" value="1" min="1" max="6">
-                        Sázka: <input type="number" id="d-bet" value="50">
-                        <button class="btn-play" onclick="playDice()">HODIT</button>
-                        <div id="d-res" style="font-size:100px; margin:20px;">🎲</div>
-                    </div>
-
-                    <div id="game-roulette" class="hidden">
-                        <h2 style="color:#1abc9c; text-align:center;">ROULETTE</h2>
-                        <div id="r-status" style="text-align:center; color:var(--orange); font-weight:bold; margin-bottom:10px; height:20px;">PŘIPRAVTE SÁZKY</div>
-                        <div class="r-slider-wrap">
-                            <div class="r-pointer"></div>
-                            <div id="r-slider" class="r-slider-inner"></div>
-                        </div>
-                        <div class="r-grid" id="r-board"></div>
-                        <div style="display:flex; gap:10px; margin-top:20px; justify-content:center; align-items:center;">
-                            SÁZKA: <input type="number" id="r-bet" value="50">
-                            <button class="btn-play" id="r-spin" onclick="spinRoulette()">SPIN</button>
-                        </div>
-                    </div>
-
+            <div class="betting-table" id="r-table">
                 </div>
+            
+            <div class="special-bets">
+                <div style="visibility: hidden;"></div>
+                <div class="special-cell" onclick="placeBet('1st12')">1ST 12</div>
+                <div class="special-cell" onclick="placeBet('2nd12')">2ND 12</div>
+                <div class="special-cell" onclick="placeBet('3rd12')">3RD 12</div>
+            </div>
+
+            <div class="bottom-bets">
+                <div style="visibility: hidden;"></div>
+                <div class="special-cell" onclick="placeBet('1-18')">1-18</div>
+                <div class="special-cell" onclick="placeBet('even')">EVEN</div>
+                <div class="special-cell" style="background:var(--red)" onclick="placeBet('red_half')">RED</div>
+                <div class="special-cell" style="background:var(--black)" onclick="placeBet('black_half')">BLACK</div>
+                <div class="special-cell" onclick="placeBet('odd')">ODD</div>
+                <div class="special-cell" onclick="placeBet('19-36')">19-36</div>
+            </div>
+
+            <div class="controls">
+                <div>SÁZKA NA KLIK: <input type="number" id="r-bet-amount" value="10"></div>
+                <button class="btn-clear" onclick="clearBets()">SMAZAT SÁZKY</button>
+                <button class="btn-spin" id="btn-spin" onclick="spinRoulette()">SPIN</button>
             </div>
         </div>
     </div>
 
     <footer>
         © 2026 Swarmbet<br>
-        <a href="#" class="footer-terms">Terms & Conditions</a><br>
+        Terms & Conditions<br>
         For entertainment purposes only. No real money involved.
     </footer>
 </div>
 
 <script>
-    const DB_URL = "https://casbss-c75a0-default-rtdb.europe-west1.firebasedatabase.app/users";
-    let currentUser = localStorage.getItem('swarm_user');
-    let userData = null;
+    let chips = 500;
+    let currentBets = {}; // Formát: { "n5": 50, "red_half": 100 }
+    let isSpinning = false;
     let audioReady = false;
 
-    // AUDIO - TVŮJ DISCORD ODKAZ
-    const sfx = {
-        star: "https://cdn.discordapp.com/attachments/1090308530348757122/1473461724018376704/sigmaman1432.mp3?ex=69964baa&is=6994fa2a&hm=08a411cebdd98fd8c356d8dadba586b7cca4efc387ddac1976d91381f279accc&",
-        win: "https://www.myinstants.com/media/sounds/correct_2.mp3",
-        boom: "https://www.myinstants.com/media/sounds/explosion.mp3",
-        click: "https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3"
-    };
+    const rOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+    const redNumbers = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
 
     function initAudio() { audioReady = true; }
-    function play(name) {
-        if(!audioReady) return;
-        const a = new Audio(sfx[name]);
-        a.volume = name === 'star' ? 0.6 : 0.4;
-        if(name === 'boom') a.volume = 0.2;
-        a.play().catch(()=>{});
-        a.onended = () => a.remove();
+    function play(n) { if(audioReady) new Audio(n).play().catch(()=>{}); }
+
+    // GENEROVÁNÍ TABULKY
+    function buildTable() {
+        const table = document.getElementById('r-table');
+        let html = `<div class="cell zero" id="cell-n0" onclick="placeBet('n0')">0</div>`;
+        
+        for(let row = 3; row >= 1; row--) {
+            for(let col = 1; col <= 12; col++) {
+                let n = (col - 1) * 3 + row;
+                let colorClass = redNumbers.includes(n) ? 'red' : 'black';
+                html += `<div class="cell ${colorClass}" id="cell-n${n}" onclick="placeBet('n${n}')">${n}</div>`;
+            }
+        }
+        table.innerHTML = html;
+        updateUI();
     }
 
-    // AUTH
-    async function auth(type) {
-        const u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value;
-        if(!u || !p) return;
-        const res = await fetch(DB_URL + ".json"), users = await res.json() || {};
-        if(type === 'reg') {
-            if(users[u]) return alert("Již existuje!");
-            userData = { password: p, chips: 500 };
-            await fetch(`${DB_URL}/${u}.json`, { method: 'PUT', body: JSON.stringify(userData) });
-            alert("Registrováno!");
-        } else {
-            if(users[u] && users[u].password === p) { currentUser = u; userData = users[u]; localStorage.setItem('swarm_user', u); loginSuccess(); }
-            else alert("Chyba!");
+    function placeBet(type) {
+        if(isSpinning) return;
+        let amount = parseInt(document.getElementById('r-bet-amount').value);
+        if(amount > chips || amount <= 0) return;
+
+        chips -= amount;
+        currentBets[type] = (currentBets[type] || 0) + amount;
+        
+        play('https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3');
+        updateUI();
+    }
+
+    function clearBets() {
+        if(isSpinning) return;
+        for(let key in currentBets) chips += currentBets[key];
+        currentBets = {};
+        updateUI();
+    }
+
+    function updateUI() {
+        document.getElementById('display-chips').innerText = chips;
+        // Reset vizuálů
+        document.querySelectorAll('.cell, .special-cell').forEach(el => {
+            el.classList.remove('active-bet');
+            let amtBadge = el.querySelector('.bet-amount');
+            if(amtBadge) amtBadge.remove();
+        });
+
+        // Vykreslení aktuálních sázek
+        for(let key in currentBets) {
+            let el;
+            if(key.startsWith('n')) el = document.getElementById('cell-' + key);
+            else {
+                // Najít speciální buňku podle textu (zjednodušeno)
+                const cells = document.querySelectorAll('.special-cell');
+                cells.forEach(c => {
+                    if(c.innerText.toLowerCase().replace(' ', '') === key.replace('_half', '').replace('st', '').replace('nd', '').replace('rd', '')) el = c;
+                    // Fix pro specifické názvy
+                    if(key === 'red_half' && c.innerText === 'RED') el = c;
+                    if(key === 'black_half' && c.innerText === 'BLACK') el = c;
+                    if(key === '1st12' && c.innerText === '1ST 12') el = c;
+                    if(key === '2nd12' && c.innerText === '2ND 12') el = c;
+                    if(key === '3rd12' && c.innerText === '3RD 12') el = c;
+                });
+            }
+
+            if(el) {
+                el.classList.add('active-bet');
+                let span = document.createElement('span');
+                span.className = 'bet-amount';
+                span.innerText = currentBets[key];
+                el.appendChild(span);
+            }
         }
     }
-    function loginSuccess() { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('main-app').classList.remove('hidden'); document.getElementById('display-name').innerText = currentUser; buildRoulette(); updateUI(); }
-    function logout() { localStorage.removeItem('swarm_user'); location.reload(); }
-    
-    // NAVIGATION LOGIC
-    function showPage(p) { 
-        play('click'); 
-        document.getElementById('page-home').classList.add('hidden'); 
-        document.getElementById('page-games').classList.add('hidden'); 
-        document.getElementById('page-'+p).classList.remove('hidden'); 
-        if(p === 'games') backToMenu();
-    }
-    
-    function selectGame(g) { 
-        play('click'); 
-        document.getElementById('selection-menu').classList.add('hidden');
-        document.getElementById('game-active-page').classList.remove('hidden');
-        ['mines','dice','roulette'].forEach(id => document.getElementById('game-'+id).classList.add('hidden')); 
-        document.getElementById('game-'+g).classList.remove('hidden');
-        window.scrollTo(0,0);
-    }
 
-    function backToMenu() {
-        document.getElementById('selection-menu').classList.remove('hidden');
-        document.getElementById('game-active-page').classList.add('hidden');
-    }
-
-    function updateUI() { document.getElementById('display-chips').innerText = Math.floor(userData.chips); fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) }); }
-
-    // MINES LOGIC
-    let mActive = false, mMult = 1, mBet = 0, mBombs = [];
-    function startMines() {
-        mBet = parseInt(document.getElementById('m-bet').value);
-        if(mBet > userData.chips || mBet <= 0) return;
-        userData.chips -= mBet; mActive = true; mMult = 1; mBombs = []; updateUI();
-        document.getElementById('m-start').disabled = true;
-        const board = document.getElementById('m-board'); board.innerHTML = '';
-        while(mBombs.length < 3) { let r = Math.floor(Math.random()*25); if(!mBombs.includes(r)) mBombs.push(r); }
-        for(let i=0; i<25; i++) {
-            let t = document.createElement('div'); t.className = 'tile';
-            t.onclick = () => {
-                if(!mActive || t.innerHTML !== "") return;
-                if(mBombs.includes(i)) { t.innerHTML='💥'; play('boom'); mActive=false; document.getElementById('m-cash').classList.add('hidden'); document.getElementById('m-start').disabled=false; }
-                else { t.innerHTML='⭐'; play('star'); mMult *= 1.25; document.getElementById('m-cash').classList.remove('hidden'); }
-            };
-            board.appendChild(t);
-        }
-    }
-    function cashoutMines() { if(!mActive) return; userData.chips += Math.floor(mBet * mMult); play('win'); mActive = false; updateUI(); document.getElementById('m-cash').classList.add('hidden'); document.getElementById('m-start').disabled = false; }
-
-    // ROULETTE & DICE
-    const rOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
-    let selectedRBet = null, isRSpinning = false;
-    function buildRoulette() {
-        const slider = document.getElementById('r-slider'); let sH = "";
-        for(let i=0; i<10; i++) rOrder.forEach(n => { let c = n===0?'var(--green)':(rOrder.indexOf(n)%2===0?'var(--black)':'var(--red)'); sH += `<div class="r-num" style="background:${c}">${n}</div>`; });
-        slider.innerHTML = sH;
-        const b = document.getElementById('r-board'); let bH = `<div class="cell nula" onclick="setRBet('n0', this)">0</div>`;
-        for(let r=3; r>=1; r--) for(let i=1; i<=12; i++) { let n=(i-1)*3+r; let c=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(n)?'red':'black'; bH+=`<div class="cell ${c}" onclick="setRBet('n${n}', this)">${n}</div>`; }
-        b.innerHTML = bH;
-    }
-    function setRBet(v, el) { if(isRSpinning) return; play('click'); selectedRBet = v; document.querySelectorAll('.cell').forEach(c => c.classList.remove('active')); el.classList.add('active'); }
     function spinRoulette() {
-        const amt = parseInt(document.getElementById('r-bet').value); if(isRSpinning || !selectedRBet || amt > userData.chips) return;
-        isRSpinning = true; userData.chips -= amt; updateUI(); document.getElementById('r-spin').disabled = true;
-        const slider = document.getElementById('r-slider'), winNum = rOrder[Math.floor(Math.random()*rOrder.length)];
-        const target = (rOrder.length * 6 + rOrder.indexOf(winNum)) * 65 - (475-32);
-        slider.style.transition = "left 4s cubic-bezier(0.1, 0, 0.1, 1)"; slider.style.left = `-${target}px`;
+        if(isSpinning || Object.keys(currentBets).length === 0) return;
+        isSpinning = true;
+        document.getElementById('btn-spin').disabled = true;
+        document.getElementById('r-status').innerText = "SPINNING...";
+
+        const winNum = rOrder[Math.floor(Math.random() * rOrder.length)];
+        const slider = document.getElementById('r-slider');
+        
+        // Reset animace
+        slider.style.transition = "none";
+        slider.style.left = "0px";
+        
+        // Generování čísel pro slider
+        let sliderHtml = "";
+        for(let i = 0; i < 15; i++) {
+            rOrder.forEach(n => {
+                let c = n === 0 ? 'var(--green)' : (redNumbers.includes(n) ? 'var(--red)' : 'var(--black)');
+                sliderHtml += `<div class="r-num-box" style="background:${c}">${n}</div>`;
+            });
+        }
+        slider.innerHTML = sliderHtml;
+
+        // Výpočet pozice (střed na výherním čísle v 10. sadě)
         setTimeout(() => {
-            if(selectedRBet === 'n'+winNum) { userData.chips += amt*(winNum===0?40:36); play('win'); } else play('boom');
-            isRSpinning = false; document.getElementById('r-spin').disabled = false; updateUI();
-        }, 4100);
+            const boxWidth = 74; // 70px + 4px margin
+            const targetPos = (rOrder.length * 10 + rOrder.indexOf(winNum)) * boxWidth - (document.querySelector('.r-slider-wrap').offsetWidth / 2) + (boxWidth / 2);
+            slider.style.transition = "left 4s cubic-bezier(0.1, 0, 0.1, 1)";
+            slider.style.left = `-${targetPos}px`;
+        }, 50);
+
+        setTimeout(() => {
+            calculateWin(winNum);
+            isSpinning = false;
+            document.getElementById('btn-spin').disabled = false;
+            currentBets = {};
+            updateUI();
+        }, 4500);
     }
-    function playDice() {
-        let b = parseInt(document.getElementById('d-bet').value), n = parseInt(document.getElementById('d-num').value);
-        if(b > userData.chips) return; userData.chips -= b; updateUI();
-        setTimeout(() => { let r = Math.floor(Math.random()*6)+1; document.getElementById('d-res').innerText = r; if(r === n) { userData.chips += b*6; play('win'); } else play('boom'); updateUI(); }, 500);
+
+    function calculateWin(winNum) {
+        let totalWin = 0;
+        const isRed = redNumbers.includes(winNum);
+
+        for(let type in currentBets) {
+            let amt = currentBets[type];
+            // Čísla (36x)
+            if(type === 'n' + winNum) totalWin += amt * 36;
+            // Barvy (2x)
+            if(type === 'red_half' && isRed && winNum !== 0) totalWin += amt * 2;
+            if(type === 'black_half' && !isRed && winNum !== 0) totalWin += amt * 2;
+            // Tucet (3x)
+            if(type === '1st12' && winNum >= 1 && winNum <= 12) totalWin += amt * 3;
+            if(type === '2nd12' && winNum >= 13 && winNum <= 24) totalWin += amt * 3;
+            if(type === '3rd12' && winNum >= 25 && winNum <= 36) totalWin += amt * 3;
+            // Poloviny (2x)
+            if(type === '1-18' && winNum >= 1 && winNum <= 18) totalWin += amt * 2;
+            if(type === '19-36' && winNum >= 19 && winNum <= 36) totalWin += amt * 2;
+            // Sudá/Lichá (2x)
+            if(type === 'even' && winNum % 2 === 0 && winNum !== 0) totalWin += amt * 2;
+            if(type === 'odd' && winNum % 2 !== 0) totalWin += amt * 2;
+        }
+
+        chips += totalWin;
+        if(totalWin > 0) {
+            document.getElementById('r-status').innerText = `WIN: ${totalWin}! (Number ${winNum})`;
+            play('https://www.myinstants.com/media/sounds/correct_2.mp3');
+        } else {
+            document.getElementById('r-status').innerText = `LOST! Number was ${winNum}`;
+        }
     }
-    window.onload = async () => { if(currentUser) { const r = await fetch(`${DB_URL}/${currentUser}.json`); userData = await r.json(); if(userData) loginSuccess(); } };
+
+    window.onload = buildTable;
 </script>
 </body>
 </html>
