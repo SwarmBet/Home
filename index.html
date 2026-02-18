@@ -112,7 +112,6 @@
         
         /* FOOTER CENTERED */
         footer { text-align: center; padding: 40px 20px; color: #555; font-size: 13px; line-height: 1.6; }
-        .footer-terms { color: #888; font-weight: bold; cursor: pointer; text-decoration: none; }
     </style>
 </head>
 <body onclick="initAudio()">
@@ -270,11 +269,11 @@
     let audioReady = false;
 
     const sfx = {
-        star: "https://cdn.discordapp.com/attachments/1090308530348757122/1473461724018376704/sigmaman1432.mp3?ex=69964baa&is=6994fa2a&hm=08a411cebdd98fd8c356d8dadba586b7cca4efc387ddac1976d91381f279accc&",
+        star: "https://cdn.discordapp.com/attachments/1090308530348757122/1473461724018376704/sigmaman1432.mp3",
         win: "https://www.myinstants.com/media/sounds/correct_2.mp3",
         boom: "https://www.myinstants.com/media/sounds/explosion.mp3",
         click: "https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3",
-        rSpin: "https://cdn.discordapp.com/attachments/1473732416706449450/1473769802110603295/Game_Wheel_Spin_Sound_Effect.mp3?ex=69976a96&is=69961916&hm=8b911be42e1254b15a18c7798e38237840b18ce169c922081fc1560c96ee4f66&"
+        rSpin: "https://cdn.discordapp.com/attachments/1473732416706449450/1473769802110603295/Game_Wheel_Spin_Sound_Effect.mp3"
     };
 
     function initAudio() { audioReady = true; }
@@ -309,7 +308,7 @@
     function backToMenu() { document.getElementById('selection-menu').classList.remove('hidden'); document.getElementById('game-active-page').classList.add('hidden'); }
     function updateUI() { if(!userData) return; document.getElementById('display-chips').innerText = Math.floor(userData.chips); fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) }); }
 
-    // ROULETTE REPLACED CODE
+    // ROULETTE REPLACED LOGIC
     const rOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
     const redNums = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
     let currentBets = {}, isRSpinning = false;
@@ -357,21 +356,23 @@
         play('rSpin'); 
         
         const slider = document.getElementById('r-slider');
-        const winNum = rOrder[Math.floor(Math.random() * rOrder.length)];
         const wrap = document.getElementById('r-wrap');
-        const wrapWidth = wrap.offsetWidth;
+        
+        const winningIndex = Math.floor(Math.random() * rOrder.length);
+        const winNum = rOrder[winningIndex];
+        
         const itemWidth = 65; 
-
-        const loops = 10;
-        const winIndexInOrder = rOrder.indexOf(winNum);
-        const landingPos = (loops * rOrder.length * itemWidth) + (winIndexInOrder * itemWidth) - (wrapWidth / 2) + (itemWidth / 2);
+        const wrapCenter = wrap.offsetWidth / 2;
+        
+        const baseOffset = 8 * rOrder.length * itemWidth;
+        const targetPos = baseOffset + (winningIndex * itemWidth) - wrapCenter + (itemWidth / 2);
 
         slider.style.transition = "none";
         slider.style.left = "0px";
         slider.offsetHeight; 
 
         slider.style.transition = "left 6s cubic-bezier(0.1, 0, 0.1, 1)";
-        slider.style.left = `-${landingPos}px`;
+        slider.style.left = `-${targetPos}px`;
 
         setTimeout(() => {
             let totalWin = 0;
@@ -395,8 +396,10 @@
             }
 
             document.getElementById('r-status').innerText = `VYHRÁLO ČÍSLO: ${winNum}`;
+            
             if(totalWin > 0) { 
-                userData.chips += totalWin; play('win'); 
+                userData.chips += totalWin; 
+                play('win'); 
                 document.getElementById('r-status').style.color = 'var(--green)';
                 document.getElementById('r-status').innerText += ` | VÝHRA: ${totalWin}`;
             } else { 
