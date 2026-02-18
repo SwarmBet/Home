@@ -4,6 +4,194 @@
     <meta charset="UTF-8">
     <title>SwarmBet - Star Premium 2026</title>
     <style>
+
+
+
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Menu</title>
+    <style>
+        body {
+            background-color: #0b0e11;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .blue-line {
+            width: 4px;
+            height: 24px;
+            background-color: #007bff;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background-color: #1a1d23;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 220px;
+            transition: 0.3s;
+            border: 2px solid transparent; 
+            position: relative;
+        }
+
+        .card:hover {
+            background-color: #242830;
+            transform: translateY(-5px);
+        }
+
+        /* Helper class for sizing the new images */
+        .icon-img {
+            width: 80px;  /* Adjusted size for the new images */
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        /* Default icon styling for the other games */
+        .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        p {
+            color: #6e7681;
+            font-size: 12px;
+            margin: 0 0 15px 0;
+        }
+
+        .btn {
+            background-color: #2b2f36;
+            color: white;
+            border: none;
+            padding: 10px 0;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #3a3f4b;
+        }
+
+        /* Special styling for Dice Roll (Active State) */
+        .card.active {
+            border-color: #ffa500;
+        }
+
+        .card.active .btn {
+            background-color: #ffa500;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div class="blue-line"></div>
+            <h2>Classics</h2>
+        </div>
+
+        <div class="grid">
+            
+            <div class="card">
+                <img src="stažený_soubor__3_-removebg-preview.png" alt="Mines" class="icon-img">
+                <h3>Mines</h3>
+                <p>avoid the bombs</p>
+                <button class="btn">Play</button>
+            </div>
+
+            <div class="card active">
+                <img src="stažený_soubor__5_-removebg-preview.png" alt="Dice Roll" class="icon-img">
+                <h3>Dice Roll</h3>
+                <p>roll dice vs robot</p>
+                <button class="btn">Play</button>
+            </div>
+
+            <div class="card">
+                <div class="icon">🪙</div>
+                <h3>Coin Flip</h3>
+                <p>heads or tails</p>
+                <button class="btn">Play</button>
+            </div>
+
+            <div class="card">
+                <div class="icon">🔴</div>
+                <h3>Roulette</h3>
+                <p>spin the wheel</p>
+                <button class="btn">Play</button>
+            </div>
+
+            <div class="card">
+                <div class="icon">🃏</div>
+                <h3>Blackjack</h3>
+                <p>beat the dealer</p>
+                <button class="btn">Play</button>
+            </div>
+
+            <div class="card">
+                <div class="icon">🧧</div>
+                <h3>Baccarat</h3>
+                <p>player, banker or tie</p>
+                <button class="btn">Play</button>
+            </div>
+
+            <div class="card">
+                <div class="icon">🚀</div>
+                <h3>Crash</h3>
+                <p>cash out in time</p>
+                <button class="btn">Play</button>
+            </div>
+
+            <div class="card">
+                <div class="icon">🛸</div>
+                <h3>Limbo</h3>
+                <p>target the rocket</p>
+                <button class="btn">Play</button>
         :root { --orange: #ff9900; --dark: #0a0a0a; --panel: #151515; --green: #27ae60; --red: #e74c3c; --black: #2c3e50; --gold: #f1c40f; }
         body { background-color: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; background-image: radial-gradient(circle at center, rgba(255, 153, 0, 0.03) 0%, transparent 80%); overflow-x: hidden; }
         .win-announcement { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; text-align: center; pointer-events: none; animation: winPop 3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); text-shadow: 0 0 20px rgba(241, 196, 15, 0.5); }
