@@ -65,7 +65,7 @@
         
         .r-slider-wrap { position: relative; width: 100%; height: 85px; background: #111; border: 2px solid #333; overflow: hidden; border-radius: 10px; margin-bottom: 20px; }
         .r-slider-inner { display: flex; position: absolute; left: 0; transition: left 6s cubic-bezier(0.1, 0, 0.1, 1); align-items: center; height: 100%; }
-        .r-num { min-width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid rgba(0,0,0,0.2); font-size: 20px; }
+        .r-num { min-width: 65px; width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid rgba(0,0,0,0.2); font-size: 20px; }
         .r-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--orange); z-index: 10; transform: translateX(-50%); box-shadow: 0 0 15px var(--orange); }
 
         .r-grid { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 5px; }
@@ -207,7 +207,7 @@
                     <div id="game-roulette" class="hidden">
                         <h2 style="color:#1abc9c; text-align:center;">ROULETTE</h2>
                         <div id="r-status" style="text-align:center; color:var(--orange); font-weight:bold; margin-bottom:10px; height:20px;">PŘIPRAVTE SÁZKY</div>
-                        <div class="r-slider-wrap">
+                        <div class="r-slider-wrap" id="r-wrap">
                             <div class="r-pointer"></div>
                             <div id="r-slider" class="r-slider-inner"></div>
                         </div>
@@ -364,14 +364,18 @@
     }
     function cashoutMines() { if(!mActive) return; userData.chips += Math.floor(mBet * mMult); play('win'); mActive = false; updateUI(); document.getElementById('m-cash').classList.add('hidden'); document.getElementById('m-start').disabled = false; }
 
-    // ROULETTE LOGIC (NOW 6 SECONDS SPIN)
+    // ROULETTE LOGIC - FIXED ALIGNMENT
     const rOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
     const redNums = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
     let currentBets = {}, isRSpinning = false;
 
     function buildRoulette() {
         const slider = document.getElementById('r-slider'); let sH = "";
-        for(let i=0; i<10; i++) rOrder.forEach(n => { let c = n===0?'var(--green)':(redNums.includes(n)?'var(--red)':'var(--black)'); sH += `<div class="r-num" style="background:${c}">${n}</div>`; });
+        // Create 10 loops of the numbers for smooth spinning
+        for(let i=0; i<10; i++) rOrder.forEach(n => { 
+            let c = n===0?'var(--green)':(redNums.includes(n)?'var(--red)':'var(--black)'); 
+            sH += `<div class="r-num" style="background:${c}">${n}</div>`; 
+        });
         slider.innerHTML = sH;
         const b = document.getElementById('r-board'); let bH = `<div class="cell nula" onclick="handleRClick('n0', this)">0</div>`;
         for(let r=3; r>=1; r--) for(let i=1; i<=12; i++) { 
@@ -424,11 +428,27 @@
         
         play('rSpin'); 
         
-        const slider = document.getElementById('r-slider'), winNum = rOrder[Math.floor(Math.random()*rOrder.length)];
-        // Upravený cílový posun pro delší trasu během 6s
-        const target = (rOrder.length * 8 + rOrder.indexOf(winNum)) * 65 - (475-32);
-        slider.style.transition = "left 6s cubic-bezier(0.1, 0, 0.1, 1)"; // ZDE ZMĚNA NA 6s
-        slider.style.left = `-${target}px`;
+        const slider = document.getElementById('r-slider');
+        const winNum = rOrder[Math.floor(Math.random()*rOrder.length)];
+        const wrapWidth = document.getElementById('r-wrap').offsetWidth;
+        
+        // Loop count (we use 7th loop for landing)
+        const loops = 7;
+        const itemWidth = 65;
+        const winIndex = rOrder.indexOf(winNum);
+        
+        // Fixed Calculation: (Laps * FullWheelWidth) + (Index * ItemWidth) - (CenterOffset)
+        // Center offset makes sure the winning number is in the middle of the slider
+        const landingPos = (loops * rOrder.length * itemWidth) + (winIndex * itemWidth) - (wrapWidth / 2) + (itemWidth / 2);
+
+        slider.style.transition = "none";
+        slider.style.left = "0px";
+        
+        // Force reflow
+        slider.offsetHeight;
+
+        slider.style.transition = "left 6s cubic-bezier(0.1, 0, 0.1, 1)";
+        slider.style.left = `-${landingPos}px`;
 
         setTimeout(() => {
             let totalWin = 0;
@@ -458,7 +478,7 @@
                 document.getElementById('r-status').style.color = 'var(--green)';
                 document.getElementById('r-status').innerText += ` | VÝHRA: ${totalWin}`;
             } else { 
-                play('boom'); 
+                // BOOM SOUND REMOVED FROM HERE
                 document.getElementById('r-status').style.color = 'var(--red)';
             }
 
@@ -477,7 +497,7 @@
             isRSpinning = false; 
             document.getElementById('r-spin').disabled = false; 
             updateUI();
-        }, 6100); // ZDE ZMĚNA NA 6100ms
+        }, 6100); 
     }
 
     // DICE LOGIC
