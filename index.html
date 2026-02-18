@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SwarmBet - Fixed Roulette 2026</title>
+    <title>SwarmBet - Final Fix 2026</title>
     <style>
         :root { --orange: #ff9900; --dark: #0a0a0a; --panel: #151515; --green: #27ae60; --red: #e74c3c; --black: #2c3e50; }
         body { background-color: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
@@ -10,22 +10,40 @@
         .container { width: 950px; margin: 30px auto; }
         .card { background: var(--panel); border: 1px solid #222; border-radius: 15px; padding: 25px; }
         .hidden { display: none !important; }
+        .btn-play { background: var(--orange); color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; }
+        input { background: #000; border: 1px solid #333; color: var(--orange); padding: 10px; border-radius: 8px; text-align: center; }
 
-        /* ROULETTE UI - KLÍČOVÉ PRO FIX */
-        .r-slider-wrap { position: relative; width: 100%; height: 90px; background: #111; border: 2px solid #333; overflow: hidden; border-radius: 10px; }
-        .r-slider-inner { display: flex; position: absolute; left: 0; align-items: center; height: 100%; will-change: left; }
-        .r-num { min-width: 80px; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-right: 1px solid rgba(0,0,0,0.5); font-size: 24px; }
-        .r-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--orange); z-index: 10; transform: translateX(-50%); box-shadow: 0 0 15px var(--orange); }
+        /* --- ROULETTE FIXED CSS --- */
+        .r-slider-wrap { 
+            position: relative; width: 100%; height: 80px; background: #111; 
+            border: 2px solid #333; overflow: hidden; border-radius: 10px; margin-bottom: 20px;
+        }
+        .r-slider-inner { 
+            display: flex; position: absolute; left: 0; height: 100%; 
+            transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1); /* Používáme transform pro plynulost */
+        }
+        .r-num { 
+            /* TOTO JE KLÍČOVÉ - PEVNÁ ŠÍŘKA 80px */
+            min-width: 80px; width: 80px; height: 80px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: bold; border-right: 1px solid rgba(0,0,0,0.5); font-size: 24px; box-sizing: border-box;
+        }
+        .r-pointer { 
+            position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; 
+            background: var(--orange); z-index: 10; transform: translateX(-50%); 
+            box-shadow: 0 0 15px var(--orange); 
+        }
 
-        .r-grid { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 5px; margin-top: 20px; }
+        .r-grid { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 5px; }
         .cell { height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border-radius: 4px; border: 2px solid transparent; }
         .cell.nula { background: var(--green); grid-row: span 3; height: 160px; }
         .cell.red { background: var(--red); }
         .cell.black { background: var(--black); }
-        .cell.active { border-color: white !important; }
-        
-        .btn-play { background: var(--orange); color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; }
-        input { background: #000; border: 1px solid #333; color: var(--orange); padding: 10px; border-radius: 8px; text-align: center; }
+        .cell.active { border-color: white !important; box-shadow: 0 0 10px white; }
+
+        /* Ostatní hry */
+        .m-grid { display: grid; grid-template-columns: repeat(5, 60px); gap: 10px; justify-content: center; margin-top: 20px; }
+        .tile { width: 60px; height: 60px; background: #000; border: 1px solid #333; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 28px; }
     </style>
 </head>
 <body onclick="initAudio()">
@@ -52,24 +70,34 @@
             <button class="btn-play" style="background:#444; color:white;" onclick="clearBets()">CLEAR</button>
         </div>
     </div>
+
+    <div id="game-mines" class="card hidden" style="margin-top:20px;">
+        <h2 style="text-align:center; color:#e91e63;">MINES</h2>
+        <div style="text-align:center;">
+            Sázka: <input type="number" id="m-bet" value="50">
+            <button class="btn-play" onclick="startMines()">START</button>
+        </div>
+        <div class="m-grid" id="m-board"></div>
+    </div>
 </div>
 
 <script>
     let chips = 500;
     let isSpinning = false;
     let bets = {};
-    let audioInit = false;
+    let audioReady = false;
 
+    // Standardní evropská ruleta
     const rOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
     const redNums = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
 
-    function initAudio() { audioInit = true; }
+    function initAudio() { audioReady = true; }
 
     function buildUI() {
         const slider = document.getElementById('r-slider');
         let html = "";
-        // Vytvoříme dlouhý pás pro plynulou animaci (15 kopií rOrder)
-        for(let i=0; i<15; i++) {
+        // Generujeme extra dlouhý pás (30 sad čísel) pro plynulý spin
+        for(let i=0; i<30; i++) {
             rOrder.forEach(n => {
                 let color = n === 0 ? 'var(--green)' : (redNums.includes(n) ? 'var(--red)' : 'var(--black)');
                 html += `<div class="r-num" style="background:${color}">${n}</div>`;
@@ -109,39 +137,57 @@
         if(isSpinning || Object.keys(bets).length === 0) return;
         isSpinning = true;
         document.getElementById('r-spin-btn').disabled = true;
+        document.getElementById('r-status').innerText = "TOČÍ SE...";
         
-        // --- KLÍČOVÁ LOGIKA ---
-        const winIndex = Math.floor(Math.random() * rOrder.length); // 1. Vybereme index
-        const winNum = rOrder[winIndex]; // 2. Získáme číslo
-        
-        const itemWidth = 80; // Musí odpovídat CSS
-        const totalItems = rOrder.length;
-        const spinCycles = 10; // Kolikrát se pás otočí před zastavením
-        
+        // 1. ZRESETUJEME PÁS NA ZAČÁTEK (okamžitě, bez animace)
         const slider = document.getElementById('r-slider');
-        const wrapWidth = document.getElementById('r-wrap').offsetWidth;
-        
-        // 3. VÝPOČET: Cílový pixel = (Počet kol * Délka pole + Index čísla) * Šířka buňky - Střed okna + Polovina buňky
-        const targetPos = ((spinCycles * totalItems) + winIndex) * itemWidth - (wrapWidth / 2) + (itemWidth / 2);
-
         slider.style.transition = "none";
-        slider.style.left = "0px";
-        slider.offsetHeight; // Reset animace
-        slider.style.transition = "left 5s cubic-bezier(0.1, 0, 0.1, 1)";
-        slider.style.left = `-${targetPos}px`;
+        slider.style.transform = "translateX(0px)";
+        slider.offsetHeight; // Force reflow (reset CSS)
 
-        if(audioInit) new Audio("https://cdn.discordapp.com/attachments/1473732416706449450/1473769802110603295/Game_Wheel_Spin_Sound_Effect.mp3").play();
+        // 2. LOGIKA: VYBEREME VÍTĚZE TEĎ
+        const winIndex = Math.floor(Math.random() * rOrder.length);
+        const winNum = rOrder[winIndex];
 
+        // 3. VÝPOČET POZICE (Matematika musí sedět s CSS)
+        const CARD_WIDTH = 80; // Přesně 80px jako v CSS
+        const LOOPS = 10; // Počet plných otoček (aby to vypadalo dobře)
+        
+        // Cílový index v poli (např. v 10. sadě čísel)
+        const targetIndex = (LOOPS * rOrder.length) + winIndex;
+        
+        // Kolik pixelů je potřeba posunout doleva
+        const pixelOffset = targetIndex * CARD_WIDTH;
+        
+        // Střed obrazovky (kontejneru)
+        const containerWidth = document.getElementById('r-wrap').offsetWidth;
+        const centerOffset = (containerWidth / 2) - (CARD_WIDTH / 2);
+        
+        // Finální pozice (záporná hodnota pro posun doleva)
+        const finalTransform = -(pixelOffset - centerOffset);
+
+        // 4. SPUSTÍME ANIMACI
         setTimeout(() => {
-            let win = 0;
-            if(bets['n'+winNum]) win = bets['n'+winNum] * 36;
+            slider.style.transition = "transform 5s cubic-bezier(0.1, 0, 0.1, 1)";
+            slider.style.transform = `translateX(${finalTransform}px)`;
             
-            document.getElementById('r-status').innerText = "ČÍSLO: " + winNum;
-            if(win > 0) {
-                chips += win;
+            if(audioReady) new Audio("https://cdn.discordapp.com/attachments/1473732416706449450/1473769802110603295/Game_Wheel_Spin_Sound_Effect.mp3").play().catch(()=>{});
+        }, 50);
+
+        // 5. VYHODNOCENÍ PO SKONČENÍ ANIMACE
+        setTimeout(() => {
+            let winAmt = 0;
+            if(bets['n'+winNum]) winAmt = bets['n'+winNum] * 36;
+            
+            document.getElementById('r-status').innerText = "VÍTĚZNÉ ČÍSLO: " + winNum;
+            
+            if(winAmt > 0) {
+                chips += winAmt;
                 document.getElementById('r-status').style.color = "var(--green)";
+                if(audioReady) new Audio("https://www.myinstants.com/media/sounds/correct_2.mp3").play().catch(()=>{});
             } else {
                 document.getElementById('r-status').style.color = "var(--red)";
+                if(audioReady) new Audio("https://www.myinstants.com/media/sounds/explosion.mp3").play().catch(()=>{});
             }
             
             isSpinning = false;
@@ -149,11 +195,28 @@
             bets = {};
             document.querySelectorAll('.cell').forEach(c => c.classList.remove('active'));
             updateUI();
-        }, 5100);
+        }, 5100); // Čas musí být o kousek delší než transition (5s)
+    }
+
+    // --- MINES LOGIC (ZACHOVÁNO) ---
+    let mActive = false, mBombs = [], mMult = 1, mBet = 0;
+    function startMines() {
+        mBet = parseInt(document.getElementById('m-bet').value); if(mBet > chips) return;
+        chips -= mBet; mActive = true; mMult = 1; mBombs = []; updateUI();
+        const board = document.getElementById('m-board'); board.innerHTML = '';
+        while(mBombs.length < 3) { let r = Math.floor(Math.random()*25); if(!mBombs.includes(r)) mBombs.push(r); }
+        for(let i=0; i<25; i++) {
+            let t = document.createElement('div'); t.className = 'tile';
+            t.onclick = () => {
+                if(!mActive || t.innerHTML !== "") return;
+                if(mBombs.includes(i)) { t.innerHTML='💣'; t.style.background="red"; mActive=false; }
+                else { t.innerHTML='💎'; t.style.background="#222"; chips += Math.floor(mBet * 1.2); updateUI(); }
+            };
+            board.appendChild(t);
+        }
     }
 
     function updateUI() { document.getElementById('chips-val').innerText = chips; }
-    
     window.onload = buildUI;
 </script>
 
