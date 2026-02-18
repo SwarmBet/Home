@@ -75,7 +75,6 @@
         .cell.black { background: var(--black); }
         .cell.active { border-color: white !important; box-shadow: 0 0 12px #fff; z-index: 2; }
 
-        /* ROULETTE EXTRA BUTTONS */
         .r-extra-bets { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-top: 10px; margin-left: 85px; }
         .r-dozen-bets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 5px; margin-left: 85px; }
         .btn-extra { background: #222; border: 1px solid #444; color: white; padding: 10px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 11px; transition: 0.2s; position: relative; }
@@ -83,7 +82,6 @@
         .btn-extra.red { background: var(--red); }
         .btn-extra.black { background: var(--black); }
 
-        /* ROULETTE CHIP DESIGN */
         .chip-overlay {
             position: absolute; width: 24px; height: 24px; background: var(--orange);
             border-radius: 50%; border: 2px dashed white; color: black; font-size: 9px;
@@ -96,7 +94,6 @@
         .btn-play { background: var(--orange); color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; }
         input { background: #000; border: 1px solid #333; color: var(--orange); padding: 10px; border-radius: 8px; text-align: center; }
 
-        /* BLACKJACK SPECIFIC */
         .bj-area { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
         .bj-hand { display: flex; gap: 10px; min-height: 120px; align-items: center; }
         .card-ui { 
@@ -110,7 +107,6 @@
         .bj-score { font-size: 14px; color: var(--orange); font-weight: bold; margin-top: 5px; }
         @keyframes dealCard { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        /* FOOTER CENTERED */
         footer { text-align: center; padding: 40px 20px; color: #555; font-size: 13px; line-height: 1.6; }
     </style>
 </head>
@@ -269,7 +265,7 @@
     let audioReady = false;
 
     const sfx = {
-        star: "https://cdn.discordapp.com/attachments/1090308530348757122/1473461724018376704/sigmaman1432.mp3",
+        star: "https://www.myinstants.com/media/sounds/collect-star.mp3",
         win: "https://www.myinstants.com/media/sounds/correct_2.mp3",
         boom: "https://www.myinstants.com/media/sounds/explosion.mp3",
         click: "https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3",
@@ -315,7 +311,7 @@
 
     function buildRoulette() {
         const slider = document.getElementById('r-slider'); let sH = "";
-        for(let i=0; i<15; i++) rOrder.forEach(n => { 
+        for(let i=0; i<20; i++) rOrder.forEach(n => { 
             let c = n===0?'var(--green)':(redNums.includes(n)?'var(--red)':'var(--black)'); 
             sH += `<div class="r-num" style="background:${c}">${n}</div>`; 
         });
@@ -357,15 +353,16 @@
         
         const slider = document.getElementById('r-slider');
         const wrap = document.getElementById('r-wrap');
-        
-        const winningIndex = Math.floor(Math.random() * rOrder.length);
-        const winNum = rOrder[winningIndex];
-        
         const itemWidth = 65; 
-        const wrapCenter = wrap.offsetWidth / 2;
         
-        const baseOffset = 8 * rOrder.length * itemWidth;
-        const targetPos = baseOffset + (winningIndex * itemWidth) - wrapCenter + (itemWidth / 2);
+        // FIX: Striktně index-based náhoda
+        const winIndex = Math.floor(Math.random() * rOrder.length);
+        const winNum = rOrder[winIndex];
+        
+        const loops = 10;
+        const wrapCenter = wrap.offsetWidth / 2;
+        // Pozice v 10. sadě pro jistotu
+        const targetPos = (loops * rOrder.length * itemWidth) + (winIndex * itemWidth) - wrapCenter + (itemWidth / 2);
 
         slider.style.transition = "none";
         slider.style.left = "0px";
@@ -398,11 +395,11 @@
             document.getElementById('r-status').innerText = `VYHRÁLO ČÍSLO: ${winNum}`;
             
             if(totalWin > 0) { 
-                userData.chips += totalWin; 
-                play('win'); 
+                userData.chips += totalWin; play('win'); 
                 document.getElementById('r-status').style.color = 'var(--green)';
                 document.getElementById('r-status').innerText += ` | VÝHRA: ${totalWin}`;
             } else { 
+                play('boom'); // ZVUK PROHRY VRÁCEN
                 document.getElementById('r-status').style.color = 'var(--red)';
             }
 
