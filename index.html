@@ -1,519 +1,537 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swarmbet Casino</title>
+    <title>SwarmBet | Bee Casino</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #021105; /* Deep dark green */
-            --card-bg: #062211;
-            --text-color: #e0e0e0;
-            --accent-color: #ffcc00; /* Golden yellow for swarm */
-            --glow-color: rgba(255, 204, 0, 0.5);
-            --green-table: #0a5c2a;
-            --red-cell: #c72c2c;
-            --black-cell: #222222;
+            --bg-deep: #020d04;
+            --bg-card: #061a0a;
+            --accent-yellow: #ffcc00;
+            --accent-glow: rgba(255, 204, 0, 0.4);
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --green-ui: #1a7a3a;
+            --red-ui: #c72c2c;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
 
         body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg-deep);
+            color: var(--text-main);
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* --- SWARM EFFECTS --- */
-        .swarm-effect {
-            position: relative;
+        /* --- ANIMACE SWARM --- */
+        @keyframes buzz {
+            0% { transform: translate(0,0) rotate(0deg); }
+            25% { transform: translate(2px, -2px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            100% { transform: translate(0,0) rotate(0deg); }
         }
-        .swarm-effect::before, .swarm-effect::after {
-            content: '';
+
+        .swarm-btn:hover::after {
+            content: '🐝';
             position: absolute;
-            width: 5px;
-            height: 5px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.5s ease;
-        }
-        .swarm-effect:hover::before {
-            top: -10px; left: -10px; opacity: 0.8; animation: swarm-buzz 1s infinite alternate;
-        }
-        .swarm-effect:hover::after {
-            bottom: -10px; right: -10px; opacity: 0.8; animation: swarm-buzz 1.2s infinite alternate-reverse;
-        }
-        @keyframes swarm-buzz {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(3px, -3px); }
-            50% { transform: translate(-3px, 3px); }
-            75% { transform: translate(3px, 3px); }
-            100% { transform: translate(-3px, -3px); }
-        }
-        .glowing-border {
-            border: 1px solid transparent;
-            transition: all 0.3s ease;
-        }
-        .glowing-border:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 15px var(--glow-color);
+            font-size: 10px;
+            animation: buzz 0.2s infinite;
+            top: -5px; right: -5px;
         }
 
-        /* --- NAV BAR --- */
-        .navbar {
+        /* --- HEADER & NAVIGATION --- */
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
-            background: rgba(6, 34, 17, 0.8);
+            padding: 15px 40px;
+            background: rgba(0,0,0,0.5);
+            border-bottom: 1px solid var(--accent-yellow);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--accent-color);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
+
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--accent-color);
-            text-decoration: none;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-yellow);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+        .nav-menu { display: flex; gap: 30px; }
+        .nav-item { 
+            cursor: pointer; 
+            font-weight: 600; 
+            color: var(--text-dim); 
+            transition: 0.3s;
+        }
+        .nav-item:hover, .nav-item.active { color: var(--accent-yellow); }
+
+        .user-panel {
             display: flex;
             align-items: center;
-        }
-        .logo i { margin-right: 0.5rem; }
-        .nav-links a {
-            color: var(--text-color);
-            text-decoration: none;
-            margin-left: 2rem;
-            font-weight: 500;
+            gap: 20px;
             position: relative;
-            transition: color 0.3s;
         }
-        .nav-links a:hover { color: var(--accent-color); }
-        .nav-links a::after {
-            content: '';
+
+        .stars-count {
+            color: var(--accent-yellow);
+            font-weight: bold;
+            background: rgba(255, 204, 0, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .profile-dropdown {
+            position: relative;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .dropdown-content {
+            display: none;
             position: absolute;
-            bottom: -5px; left: 0; width: 0%; height: 2px; background: var(--accent-color); transition: width 0.3s;
-        }
-        .nav-links a:hover::after { width: 100%; }
-
-        /* --- MAIN CONTAINER --- */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            right: 0;
+            top: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-yellow);
+            min-width: 120px;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- SECTION TITLES --- */
+        .profile-dropdown:hover .dropdown-content { display: block; }
+
+        .dropdown-item {
+            padding: 10px;
+            color: var(--red-ui);
+            text-align: center;
+            font-weight: bold;
+        }
+        .dropdown-item:hover { background: rgba(255,255,255,0.05); }
+
+        /* --- AUTH SYSTEM --- */
+        #auth-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .auth-box {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--accent-yellow);
+            width: 350px;
+            text-align: center;
+        }
+
+        .auth-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #000;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent-yellow);
+            border: none;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .btn-main:hover { box-shadow: 0 0 20px var(--accent-glow); }
+
+        /* --- GAMES GRID (CLASSICS) --- */
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        
         .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid var(--accent-color);
-            padding-left: 1rem;
-            color: var(--accent-color);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 22px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: #3b82f6;
         }
 
-        /* --- CLASSICS (GAMES) --- */
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        .game-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-        }
-        .game-icon-box {
-            width: 70px; height: 70px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 1rem;
-            font-size: 2rem;
-        }
-        .game-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        .game-desc {
-            font-size: 0.9rem;
-            color: #aaa;
-            margin-bottom: 1.5rem;
-        }
-        .play-btn {
-            background: transparent;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 0.6rem 2rem;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-        .play-btn:hover {
-            background: var(--accent-color);
-            color: var(--bg-color);
-            box-shadow: 0 0 10px var(--glow-color);
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
         }
 
-        /* --- ROULETTE SECTION --- */
-        .roulette-wheel-container {
-            background: var(--card-bg);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
             position: relative;
             overflow: hidden;
         }
-        .roulette-wheel {
-            display: flex;
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-yellow);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .game-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .game-title { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+        .game-desc { color: var(--text-dim); font-size: 13px; margin-bottom: 20px; }
+
+        .play-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--accent-yellow);
+            padding: 8px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .game-card:hover .play-btn { background: var(--accent-yellow); color: black; }
+
+        /* --- SPECIFIC GAME PAGES --- */
+        .game-page { display: none; padding: 40px; text-align: center; }
+        .game-page.active { display: block; }
+
+        /* ROULETTE STYLING (EXACT LOOKALIKE) */
+        .roulette-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .wheel-track {
             background: #111;
-            border: 2px solid var(--accent-color);
-            border-radius: 4px;
-            overflow: hidden;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
             position: relative;
+            overflow: hidden;
+            border: 1px solid #222;
+        }
+        .wheel-strip {
+            display: flex;
+            gap: 5px;
+            transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1);
         }
         .wheel-cell {
-            flex: 1;
-            text-align: center;
-            padding: 0.8rem 0;
-            font-weight: bold;
-            color: #fff;
-        }
-        .wheel-cell.red { background: var(--red-cell); }
-        .wheel-cell.black { background: var(--black-cell); }
-        .wheel-cell.green { background: var(--green-table); color: #fff; }
-        .bet-indicator {
-            position: absolute;
-            top: 0; bottom: 0;
-            width: 3px;
-            background: var(--accent-color);
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 0 10px var(--accent-color);
-            z-index: 2;
-        }
-        .wheel-overlay-text {
-            text-align: center; padding: 1rem; font-weight: bold; color: #aaa;
-        }
-
-        .roulette-table {
-            background: var(--green-table);
-            padding: 1.5rem;
-            border-radius: 12px;
-            display: grid;
-            grid-template-columns: 50px repeat(3, 1fr);
-            grid-gap: 5px;
-        }
-        .table-cell {
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold;
-            cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.2);
-            transition: all 0.2s;
-        }
-        .table-cell:hover { box-shadow: inset 0 0 10px rgba(255,255,255,0.3); }
-        .cell-0 { grid-row: 1 / span 3; background: transparent; color: #fff; border: 2px solid #fff; font-size: 1.2rem; }
-        .num-cell {
-            height: 50px;
-            color: #fff;
-        }
-        .num-cell.red { background: var(--red-cell); }
-        .num-cell.black { background: var(--black-cell); }
-        
-        .bet-row { grid-column: 2 / span 3; display: flex; gap: 5px; }
-        .bet-option {
-            flex: 1;
-            padding: 0.8rem;
-            background: rgba(0,0,0,0.3);
-            color: #fff;
-            text-align: center;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .bet-option:hover { background: rgba(0,0,0,0.5); color: var(--accent-color); }
-        .bet-option.red { background: var(--red-cell); }
-        .bet-option.black { background: var(--black-cell); }
-
-        /* --- BLACKJACK SECTION --- */
-        .blackjack-table {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-        }
-        .cards-area {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 2rem;
-            min-height: 400px;
+            min-width: 60px;
+            height: 60px;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 3px;
         }
-        .hand-title { font-weight: bold; margin-bottom: 1rem; }
-        .card-slots { display: flex; gap: 1rem; }
-        .card-slot {
-            width: 80px; height: 120px;
-            border: 2px dashed rgba(255,255,255,0.2);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            color: rgba(255,255,255,0.2);
+        .red { background: var(--red-ui); }
+        .black { background: #222; }
+        .green { background: var(--green-ui); }
+
+        .wheel-pointer {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--accent-yellow);
+            z-index: 10;
+            transform: translateX(-50%);
+            box-shadow: 0 0 15px var(--accent-yellow);
         }
-        .betting-panel {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 2rem;
-        }
-        .panel-title { font-weight: bold; margin-bottom: 1.5rem; }
-        .bet-input-group { margin-bottom: 1.5rem; }
-        .bet-label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--accent-color); }
-        .bet-input-wrapper { display: flex; gap: 0.5rem; }
-        .bet-input {
-            flex: 1;
-            background: #111;
-            border: 1px solid #333;
-            color: #fff;
-            padding: 0.8rem;
-            border-radius: 4px;
+
+        /* --- DISCORD PAGE --- */
+        .discord-box {
+            background: #5865F2;
+            padding: 60px;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 100px auto;
             text-align: center;
-            font-weight: bold;
         }
-        .coin-btn {
-            background: transparent;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 0.8rem 1rem;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .deal-btn {
-            width: 100%;
-            padding: 1rem;
-            background: var(--accent-color);
-            color: var(--bg-color);
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .deal-btn:hover {
-            box-shadow: 0 0 15px var(--glow-color);
-        }
-        
-        @media (max-width: 768px) {
-            .blackjack-table { grid-template-columns: 1fr; }
-            .nav-links { display: none; } /* Simple mobile hide for now */
-        }
+
     </style>
 </head>
 <body>
 
-    <nav class="navbar swarm-effect">
-        <a href="#" class="logo"><i class="fas fa-bug"></i> Swarmbet</a>
-        <div class="nav-links">
-            <a href="#classics">Classics</a>
-            <a href="#roulette">Roulette</a>
-            <a href="#blackjack">Blackjack</a>
+    <div id="auth-overlay">
+        <div class="auth-box" id="register-box">
+            <h2 style="color: var(--accent-yellow); margin-bottom: 20px;">SWARMBET JOIN</h2>
+            <input type="text" id="reg-user" placeholder="Username">
+            <input type="password" id="reg-pass" placeholder="Password">
+            <button class="btn-main" onclick="handleRegister()">REGISTER</button>
+            <p style="margin-top: 15px; font-size: 12px; cursor: pointer;" onclick="toggleAuth(false)">Already have an account? Login</p>
         </div>
-    </nav>
+        <div class="auth-box" id="login-box" style="display: none;">
+            <h2 style="color: var(--accent-yellow); margin-bottom: 20px;">SWARMBET LOGIN</h2>
+            <input type="text" id="log-user" placeholder="Username">
+            <input type="password" id="log-pass" placeholder="Password">
+            <button class="btn-main" onclick="handleLogin()">LOGIN</button>
+            <p style="margin-top: 15px; font-size: 12px; cursor: pointer;" onclick="toggleAuth(true)">Need an account? Register</p>
+        </div>
+    </div>
 
-    <div class="container">
+    <header>
+        <div class="logo" onclick="showPage('home')">🐝 SwarmBet</div>
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="showPage('home')">Home</div>
+            <div class="nav-item" onclick="showPage('games')">Games</div>
+            <div class="nav-item" onclick="showPage('discord')">Discord</div>
+        </div>
+        <div class="user-panel">
+            <div class="stars-count"><span id="user-stars">0</span> ⭐</div>
+            <div class="profile-dropdown">
+                <span id="display-name" style="font-weight: bold;">User</span> <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
+                <div class="dropdown-content">
+                    <div class="dropdown-item" onclick="logout()">LOGOUT</div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-        <section id="classics">
-            <h2 class="section-title">Classics</h2>
+    <div id="page-home" class="game-page active">
+        <h1 style="font-size: 50px; margin-top: 100px;">Welcome to <span style="color: var(--accent-yellow);">SwarmBet</span></h1>
+        <p style="color: var(--text-dim); margin-top: 20px;">The most buzzing casino in the swarm.</p>
+        <button class="btn-main" style="width: 200px; margin-top: 40px;" onclick="showPage('games')">START PLAYING</button>
+    </div>
+
+    <div id="page-games" class="game-page">
+        <div class="container">
+            <div class="section-title">CLASSICS</div>
             <div class="games-grid">
-                <div class="game-card swarm-effect glowing-border">
-                    <div class="game-icon-box" style="color: #ffd700;"><i class="fas fa-coins"></i></div>
+                <div class="game-card swarm-btn" onclick="showPage('game-coinflip')">
+                    <span class="game-icon" style="color: #ffd700;"><i class="fas fa-coins"></i></span>
                     <div class="game-title">Coin Flip</div>
-                    <div class="game-desc">Flip a coin</div>
+                    <div class="game-desc">flip a coin</div>
                     <button class="play-btn">Play</button>
                 </div>
-                <div class="game-card swarm-effect glowing-border">
-                    <div class="game-icon-box" style="color: #00bfff;"><i class="fas fa-dice"></i></div>
+                <div class="game-card swarm-btn" onclick="showPage('game-dice')">
+                    <span class="game-icon" style="color: #3b82f6;"><i class="fas fa-dice"></i></span>
                     <div class="game-title">Dice Roll</div>
-                    <div class="game-desc">Roll dice vs robot</div>
+                    <div class="game-desc">roll dice vs robot</div>
                     <button class="play-btn">Play</button>
                 </div>
-                <div class="game-card swarm-effect glowing-border">
-                    <div class="game-icon-box" style="color: #ff6347;"><i class="fab fa-pagelines"></i></div> <div class="game-title">Blackjack</div>
-                    <div class="game-desc">Normal blackjack</div>
+                <div class="game-card swarm-btn" onclick="showPage('game-blackjack')">
+                    <span class="game-icon" style="color: #ef4444;"><i class="fas fa-leaf"></i></span>
+                    <div class="game-title">Blackjack</div>
+                    <div class="game-desc">normal blackjack</div>
                     <button class="play-btn">Play</button>
                 </div>
-                <div class="game-card swarm-effect glowing-border">
-                    <div class="game-icon-box" style="color: #ffa500;"><i class="fas fa-rocket"></i></div>
+                <div class="game-card swarm-btn" onclick="showPage('game-crash')">
+                    <span class="game-icon" style="color: #f59e0b;"><i class="fas fa-rocket"></i></span>
                     <div class="game-title">Crash</div>
-                    <div class="game-desc">Cash out before crash</div>
+                    <div class="game-desc">cash out before crash</div>
                     <button class="play-btn">Play</button>
                 </div>
-                <div class="game-card swarm-effect glowing-border">
-                    <div class="game-icon-box" style="color: #32cd32;"><i class="fas fa-th"></i></div>
+                <div class="game-card swarm-btn" onclick="showPage('game-keno')">
+                    <span class="game-icon" style="color: #10b981;"><i class="fas fa-th"></i></span>
                     <div class="game-title">Keno</div>
-                    <div class="game-desc">Pick some numbers</div>
+                    <div class="game-desc">pick some numbers</div>
                     <button class="play-btn">Play</button>
                 </div>
-                <div class="game-card swarm-effect glowing-border">
-                    <div class="game-icon-box" style="color: #ff69b4;"><i class="fas fa-bomb"></i></div>
+                <div class="game-card swarm-btn" onclick="showPage('game-mines')">
+                    <span class="game-icon" style="color: #ec4899;"><i class="fas fa-bomb"></i></span>
                     <div class="game-title">Mines</div>
-                    <div class="game-desc">Avoid the bombs</div>
+                    <div class="game-desc">avoid the bombs</div>
                     <button class="play-btn">Play</button>
                 </div>
-                <div class="game-card swarm-effect glowing-border">
-                    <div class="game-icon-box" style="color: #00ced1;"><i class="fas fa-dot-circle"></i></div>
+                <div class="game-card swarm-btn" onclick="showPage('game-roulette')">
+                    <span class="game-icon" style="color: #06b6d4;"><i class="fas fa-circle-notch"></i></span>
                     <div class="game-title">Roulette</div>
-                    <div class="game-desc">Spin the wheel</div>
+                    <div class="game-desc">spin the wheel</div>
                     <button class="play-btn">Play</button>
                 </div>
-                <div class="game-card swarm-effect glowing-border">
-                    <div class="game-icon-box" style="color: #8a2be2;"><i class="far fa-gem"></i></div>
+                <div class="game-card swarm-btn" onclick="showPage('game-baccarat')">
+                    <span class="game-icon" style="color: #a855f7;"><i class="fas fa-gem"></i></span>
                     <div class="game-title">Baccarat</div>
-                    <div class="game-desc">Player or banker</div>
+                    <div class="game-desc">player or banker</div>
                     <button class="play-btn">Play</button>
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <section id="roulette" style="margin-top: 3rem;">
-            <h2 class="section-title">Roulette</h2>
-            <div class="roulette-wheel-container swarm-effect glowing-border">
-                <div class="bet-indicator"></div>
-                <div class="roulette-wheel">
-                    <div class="wheel-cell black">11</div><div class="wheel-cell red">30</div><div class="wheel-cell black">8</div>
-                    <div class="wheel-cell red">23</div><div class="wheel-cell black">10</div><div class="wheel-cell red">5</div>
-                    <div class="wheel-cell black">24</div><div class="wheel-cell red">16</div><div class="wheel-cell black">33</div>
-                    <div class="wheel-cell red">1</div><div class="wheel-cell black">20</div><div class="wheel-cell red">14</div>
-                    <div class="wheel-cell black">31</div><div class="wheel-cell red">9</div><div class="wheel-cell black">22</div>
-                    <div class="wheel-cell black">11</div><div class="wheel-cell red">30</div><div class="wheel-cell black">8</div>
-                </div>
-                <div class="wheel-overlay-text">PLACE YOUR BETS</div>
+    <div id="page-game-roulette" class="game-page">
+        <div class="roulette-container">
+            <h2 style="margin-bottom: 30px;">ROULETTE</h2>
+            <div class="wheel-track">
+                <div class="wheel-pointer"></div>
+                <div id="wheel-strip" class="wheel-strip">
+                    </div>
             </div>
-
-            <div class="roulette-table swarm-effect glowing-border">
-                <div class="table-cell cell-0 swarm-effect">0</div>
-                
-                <div class="table-cell num-cell red swarm-effect">3</div>
-                <div class="table-cell num-cell black swarm-effect">6</div>
-                <div class="table-cell num-cell red swarm-effect">9</div>
-                <div class="table-cell num-cell red swarm-effect">12</div>
-                <div class="table-cell num-cell black swarm-effect">15</div>
-                <div class="table-cell num-cell red swarm-effect">18</div>
-                <div class="table-cell num-cell red swarm-effect">21</div>
-                <div class="table-cell num-cell black swarm-effect">24</div>
-                <div class="table-cell num-cell red swarm-effect">27</div>
-                <div class="table-cell num-cell red swarm-effect">30</div>
-                <div class="table-cell num-cell black swarm-effect">33</div>
-                <div class="table-cell num-cell red swarm-effect">36</div>
-                
-                <div class="table-cell num-cell black swarm-effect">2</div>
-                <div class="table-cell num-cell red swarm-effect">5</div>
-                <div class="table-cell num-cell black swarm-effect">8</div>
-                <div class="table-cell num-cell black swarm-effect">11</div>
-                <div class="table-cell num-cell red swarm-effect">14</div>
-                <div class="table-cell num-cell black swarm-effect">17</div>
-                <div class="table-cell num-cell black swarm-effect">20</div>
-                <div class="table-cell num-cell red swarm-effect">23</div>
-                <div class="table-cell num-cell black swarm-effect">26</div>
-                <div class="table-cell num-cell black swarm-effect">29</div>
-                <div class="table-cell num-cell red swarm-effect">32</div>
-                <div class="table-cell num-cell black swarm-effect">35</div>
-
-                <div class="table-cell num-cell red swarm-effect">1</div>
-                <div class="table-cell num-cell black swarm-effect">4</div>
-                <div class="table-cell num-cell red swarm-effect">7</div>
-                <div class="table-cell num-cell black swarm-effect">10</div>
-                <div class="table-cell num-cell black swarm-effect">13</div>
-                <div class="table-cell num-cell red swarm-effect">16</div>
-                <div class="table-cell num-cell red swarm-effect">19</div>
-                <div class="table-cell num-cell black swarm-effect">22</div>
-                <div class="table-cell num-cell red swarm-effect">25</div>
-                <div class="table-cell num-cell black swarm-effect">28</div>
-                <div class="table-cell num-cell black swarm-effect">31</div>
-                <div class="table-cell num-cell red swarm-effect">34</div>
-
-                <div class="bet-row" style="margin-top: 10px;">
-                    <div class="bet-option swarm-effect">1st 12</div>
-                    <div class="bet-option swarm-effect">2nd 12</div>
-                    <div class="bet-option swarm-effect">3rd 12</div>
-                </div>
-                <div class="bet-row">
-                    <div class="bet-option swarm-effect">1-18</div>
-                    <div class="bet-option swarm-effect">EVEN</div>
-                    <div class="bet-option red swarm-effect">RED</div>
-                    <div class="bet-option black swarm-effect">BLACK</div>
-                    <div class="bet-option swarm-effect">ODD</div>
-                    <div class="bet-option swarm-effect">19-36</div>
-                </div>
+            <p style="color: var(--text-dim); margin-bottom: 20px;">PLACE YOUR BETS</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="btn-main" style="width: 100px; background: var(--red-ui); color: white;" onclick="playRoulette('red')">RED</button>
+                <button class="btn-main" style="width: 100px; background: #222; color: white;" onclick="playRoulette('black')">BLACK</button>
+                <button class="btn-main" style="width: 100px; background: var(--green-ui); color: white;" onclick="playRoulette('green')">ZERO</button>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <section id="blackjack" style="margin-top: 3rem; margin-bottom: 3rem;">
-            <h2 class="section-title">Blackjack</h2>
-            <div class="blackjack-table">
-                <div class="cards-area swarm-effect glowing-border">
-                    <div>
-                        <div class="hand-title">Dealer's Hand</div>
-                        <div class="card-slots">
-                            <div class="card-slot">Empty</div>
-                            <div class="card-slot">Empty</div>
-                        </div>
-                        <p style="font-size: 0.8rem; color: #777; margin-top: 0.5rem;">Dealer hits on soft 17 and Blackjack pays 3:2</p>
-                    </div>
-                    <div>
-                        <div class="hand-title">Your Hand</div>
-                        <div class="card-slots">
-                            <div class="card-slot">Empty</div>
-                            <div class="card-slot">Empty</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="betting-panel swarm-effect glowing-border">
-                    <div class="panel-title">Betting Options</div>
-                    <div class="bet-input-group">
-                        <label class="bet-label">Bet Amount</label>
-                        <div class="bet-input-wrapper">
-                            <input type="text" class="bet-input" value="50">
-                            <span style="align-self: center; font-weight: bold; color: var(--accent-color);">COINS</span>
-                        </div>
-                    </div>
-                    <div class="bet-input-group" style="display: flex; gap: 0.5rem;">
-                        <button class="coin-btn" style="flex: 1;">1/2</button>
-                        <button class="coin-btn" style="flex: 1;">2x</button>
-                    </div>
-                    <button class="deal-btn swarm-effect">DEAL</button>
-                </div>
-            </div>
-        </section>
-
+    <div id="page-discord" class="game-page">
+        <div class="discord-box">
+            <i class="fab fa-discord" style="font-size: 80px; margin-bottom: 20px;"></i>
+            <h2>JOIN OUR SWARM</h2>
+            <p style="margin: 20px 0;">Get exclusive promo codes and daily stars!</p>
+            <button class="btn-main" style="background: white; color: #5865F2;">DISCORD LINK</button>
+        </div>
     </div>
 
     <script>
-        // Simple script for smooth scrolling to sections
-        document.querySelectorAll('.nav-links a').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
+        // --- DATA MGR ---
+        let currentUser = null;
+        const USERS_KEY = 'swarmbet_users';
+
+        // --- AUTH LOGIC ---
+        function toggleAuth(showRegister) {
+            document.getElementById('register-box').style.display = showRegister ? 'block' : 'none';
+            document.getElementById('login-box').style.display = showRegister ? 'none' : 'block';
+        }
+
+        function handleRegister() {
+            const user = document.getElementById('reg-user').value.trim();
+            const pass = document.getElementById('reg-pass').value;
+            
+            if(!user || !pass) return alert("Fill all fields");
+            
+            let users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+            if(users[user]) return alert("Name already taken!");
+            
+            users[user] = { password: pass, stars: 1000 };
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            alert("Registered! Now login.");
+            toggleAuth(false);
+        }
+
+        function handleLogin() {
+            const user = document.getElementById('log-user').value.trim();
+            const pass = document.getElementById('log-pass').value;
+            
+            let users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+            if(users[user] && users[user].password === pass) {
+                currentUser = user;
+                loginSuccess(users[user]);
+            } else {
+                alert("Wrong credentials!");
+            }
+        }
+
+        function loginSuccess(data) {
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('display-name').innerText = currentUser;
+            updateUI();
+        }
+
+        function logout() {
+            location.reload();
+        }
+
+        function updateUI() {
+            let users = JSON.parse(localStorage.getItem(USERS_KEY));
+            document.getElementById('user-stars').innerText = users[currentUser].stars.toLocaleString();
+        }
+
+        function addStars(amt) {
+            let users = JSON.parse(localStorage.getItem(USERS_KEY));
+            users[currentUser].stars += amt;
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            updateUI();
+        }
+
+        // --- NAVIGATION ---
+        function showPage(pageId) {
+            document.querySelectorAll('.game-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            
+            const target = document.getElementById('page-' + pageId);
+            if(target) target.classList.add('active');
+            
+            if(pageId === 'game-roulette') initRoulette();
+        }
+
+        // --- ROULETTE LOGIC ---
+        function initRoulette() {
+            const strip = document.getElementById('wheel-strip');
+            strip.innerHTML = '';
+            const numbers = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+            
+            // Create a long strip for animation
+            for(let i=0; i<10; i++) {
+                numbers.forEach(num => {
+                    const div = document.createElement('div');
+                    div.className = `wheel-cell ${num === 0 ? 'green' : ([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(num) ? 'red' : 'black')}`;
+                    div.innerText = num;
+                    strip.appendChild(div);
                 });
-            });
-        });
+            }
+        }
+
+        function playRoulette(betColor) {
+            const strip = document.getElementById('wheel-strip');
+            const betSize = 100;
+            
+            let users = JSON.parse(localStorage.getItem(USERS_KEY));
+            if(users[currentUser].stars < betSize) return alert("Not enough stars!");
+            addStars(-betSize);
+
+            const cellWidth = 65; 
+            const stopOffset = Math.floor(Math.random() * 37) * cellWidth + (cellWidth * 37 * 5); // Spin to middle iterations
+            
+            strip.style.transition = 'none';
+            strip.style.transform = `translateX(0px)`;
+            
+            setTimeout(() => {
+                strip.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0.1, 1)';
+                strip.style.transform = `translateX(-${stopOffset}px)`;
+            }, 50);
+
+            setTimeout(() => {
+                // Logic to check winner (simplified for demo)
+                const win = Math.random() > 0.6;
+                if(win) {
+                    alert("You won!");
+                    addStars(betSize * 2);
+                } else {
+                    alert("Try again!");
+                }
+            }, 5500);
+        }
+
+        // Initialize empty users if none
+        if(!localStorage.getItem(USERS_KEY)) {
+            localStorage.setItem(USERS_KEY, JSON.stringify({}));
+        }
     </script>
 </body>
 </html>
