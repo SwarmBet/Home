@@ -77,6 +77,20 @@
 
         .btn-play { background: var(--orange); color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; }
         input { background: #000; border: 1px solid #333; color: var(--orange); padding: 10px; border-radius: 8px; text-align: center; }
+
+        /* BLACKJACK SPECIFIC */
+        .bj-area { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
+        .bj-hand { display: flex; gap: 10px; min-height: 120px; align-items: center; }
+        .card-ui { 
+            width: 70px; height: 100px; background: white; border-radius: 8px; 
+            color: black; display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; font-weight: bold; font-size: 20px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 1px solid #ddd;
+            animation: dealCard 0.3s ease-out;
+        }
+        .card-ui.red { color: #e74c3c; }
+        .bj-score { font-size: 14px; color: var(--orange); font-weight: bold; margin-top: 5px; }
+        @keyframes dealCard { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
         /* FOOTER CENTERED */
         footer { text-align: center; padding: 40px 20px; color: #555; font-size: 13px; line-height: 1.6; }
@@ -141,10 +155,10 @@
                         <p>spin the wheel</p>
                         <button class="btn-card-play">Play</button>
                     </div>
-                    <div class="game-card">
-                        <div class="icon-box" style="color:#f1c40f;">🪙</div>
-                        <h3>Coin Flip</h3>
-                        <p>flip a coin</p>
+                    <div class="game-card" onclick="selectGame('blackjack')">
+                        <div class="icon-box" style="color:#f39c12;">🃏</div>
+                        <h3>Blackjack</h3>
+                        <p>beat the dealer</p>
                         <button class="btn-card-play">Play</button>
                     </div>
                 </div>
@@ -186,6 +200,31 @@
                         </div>
                     </div>
 
+                    <div id="game-blackjack" class="hidden">
+                        <div class="bj-area">
+                            <div class="bj-hand-wrap">
+                                <div style="text-align:center; font-size:12px; color:#666;">DEALER</div>
+                                <div id="bj-dealer-hand" class="bj-hand"></div>
+                                <div id="bj-dealer-score" class="bj-score" style="text-align:center;"></div>
+                            </div>
+
+                            <div id="bj-status" style="font-size:24px; font-weight:900; color:var(--orange);">VS</div>
+
+                            <div class="bj-hand-wrap">
+                                <div id="bj-player-hand" class="bj-hand"></div>
+                                <div id="bj-player-score" class="bj-score" style="text-align:center;"></div>
+                                <div style="text-align:center; font-size:12px; color:#666;">YOU</div>
+                            </div>
+
+                            <div id="bj-controls" style="display:flex; gap:10px; margin-top:10px;">
+                                Sázka: <input type="number" id="bj-bet" value="100" style="width:80px;">
+                                <button class="btn-play" id="bj-deal-btn" onclick="startBlackjack()">ROZDAT</button>
+                                <button class="btn-play hidden" id="bj-hit-btn" onclick="bjHit()" style="background:#3498db; color:white;">HIT</button>
+                                <button class="btn-play hidden" id="bj-stand-btn" onclick="bjStand()" style="background:#9b59b6; color:white;">STAND</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -204,7 +243,7 @@
     let userData = null;
     let audioReady = false;
 
-    // AUDIO - TVŮJ DISCORD ODKAZ
+    // AUDIO
     const sfx = {
         star: "https://cdn.discordapp.com/attachments/1090308530348757122/1473461724018376704/sigmaman1432.mp3?ex=69964baa&is=6994fa2a&hm=08a411cebdd98fd8c356d8dadba586b7cca4efc387ddac1976d91381f279accc&",
         win: "https://www.myinstants.com/media/sounds/correct_2.mp3",
@@ -253,7 +292,7 @@
         play('click'); 
         document.getElementById('selection-menu').classList.add('hidden');
         document.getElementById('game-active-page').classList.remove('hidden');
-        ['mines','dice','roulette'].forEach(id => document.getElementById('game-'+id).classList.add('hidden')); 
+        ['mines','dice','roulette','blackjack'].forEach(id => document.getElementById('game-'+id).classList.add('hidden')); 
         document.getElementById('game-'+g).classList.remove('hidden');
         window.scrollTo(0,0);
     }
@@ -263,7 +302,11 @@
         document.getElementById('game-active-page').classList.add('hidden');
     }
 
-    function updateUI() { document.getElementById('display-chips').innerText = Math.floor(userData.chips); fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) }); }
+    function updateUI() { 
+        if(!userData) return;
+        document.getElementById('display-chips').innerText = Math.floor(userData.chips); 
+        fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) }); 
+    }
 
     // MINES LOGIC
     let mActive = false, mMult = 1, mBet = 0, mBombs = [];
@@ -314,53 +357,119 @@
         if(b > userData.chips) return; userData.chips -= b; updateUI();
         setTimeout(() => { let r = Math.floor(Math.random()*6)+1; document.getElementById('d-res').innerText = r; if(r === n) { userData.chips += b*6; play('win'); } else play('boom'); updateUI(); }, 500);
     }
+
+    // BLACKJACK LOGIC
+    let deck = [], pHand = [], dHand = [], bjActive = false, bjBet = 0;
+
+    function createDeck() {
+        const suits = ['♠', '♣', '♥', '♦'];
+        const values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+        deck = [];
+        for (let s of suits) for (let v of values) deck.push({v, s});
+        for (let i = deck.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+    }
+
+    function getScore(hand) {
+        let score = 0, aces = 0;
+        for (let c of hand) {
+            if (c.v === 'A') aces++;
+            else if (['J','Q','K'].includes(c.v)) score += 10;
+            else if (c.v === '?') continue;
+            else score += parseInt(c.v);
+        }
+        for (let i = 0; i < aces; i++) score += (score + 11 <= 21) ? 11 : 1;
+        return score;
+    }
+
+    function renderCard(card, target) {
+        const div = document.createElement('div');
+        div.className = `card-ui ${['♥','♦'].includes(card.s) ? 'red' : ''}`;
+        div.innerHTML = `<div>${card.v}</div><div style="font-size:12px">${card.s}</div>`;
+        document.getElementById(target).appendChild(div);
+    }
+
+    function startBlackjack() {
+        bjBet = parseInt(document.getElementById('bj-bet').value);
+        if (bjBet > userData.chips || bjBet <= 0) return alert("Nedostatek čipů!");
+        
+        userData.chips -= bjBet; updateUI();
+        bjActive = true; createDeck();
+        pHand = [deck.pop(), deck.pop()]; dHand = [deck.pop(), deck.pop()];
+        
+        document.getElementById('bj-player-hand').innerHTML = '';
+        document.getElementById('bj-dealer-hand').innerHTML = '';
+        document.getElementById('bj-dealer-score').innerText = '';
+        document.getElementById('bj-status').innerText = "HRAJETE...";
+        
+        pHand.forEach(c => renderCard(c, 'bj-player-hand'));
+        renderCard(dHand[0], 'bj-dealer-hand');
+        const back = document.createElement('div'); back.className='card-ui'; back.id='bj-back'; back.style.background='#444'; back.innerText='?';
+        document.getElementById('bj-dealer-hand').appendChild(back);
+
+        toggleBJControls(true);
+        updateBJScore();
+        play('click');
+    }
+
+    function updateBJScore() {
+        document.getElementById('bj-player-score').innerText = getScore(pHand);
+        if (getScore(pHand) > 21) endBJ("Bust! Dealer vyhrává.");
+    }
+
+    function bjHit() {
+        if (!bjActive) return;
+        const card = deck.pop(); pHand.push(card);
+        renderCard(card, 'bj-player-hand');
+        updateBJScore();
+        play('click');
+    }
+
+    async function bjStand() {
+        if (!bjActive) return;
+        bjActive = false;
+        const backEl = document.getElementById('bj-back');
+        if(backEl) backEl.remove();
+        renderCard(dHand[1], 'bj-dealer-hand');
+        
+        let dScore = getScore(dHand);
+        document.getElementById('bj-dealer-score').innerText = dScore;
+
+        while (dScore < 17) {
+            await new Promise(r => setTimeout(r, 600));
+            const card = deck.pop(); dHand.push(card);
+            renderCard(card, 'bj-dealer-hand');
+            dScore = getScore(dHand);
+            document.getElementById('bj-dealer-score').innerText = dScore;
+        }
+        
+        const pScore = getScore(pHand);
+        if (dScore > 21 || pScore > dScore) {
+            userData.chips += bjBet * 2; endBJ("VÝHRA!"); play('win');
+        } else if (dScore === pScore) {
+            userData.chips += bjBet; endBJ("REMÍZA");
+        } else {
+            endBJ("PROHRA"); play('boom');
+        }
+        updateUI();
+    }
+
+    function endBJ(msg) {
+        bjActive = false;
+        document.getElementById('bj-status').innerText = msg;
+        document.getElementById('bj-dealer-score').innerText = getScore(dHand);
+        toggleBJControls(false);
+    }
+
+    function toggleBJControls(playing) {
+        document.getElementById('bj-deal-btn').classList.toggle('hidden', playing);
+        document.getElementById('bj-hit-btn').classList.toggle('hidden', !playing);
+        document.getElementById('bj-stand-btn').classList.toggle('hidden', !playing);
+    }
+
     window.onload = async () => { if(currentUser) { const r = await fetch(`${DB_URL}/${currentUser}.json`); userData = await r.json(); if(userData) loginSuccess(); } };
-
-/* BLACKJACK SPECIFIC */
-.bj-area { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
-.bj-hand { display: flex; gap: 10px; min-height: 120px; align-items: center; }
-.card-ui { 
-    width: 70px; height: 100px; background: white; border-radius: 8px; 
-    color: black; display: flex; flex-direction: column; justify-content: center; 
-    align-items: center; font-weight: bold; font-size: 20px; 
-    box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 1px solid #ddd;
-    animation: dealCard 0.3s ease-out;
-}
-.card-ui.red { color: #e74c3c; }
-.bj-score { font-size: 14px; color: var(--orange); font-weight: bold; margin-top: 5px; }
-@keyframes dealCard { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-    <div class="game-card" onclick="selectGame('blackjack')">
-    <div class="icon-box" style="color:#f39c12;">🃏</div>
-    <h3>Blackjack</h3>
-    <p>beat the dealer</p>
-    <button class="btn-card-play">Play</button>
-</div>
-
-<div id="game-blackjack" class="hidden">
-    <div class="bj-area">
-        <div class="bj-hand-wrap">
-            <div style="text-align:center; font-size:12px; color:#666;">DEALER</div>
-            <div id="bj-dealer-hand" class="bj-hand"></div>
-            <div id="bj-dealer-score" class="bj-score" style="text-align:center;"></div>
-        </div>
-
-        <div id="bj-status" style="font-size:24px; font-weight:900; color:var(--orange);">VS</div>
-
-        <div class="bj-hand-wrap">
-            <div id="bj-player-hand" class="bj-hand"></div>
-            <div id="bj-player-score" class="bj-score" style="text-align:center;"></div>
-            <div style="text-align:center; font-size:12px; color:#666;">YOU</div>
-        </div>
-
-        <div id="bj-controls" style="display:flex; gap:10px; margin-top:10px;">
-            Sázka: <input type="number" id="bj-bet" value="100" style="width:80px;">
-            <button class="btn-play" id="bj-deal-btn" onclick="startBlackjack()">ROZDAT</button>
-            <button class="btn-play hidden" id="bj-hit-btn" onclick="bjHit()" style="background:#3498db; color:white;">HIT</button>
-            <button class="btn-play hidden" id="bj-stand-btn" onclick="bjStand()" style="background:#9b59b6; color:white;">STAND</button>
-        </div>
-    </div>
-</div>
 </script>
 </body>
 </html>
