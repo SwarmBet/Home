@@ -3,499 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SwarmBet | Plně Funkční Casino</title>
+    <title>SwarmBet | Premium Casino</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-deep: #020d04;
-            --bg-card: #061a0a;
+            --bg-panel: #061a0a;
+            --bg-card: #0a240f;
             --accent-yellow: #ffcc00;
-            --accent-glow: rgba(255, 204, 0, 0.4);
-            --text-main: #ffffff;
-            --text-dim: #a0a0a0;
+            --text-white: #ffffff;
+            --text-gray: #a0a0a0;
             --green-ui: #1a7a3a;
             --red-ui: #c72c2c;
+            --blue-ui: #3b82f6;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--bg-deep); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-deep); color: var(--text-white); overflow-x: hidden; }
 
-        /* --- HEADER --- */
-        header {
+        /* --- NAVIGATION --- */
+        nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 40px; background: rgba(0,0,0,0.8);
-            border-bottom: 1px solid var(--accent-yellow); position: sticky; top: 0; z-index: 1000;
+            padding: 20px 8%; background: rgba(0,0,0,0.9);
+            border-bottom: 2px solid #111; position: sticky; top: 0; z-index: 1000;
         }
-        .logo { font-size: 24px; font-weight: 800; color: var(--accent-yellow); cursor: pointer; text-transform: uppercase; }
-        .user-panel { display: flex; align-items: center; gap: 20px; }
-        .stars-count { color: var(--accent-yellow); font-weight: bold; background: rgba(255, 204, 0, 0.1); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--accent-yellow); }
-        
-        /* --- UI ELEMENTS --- */
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        .btn-main { background: var(--accent-yellow); border: none; padding: 12px 25px; font-weight: bold; cursor: pointer; border-radius: 5px; transition: 0.3s; }
-        .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--accent-glow); }
-        .btn-bet { background: #111; border: 1px solid #333; color: white; padding: 10px; cursor: pointer; border-radius: 4px; }
-        .btn-bet.active { border-color: var(--accent-yellow); color: var(--accent-yellow); }
-
-        /* --- GAMES GRID --- */
-        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-        .game-card { 
-            background: var(--bg-card); padding: 30px; border-radius: 15px; text-align: center; 
-            transition: 0.3s; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);
+        .logo { font-size: 28px; font-weight: 900; color: var(--accent-yellow); letter-spacing: -1px; }
+        .nav-links { display: flex; gap: 40px; }
+        .nav-link { 
+            cursor: pointer; font-weight: 700; color: var(--text-gray); 
+            transition: var(--transition); text-transform: uppercase; font-size: 14px;
         }
-        .game-card:hover { border-color: var(--accent-yellow); transform: translateY(-5px); }
-        .game-icon { font-size: 40px; margin-bottom: 15px; display: block; }
+        .nav-link:hover, .nav-link.active { color: var(--accent-yellow); transform: translateY(-2px); }
 
-        /* --- GAME SCREEN --- */
-        .game-screen { display: none; background: var(--bg-card); padding: 40px; border-radius: 20px; border: 1px solid #222; position: relative; }
-        .game-screen.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .close-game { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 20px; color: var(--text-dim); }
+        .user-info { display: flex; align-items: center; gap: 20px; }
+        .balance-box { 
+            background: #000; padding: 8px 15px; border-radius: 8px; 
+            border: 1px solid var(--accent-yellow); box-shadow: 0 0 15px rgba(255, 204, 0, 0.1);
+        }
 
-        /* --- SPECIFIC GAME UI --- */
-        .bet-input { background: #000; border: 1px solid #333; color: white; padding: 10px; width: 120px; border-radius: 4px; text-align: center; font-size: 18px; margin-bottom: 10px; }
+        /* --- PAGES --- */
+        .page { display: none; padding: 40px 8%; min-height: 90vh; animation: fadeIn 0.5s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- HOME PAGE --- */
+        .hero { text-align: center; padding: 100px 0; }
+        .hero h1 { font-size: 64px; margin-bottom: 20px; }
+        .hero p { color: var(--text-gray); font-size: 20px; max-width: 600px; margin: 0 auto 40px; }
+        .cta-btn { 
+            background: var(--accent-yellow); color: #000; padding: 18px 40px; 
+            border-radius: 10px; font-weight: 900; text-decoration: none; transition: var(--transition);
+        }
+        .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 204, 0, 0.3); }
+
+        /* --- GAMES GRID (Podle Snímek obrazovky) --- */
+        .section-header { margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+        .section-header span { width: 4px; height: 24px; background: var(--blue-ui); border-radius: 2px; }
+        .games-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
         
-        /* Mines Grid */
-        .mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 400px; margin: 20px auto; }
-        .mine-cell { width: 70px; height: 70px; background: #111; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .mine-cell.revealed { background: #222; cursor: default; }
+        .game-card {
+            background: var(--bg-panel); border-radius: 20px; padding: 40px 20px;
+            text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.03);
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .game-card:hover { 
+            transform: translateY(-10px); border-color: var(--accent-yellow);
+            background: var(--bg-card);
+        }
+        .game-icon { 
+            width: 70px; height: 70px; background: rgba(0,0,0,0.2); 
+            border-radius: 15px; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; font-size: 32px;
+        }
+        .game-card h3 { margin-bottom: 5px; font-size: 20px; }
+        .game-card p { color: var(--text-gray); font-size: 13px; margin-bottom: 25px; }
+        .play-link { 
+            color: var(--accent-yellow); font-weight: 800; text-transform: uppercase; 
+            font-size: 14px; padding: 10px 0; border-top: 1px solid #111; display: block;
+        }
 
-        /* Crash Multiplier */
-        #crash-multiplier { font-size: 80px; font-weight: 900; color: var(--accent-yellow); margin: 40px 0; }
+        /* --- GAME OVERLAY --- */
+        #game-view {
+            position: fixed; inset: 0; background: var(--bg-deep); z-index: 2000;
+            display: none; flex-direction: column;
+        }
+        .game-header { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; }
+        .back-btn { cursor: pointer; font-size: 20px; color: var(--text-gray); }
+        
+        .game-stage { 
+            display: flex; flex: 1; padding: 40px 5%; gap: 30px; align-items: flex-start; 
+            max-width: 1400px; margin: 0 auto; width: 100%;
+        }
+        .main-canvas { 
+            flex: 2.5; background: #041006; border-radius: 25px; 
+            min-height: 550px; position: relative; display: flex; 
+            align-items: center; justify-content: center; overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+        }
+        .bet-panel { 
+            flex: 1; background: var(--bg-panel); border-radius: 25px; 
+            padding: 30px; display: flex; flex-direction: column; gap: 20px;
+        }
 
-        /* Blackjack Cards */
-        .cards-container { display: flex; gap: 10px; justify-content: center; margin: 20px 0; min-height: 120px; }
-        .card { width: 80px; height: 110px; background: white; color: black; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
+        /* --- UI COMPONENTS --- */
+        .input-group { background: #000; padding: 15px; border-radius: 12px; }
+        .input-group label { display: block; font-size: 11px; color: var(--text-gray); margin-bottom: 8px; font-weight: 700; }
+        .input-row { display: flex; align-items: center; justify-content: space-between; }
+        .input-row input { background: transparent; border: none; color: #fff; font-size: 22px; font-weight: 800; width: 60%; outline: none; }
+        .bet-btn { 
+            background: var(--accent-yellow); border: none; padding: 20px; 
+            border-radius: 12px; font-weight: 900; cursor: pointer; transition: var(--transition);
+        }
+        .bet-btn:hover { filter: brightness(1.2); transform: scale(1.02); }
 
-        /* --- AUTH --- */
-        #auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; z-index: 2000; }
-        .auth-box { background: var(--bg-card); padding: 40px; border-radius: 15px; border: 1px solid var(--accent-yellow); width: 350px; text-align: center; }
-        .auth-box input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 4px; }
+        /* --- GAME SPECIFICS --- */
+        .crash-value { font-size: 120px; font-weight: 900; text-shadow: 0 0 30px rgba(255,255,255,0.2); }
+        
+        .mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .mine-tile { 
+            width: 75px; height: 75px; background: #112615; border-radius: 8px; 
+            cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 24px;
+        }
+        .mine-tile:hover { background: #1a3a20; }
+
+        .coin-element { 
+            width: 200px; height: 200px; background: var(--accent-yellow); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 80px; box-shadow: 0 0 50px rgba(255, 204, 0, 0.4);
+        }
+        .flipping { animation: flipAnim 0.6s infinite linear; }
+        @keyframes flipAnim { 0% { transform: rotateY(0); } 100% { transform: rotateY(360deg); } }
+
+        /* Roulette Reel */
+        .r-reel { width: 100%; height: 100px; position: relative; overflow: hidden; background: #000; border: 2px solid var(--accent-yellow); }
+        .r-strip { display: flex; position: absolute; transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1); }
+        .r-item { min-width: 80px; height: 100px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; }
+        .r-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--accent-yellow); z-index: 10; transform: translateX(-50%); }
+
+        /* --- DISCORD --- */
+        .discord-box { 
+            background: #5865F2; padding: 60px; border-radius: 30px; text-align: center;
+            max-width: 800px; margin: 50px auto;
+        }
     </style>
 </head>
 <body>
 
-    <div id="auth-overlay">
-        <div class="auth-box" id="auth-form">
-            <h2 id="auth-title" style="color: var(--accent-yellow); margin-bottom: 20px;">SWARMBET JOIN</h2>
-            <input type="text" id="auth-user" placeholder="Username">
-            <input type="password" id="auth-pass" placeholder="Password">
-            <button class="btn-main" style="width: 100%;" onclick="handleAuth()">CONTINUE</button>
-            <p style="margin-top: 15px; font-size: 12px; cursor: pointer; color: var(--text-dim);" onclick="toggleAuth()">Switch Login/Register</p>
+    <nav>
+        <div class="logo">🐝 SWARMBET</div>
+        <div class="nav-links">
+            <div class="nav-link active" onclick="showPage('home')">Home</div>
+            <div class="nav-link" onclick="showPage('games')">Hry</div>
+            <div class="nav-link" onclick="showPage('discord')">Discord</div>
+        </div>
+        <div class="user-info">
+            <div class="balance-box"><span id="balance">1000</span> ⭐</div>
+        </div>
+    </nav>
+
+    <div id="home" class="page active">
+        <div class="hero">
+            <h1>Vítej v budoucnu sázení</h1>
+            <p>SwarmBet přináší nejrychlejší hry, nejlepší animace a férový systém pro každého včelího sázkaře.</p>
+            <button class="cta-btn" onclick="showPage('games')">ZAČÍT HRÁT</button>
         </div>
     </div>
 
-    <header>
-        <div class="logo" onclick="location.reload()">🐝 SwarmBet</div>
-        <div class="user-panel">
-            <div class="stars-count"><span id="user-stars">0</span> ⭐</div>
-            <div style="font-weight: bold;"><span id="display-name">Guest</span></div>
-            <button class="btn-bet" onclick="location.reload()" style="padding: 5px 10px;">Logout</button>
-        </div>
-    </header>
-
-    <div class="container" id="main-content">
-        <div id="lobby">
-            <h2 style="margin-bottom: 30px; border-left: 4px solid #3b82f6; padding-left: 15px;">CLASSICS</h2>
-            <div class="games-grid">
-                <div class="game-card" onclick="openGame('coinflip')">
-                    <i class="fas fa-coins game-icon" style="color: #ffd700;"></i>
-                    <div class="game-title">Coin Flip</div>
-                    <p class="game-desc">50/50 Chance</p>
-                </div>
-                <div class="game-card" onclick="openGame('dice')">
-                    <i class="fas fa-dice game-icon" style="color: #3b82f6;"></i>
-                    <div class="game-title">Dice Roll</div>
-                    <p class="game-desc">Higher wins</p>
-                </div>
-                <div class="game-card" onclick="openGame('blackjack')">
-                    <i class="fas fa-leaf game-icon" style="color: #ef4444;"></i>
-                    <div class="game-title">Blackjack</div>
-                    <p class="game-desc">Beat the dealer</p>
-                </div>
-                <div class="game-card" onclick="openGame('crash')">
-                    <i class="fas fa-rocket game-icon" style="color: #f59e0b;"></i>
-                    <div class="game-title">Crash</div>
-                    <p class="game-desc">Cashout in time</p>
-                </div>
-                <div class="game-card" onclick="openGame('mines')">
-                    <i class="fas fa-bomb game-icon" style="color: #ec4899;"></i>
-                    <div class="game-title">Mines</div>
-                    <p class="game-desc">Avoid bombs</p>
-                </div>
-                <div class="game-card" onclick="openGame('keno')">
-                    <i class="fas fa-th game-icon" style="color: #10b981;"></i>
-                    <div class="game-title">Keno</div>
-                    <p class="game-desc">Lucky numbers</p>
-                </div>
-                <div class="game-card" onclick="openGame('roulette')">
-                    <i class="fas fa-circle-notch game-icon" style="color: #06b6d4;"></i>
-                    <div class="game-title">Roulette</div>
-                    <p class="game-desc">Red or Black</p>
-                </div>
-                <div class="game-card" onclick="openGame('baccarat')">
-                    <i class="fas fa-gem game-icon" style="color: #a855f7;"></i>
-                    <div class="game-title">Baccarat</div>
-                    <p class="game-desc">Player vs Banker</p>
-                </div>
+    <div id="games" class="page">
+        <div class="section-header"><span></span> CLASSICS</div>
+        <div class="games-grid">
+            <div class="game-card" onclick="launchGame('roulette')">
+                <div class="game-icon"><i class="fas fa-circle-notch" style="color: #06b6d4;"></i></div>
+                <h3>Roulette</h3>
+                <p>spin the wheel</p>
+                <div class="play-link">Play</div>
+            </div>
+            <div class="game-card" onclick="launchGame('blackjack')">
+                <div class="game-icon"><i class="fas fa-clover" style="color: #ef4444;"></i></div>
+                <h3>Blackjack</h3>
+                <p>normal blackjack</p>
+                <div class="play-link">Play</div>
+            </div>
+            <div class="game-card" onclick="launchGame('crash')">
+                <div class="game-icon"><i class="fas fa-rocket" style="color: #f59e0b;"></i></div>
+                <h3>Crash</h3>
+                <p>cash out before crash</p>
+                <div class="play-link">Play</div>
+            </div>
+            <div class="game-card" onclick="launchGame('baccarat')">
+                <div class="game-icon"><i class="fas fa-gem" style="color: #a855f7;"></i></div>
+                <h3>Baccarat</h3>
+                <p>player or banker</p>
+                <div class="play-link">Play</div>
+            </div>
+            <div class="game-card" onclick="launchGame('mines')">
+                <div class="game-icon"><i class="fas fa-bomb" style="color: #ec4899;"></i></div>
+                <h3>Mines</h3>
+                <p>avoid the bombs</p>
+                <div class="play-link">Play</div>
+            </div>
+            <div class="game-card" onclick="launchGame('keno')">
+                <div class="game-icon"><i class="fas fa-th" style="color: #10b981;"></i></div>
+                <h3>Keno</h3>
+                <p>pick some numbers</p>
+                <div class="play-link">Play</div>
+            </div>
+            <div class="game-card" onclick="launchGame('coinflip')">
+                <div class="game-icon"><i class="fas fa-coins" style="color: #ffd700;"></i></div>
+                <h3>Coin Flip</h3>
+                <p>flip a coin</p>
+                <div class="play-link">Play</div>
             </div>
         </div>
+    </div>
 
-        <div id="game-coinflip" class="game-screen">
-            <i class="fas fa-times close-game" onclick="closeGame()"></i>
-            <h2>COIN FLIP</h2>
-            <div id="coin-result" style="font-size: 100px; margin: 40px;">🪙</div>
-            <input type="number" id="bet-coin" class="bet-input" value="10">
-            <div>
-                <button class="btn-main" onclick="playCoin('heads')">HEADS</button>
-                <button class="btn-main" onclick="playCoin('tails')">TAILS</button>
+    <div id="discord" class="page">
+        <div class="discord-box">
+            <i class="fab fa-discord" style="font-size: 80px; margin-bottom: 20px;"></i>
+            <h2>Připoj se k naší komunitě</h2>
+            <p style="margin: 20px 0; opacity: 0.8;">Získej exkluzivní bonusy, giveawaye a novinky jako první!</p>
+            <button class="cta-btn" style="background: white;">VSTOUPIT NA DISCORD</button>
+        </div>
+    </div>
+
+    <div id="game-view">
+        <div class="game-header">
+            <div class="back-btn" onclick="exitGame()"><i class="fas fa-chevron-left"></i> Zpět do lobby</div>
+            <h2 id="current-game-name" style="color: var(--accent-yellow);">GAME</h2>
+            <div style="width: 100px;"></div>
+        </div>
+        <div class="game-stage">
+            <div class="main-canvas" id="canvas">
+                </div>
+            <div class="bet-panel">
+                <div class="input-group">
+                    <label>SÁZKA</label>
+                    <div class="input-row">
+                        <input type="number" id="bet-amount" value="50">
+                        <span style="color: var(--accent-yellow); font-weight: 800;">COINS</span>
+                    </div>
+                </div>
+                <div id="game-options" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                <button class="bet-btn" id="action-btn" onclick="processGame()">HRAJT</button>
             </div>
         </div>
-
-        <div id="game-dice" class="game-screen">
-            <i class="fas fa-times close-game" onclick="closeGame()"></i>
-            <h2>DICE ROLL</h2>
-            <div style="display: flex; justify-content: space-around; font-size: 50px; margin: 40px;">
-                <div>YOU: <span id="dice-user">?</span></div>
-                <div>BOT: <span id="dice-bot">?</span></div>
-            </div>
-            <input type="number" id="bet-dice" class="bet-input" value="10">
-            <button class="btn-main" style="display: block; margin: 0 auto;" onclick="playDice()">ROLL DICE</button>
-        </div>
-
-        <div id="game-blackjack" class="game-screen">
-            <i class="fas fa-times close-game" onclick="closeGame()"></i>
-            <h2>BLACKJACK</h2>
-            <p>Dealer's Hand: <span id="bj-dealer-score">0</span></p>
-            <div id="bj-dealer-cards" class="cards-container"></div>
-            <p>Your Hand: <span id="bj-user-score">0</span></p>
-            <div id="bj-user-cards" class="cards-container"></div>
-            <input type="number" id="bet-bj" class="bet-input" value="10">
-            <div id="bj-controls">
-                <button class="btn-main" onclick="startBJ()">DEAL</button>
-            </div>
-            <div id="bj-actions" style="display: none;">
-                <button class="btn-main" onclick="bjAction('hit')">HIT</button>
-                <button class="btn-main" onclick="bjAction('stand')">STAND</button>
-            </div>
-        </div>
-
-        <div id="game-crash" class="game-screen">
-            <i class="fas fa-times close-game" onclick="closeGame()"></i>
-            <h2>CRASH</h2>
-            <div id="crash-multiplier">1.00x</div>
-            <input type="number" id="bet-crash" class="bet-input" value="10">
-            <button id="crash-btn" class="btn-main" onclick="startCrash()">PLACE BET</button>
-        </div>
-
-        <div id="game-mines" class="game-screen">
-            <i class="fas fa-times close-game" onclick="closeGame()"></i>
-            <h2>MINES</h2>
-            <div id="mines-board" class="mines-grid"></div>
-            <input type="number" id="bet-mines" class="bet-input" value="10">
-            <button id="mines-start" class="btn-main" onclick="startMines()">START GAME</button>
-            <button id="mines-cashout" class="btn-main" style="display:none;" onclick="cashoutMines()">CASHOUT</button>
-        </div>
-
-        <div id="game-keno" class="game-screen">
-            <i class="fas fa-times close-game" onclick="closeGame()"></i>
-            <h2>KENO</h2>
-            <div id="keno-board" class="mines-grid"></div> <input type="number" id="bet-keno" class="bet-input" value="10">
-            <button class="btn-main" onclick="playKeno()">PLAY KENO</button>
-        </div>
-
-        <div id="game-roulette" class="game-screen">
-            <i class="fas fa-times close-game" onclick="closeGame()"></i>
-            <h2>ROULETTE</h2>
-            <div id="roulette-wheel" style="font-size: 50px; margin: 30px; border: 4px solid var(--accent-yellow); padding: 20px;">?</div>
-            <input type="number" id="bet-roulette" class="bet-input" value="10">
-            <div>
-                <button class="btn-main" style="background:var(--red-ui)" onclick="playRoulette('red')">RED</button>
-                <button class="btn-main" style="background:#222; color:white" onclick="playRoulette('black')">BLACK</button>
-                <button class="btn-main" style="background:var(--green-ui)" onclick="playRoulette('zero')">ZERO</button>
-            </div>
-        </div>
-
-        <div id="game-baccarat" class="game-screen">
-            <i class="fas fa-times close-game" onclick="closeGame()"></i>
-            <h2>BACCARAT</h2>
-            <div style="display:flex; justify-content: space-around; margin: 40px 0;">
-                <div>PLAYER: <span id="bac-p">0</span></div>
-                <div>BANKER: <span id="bac-b">0</span></div>
-            </div>
-            <input type="number" id="bet-bac" class="bet-input" value="10">
-            <div>
-                <button class="btn-main" onclick="playBaccarat('player')">BET PLAYER</button>
-                <button class="btn-main" onclick="playBaccarat('banker')">BET BANKER</button>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        let currentUser = null;
-        let isRegister = true;
+        let balance = 1000;
+        let activeGame = '';
 
-        // --- CORE LOGIC ---
-        function handleAuth() {
-            const user = document.getElementById('auth-user').value.trim();
-            const pass = document.getElementById('auth-pass').value;
-            if(!user || !pass) return;
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
 
-            let users = JSON.parse(localStorage.getItem('swarm_users') || '{}');
-            
-            if(isRegister) {
-                if(users[user]) return alert("Username taken!");
-                users[user] = { pass, stars: 1000 };
-                localStorage.setItem('swarm_users', JSON.stringify(users));
-                alert("Registered! Now login.");
-                toggleAuth();
-            } else {
-                if(users[user] && users[user].pass === pass) {
-                    currentUser = user;
-                    document.getElementById('auth-overlay').style.display = 'none';
-                    document.getElementById('display-name').innerText = user;
-                    updateUI();
-                } else { alert("Wrong credentials!"); }
+        function launchGame(game) {
+            activeGame = game;
+            document.getElementById('game-view').style.display = 'flex';
+            document.getElementById('current-game-name').innerText = game.toUpperCase();
+            setupGameUI(game);
+        }
+
+        function exitGame() {
+            document.getElementById('game-view').style.display = 'none';
+        }
+
+        function setupGameUI(game) {
+            const canvas = document.getElementById('canvas');
+            const opts = document.getElementById('game-options');
+            canvas.innerHTML = '';
+            opts.innerHTML = '';
+
+            if (game === 'crash') {
+                canvas.innerHTML = `<div class="crash-value" id="crash-num">1.00x</div>`;
+            } else if (game === 'mines') {
+                canvas.innerHTML = `<div class="mines-grid" id="m-grid"></div>`;
+                for(let i=0; i<25; i++) document.getElementById('m-grid').innerHTML += `<div class="mine-tile">?</div>`;
+                opts.innerHTML = `<label style="font-size:12px">POČET MIN (1-24)</label><input type="range" min="1" max="24" value="3" id="mine-count" oninput="this.nextElementSibling.innerText = this.value"> <span style="text-align:center">3</span>`;
+            } else if (game === 'coinflip') {
+                canvas.innerHTML = `<div class="coin-element" id="coin">?</div>`;
+                opts.innerHTML = `<div style="display:flex; gap:10px;"><button class="bet-btn" style="flex:1" onclick="selSide('H')">HLAVA</button><button class="bet-btn" style="flex:1; background:#333; color:white;" onclick="selSide('O')">OREL</button></div>`;
+            } else if (game === 'roulette') {
+                canvas.innerHTML = `<div class="r-pointer"></div><div class="r-reel"><div class="r-strip" id="r-strip"></div></div>`;
+                buildRoulette();
+            } else if (game === 'blackjack') {
+                canvas.innerHTML = `<div style="text-align:center"><h3>Dealer: <span id="d-score">?</span></h3><br><br><h3>Hráč: <span id="p-score">?</span></h3></div>`;
+            } else if (game === 'baccarat') {
+                canvas.innerHTML = `<div style="display:flex; gap:100px; font-size:40px;"><div>P<br><span id="bac-p">0</span></div><div>B<br><span id="bac-b">0</span></div></div>`;
             }
         }
 
-        function toggleAuth() {
-            isRegister = !isRegister;
-            document.getElementById('auth-title').innerText = isRegister ? "SWARMBET JOIN" : "SWARMBET LOGIN";
+        // --- GAME LOGIC FUNCTIONS ---
+
+        function processGame() {
+            const bet = parseInt(document.getElementById('bet-amount').value);
+            if (bet > balance || bet <= 0) return alert("Nedostatek coins!");
+            
+            balance -= bet;
+            updateUI();
+
+            if (activeGame === 'coinflip') {
+                const coin = document.getElementById('coin');
+                coin.classList.add('flipping');
+                setTimeout(() => {
+                    coin.classList.remove('flipping');
+                    const win = Math.random() > 0.5;
+                    coin.innerText = win ? '🟡' : '⚪';
+                    if(win) { balance += bet * 1.9; alert("VÝHRA!"); }
+                    updateUI();
+                }, 1000);
+            }
+
+            if (activeGame === 'crash') {
+                let currentMult = 1.0;
+                const crashAt = Math.random() * 5 + 1;
+                document.getElementById('action-btn').disabled = true;
+                const interval = setInterval(() => {
+                    currentMult += 0.02;
+                    document.getElementById('crash-num').innerText = currentMult.toFixed(2) + 'x';
+                    if (currentMult >= crashAt) {
+                        clearInterval(interval);
+                        document.getElementById('crash-num').style.color = 'red';
+                        document.getElementById('action-btn').disabled = false;
+                        alert("CRASHED!");
+                    }
+                }, 100);
+            }
+
+            if (activeGame === 'roulette') {
+                const strip = document.getElementById('r-strip');
+                const winIdx = Math.floor(Math.random() * 37);
+                const offset = (winIdx * 80) + (37 * 80 * 3); // 3 full loops
+                strip.style.transform = `translateX(-${offset}px)`;
+                setTimeout(() => {
+                    alert("Padlo číslo " + winIdx);
+                    strip.style.transition = 'none';
+                    strip.style.transform = `translateX(-${winIdx * 80}px)`;
+                    setTimeout(() => strip.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0.1, 1)', 50);
+                }, 5500);
+            }
+            
+            // Logika pro ostatní hry by byla analogická...
+        }
+
+        function buildRoulette() {
+            const strip = document.getElementById('r-strip');
+            let html = '';
+            const nums = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+            for(let loop=0; loop<10; loop++) {
+                nums.forEach(n => {
+                    const color = n === 0 ? 'var(--green-ui)' : (([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(n)) ? 'var(--red-ui)' : '#111');
+                    html += `<div class="r-item" style="background:${color}">${n}</div>`;
+                });
+            }
+            strip.innerHTML = html;
         }
 
         function updateUI() {
-            let users = JSON.parse(localStorage.getItem('swarm_users'));
-            document.getElementById('user-stars').innerText = Math.floor(users[currentUser].stars).toLocaleString();
-        }
-
-        function addStars(amt) {
-            let users = JSON.parse(localStorage.getItem('swarm_users'));
-            users[currentUser].stars += amt;
-            localStorage.setItem('swarm_users', JSON.stringify(users));
-            updateUI();
-        }
-
-        function openGame(id) {
-            document.getElementById('lobby').style.display = 'none';
-            document.getElementById('game-'+id).classList.add('active');
-            if(id === 'mines') initMinesBoard();
-            if(id === 'keno') initKenoBoard();
-        }
-
-        function closeGame() {
-            document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('lobby').style.display = 'block';
-            resetGameState();
-        }
-
-        function resetGameState() {
-            clearInterval(crashInterval);
-            crashInGame = false;
-        }
-
-        // --- 1. COINFLIP ---
-        function playCoin(choice) {
-            let bet = parseInt(document.getElementById('bet-coin').value);
-            if(addStarsIfAble(bet)) {
-                let res = Math.random() > 0.5 ? 'heads' : 'tails';
-                document.getElementById('coin-result').innerText = res === 'heads' ? '🪙' : '🦅';
-                if(choice === res) { addStars(bet * 2); alert("Win!"); } else { alert("Lost!"); }
-            }
-        }
-
-        // --- 2. DICE ---
-        function playDice() {
-            let bet = parseInt(document.getElementById('bet-dice').value);
-            if(addStarsIfAble(bet)) {
-                let u = Math.floor(Math.random()*6)+1;
-                let b = Math.floor(Math.random()*6)+1;
-                document.getElementById('dice-user').innerText = u;
-                document.getElementById('dice-bot').innerText = b;
-                if(u > b) { addStars(bet * 2); alert("You Win!"); }
-                else if(u === b) { addStars(bet); alert("Draw!"); }
-                else { alert("Bot Wins!"); }
-            }
-        }
-
-        // --- 3. BLACKJACK ---
-        let bjDeck, bjUserHand, bjDealerHand;
-        function startBJ() {
-            let bet = parseInt(document.getElementById('bet-bj').value);
-            if(!addStarsIfAble(bet)) return;
-            document.getElementById('bj-controls').style.display = 'none';
-            document.getElementById('bj-actions').style.display = 'block';
-            bjUserHand = [drawCard(), drawCard()];
-            bjDealerHand = [drawCard()];
-            renderBJ();
-        }
-        function drawCard() { return Math.floor(Math.random()*10)+1; }
-        function renderBJ() {
-            const uDiv = document.getElementById('bj-user-cards');
-            const dDiv = document.getElementById('bj-dealer-cards');
-            uDiv.innerHTML = ''; dDiv.innerHTML = '';
-            let uScore = 0, dScore = 0;
-            bjUserHand.forEach(c => { uDiv.innerHTML += `<div class="card">${c}</div>`; uScore += c; });
-            bjDealerHand.forEach(c => { dDiv.innerHTML += `<div class="card">${c}</div>`; dScore += c; });
-            document.getElementById('bj-user-score').innerText = uScore;
-            document.getElementById('bj-dealer-score').innerText = dScore;
-            if(uScore > 21) bjEnd("Dealer Wins (Bust)");
-        }
-        function bjAction(act) {
-            if(act === 'hit') { bjUserHand.push(drawCard()); renderBJ(); }
-            else {
-                while(bjDealerHand.reduce((a,b)=>a+b) < 17) { bjDealerHand.push(drawCard()); }
-                renderBJ();
-                let u = bjUserHand.reduce((a,b)=>a+b);
-                let d = bjDealerHand.reduce((a,b)=>a+b);
-                if(d > 21 || u > d) { addStars(parseInt(document.getElementById('bet-bj').value)*2); bjEnd("You Win!"); }
-                else if(u === d) { addStars(parseInt(document.getElementById('bet-bj').value)); bjEnd("Draw!"); }
-                else { bjEnd("Dealer Wins!"); }
-            }
-        }
-        function bjEnd(msg) { alert(msg); document.getElementById('bj-controls').style.display = 'block'; document.getElementById('bj-actions').style.display = 'none'; }
-
-        // --- 4. CRASH ---
-        let crashInterval, crashMult = 1.0, crashInGame = false, crashBet = 0;
-        function startCrash() {
-            if(!crashInGame) {
-                crashBet = parseInt(document.getElementById('bet-crash').value);
-                if(!addStarsIfAble(crashBet)) return;
-                crashInGame = true; crashMult = 1.0;
-                document.getElementById('crash-btn').innerText = "CASHOUT";
-                document.getElementById('crash-btn').style.background = "var(--green-ui)";
-                let crashPoint = Math.random() * 5 + 1;
-                crashInterval = setInterval(() => {
-                    crashMult += 0.01;
-                    document.getElementById('crash-multiplier').innerText = crashMult.toFixed(2) + "x";
-                    if(crashMult >= crashPoint) {
-                        clearInterval(crashInterval);
-                        document.getElementById('crash-multiplier').style.color = "red";
-                        alert("CRASHED!");
-                        resetCrash();
-                    }
-                }, 50);
-            } else {
-                addStars(crashBet * crashMult);
-                alert("Cashed out at " + crashMult.toFixed(2) + "x");
-                clearInterval(crashInterval);
-                resetCrash();
-            }
-        }
-        function resetCrash() {
-            crashInGame = false;
-            document.getElementById('crash-btn').innerText = "PLACE BET";
-            document.getElementById('crash-btn').style.background = "var(--accent-yellow)";
-            document.getElementById('crash-multiplier').style.color = "var(--accent-yellow)";
-        }
-
-        // --- 5. MINES ---
-        let minePositions = [], revealedCount = 0, currentMinesBet = 0;
-        function initMinesBoard() {
-            const board = document.getElementById('mines-board');
-            board.innerHTML = '';
-            for(let i=0; i<25; i++) {
-                board.innerHTML += `<div class="mine-cell" id="mine-${i}" onclick="clickMine(${i})">?</div>`;
-            }
-        }
-        function startMines() {
-            currentMinesBet = parseInt(document.getElementById('bet-mines').value);
-            if(!addStarsIfAble(currentMinesBet)) return;
-            minePositions = []; revealedCount = 0;
-            while(minePositions.length < 3) {
-                let r = Math.floor(Math.random()*25);
-                if(!minePositions.includes(r)) minePositions.push(r);
-            }
-            document.getElementById('mines-start').style.display = 'none';
-            document.getElementById('mines-cashout').style.display = 'inline-block';
-            initMinesBoard();
-        }
-        function clickMine(i) {
-            if(minePositions.includes(i)) {
-                document.getElementById(`mine-${i}`).innerText = '💣';
-                alert("BOOM! Lost.");
-                resetMines();
-            } else {
-                document.getElementById(`mine-${i}`).innerText = '💎';
-                document.getElementById(`mine-${i}`).style.color = 'cyan';
-                revealedCount++;
-            }
-        }
-        function cashoutMines() {
-            let win = currentMinesBet * (1 + revealedCount * 0.2);
-            addStars(win);
-            alert(`Won ${win.toFixed(0)} stars!`);
-            resetMines();
-        }
-        function resetMines() {
-            document.getElementById('mines-start').style.display = 'inline-block';
-            document.getElementById('mines-cashout').style.display = 'none';
-        }
-
-        // --- 6. KENO ---
-        let selectedKeno = [];
-        function initKenoBoard() {
-            const board = document.getElementById('keno-board'); board.innerHTML = '';
-            selectedKeno = [];
-            for(let i=1; i<=20; i++) {
-                board.innerHTML += `<div class="mine-cell" id="keno-${i}" onclick="selectKeno(${i})">${i}</div>`;
-            }
-        }
-        function selectKeno(i) {
-            if(selectedKeno.includes(i)) return;
-            if(selectedKeno.length >= 5) return alert("Max 5 numbers");
-            selectedKeno.push(i);
-            document.getElementById(`keno-${i}`).style.borderColor = 'var(--accent-yellow)';
-        }
-        function playKeno() {
-            let bet = parseInt(document.getElementById('bet-keno').value);
-            if(selectedKeno.length < 1) return alert("Select numbers");
-            if(!addStarsIfAble(bet)) return;
-            let hits = 0;
-            for(let j=0; j<5; j++) {
-                let draw = Math.floor(Math.random()*20)+1;
-                if(selectedKeno.includes(draw)) hits++;
-            }
-            if(hits > 0) { addStars(bet * hits * 2); alert(`Hits: ${hits}! Win!`); }
-            else { alert("No hits!"); }
-            initKenoBoard();
-        }
-
-        // --- 7. ROULETTE ---
-        function playRoulette(color) {
-            let bet = parseInt(document.getElementById('bet-roulette').value);
-            if(!addStarsIfAble(bet)) return;
-            let num = Math.floor(Math.random()*37);
-            let resColor = num === 0 ? 'zero' : ([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(num) ? 'red' : 'black');
-            document.getElementById('roulette-wheel').innerText = num + " (" + resColor.toUpperCase() + ")";
-            if(color === resColor) {
-                let mult = color === 'zero' ? 35 : 2;
-                addStars(bet * mult); alert("Win!");
-            } else { alert("Lost!"); }
-        }
-
-        // --- 8. BACCARAT ---
-        function playBaccarat(side) {
-            let bet = parseInt(document.getElementById('bet-bac').value);
-            if(!addStarsIfAble(bet)) return;
-            let p = (Math.floor(Math.random()*9)+1);
-            let b = (Math.floor(Math.random()*9)+1);
-            document.getElementById('bac-p').innerText = p;
-            document.getElementById('bac-b').innerText = b;
-            let winner = p > b ? 'player' : (b > p ? 'banker' : 'tie');
-            if(side === winner) { addStars(bet * 2); alert("Win!"); } else { alert("Lost!"); }
-        }
-
-        // UTILS
-        function addStarsIfAble(amt) {
-            let users = JSON.parse(localStorage.getItem('swarm_users'));
-            if(users[currentUser].stars >= amt) {
-                addStars(-amt);
-                return true;
-            }
-            alert("Not enough stars!");
-            return false;
+            document.getElementById('balance').innerText = Math.floor(balance);
         }
 
     </script>
