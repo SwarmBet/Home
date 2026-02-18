@@ -69,11 +69,20 @@
         .r-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--orange); z-index: 10; transform: translateX(-50%); box-shadow: 0 0 15px var(--orange); }
 
         .r-grid { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 5px; }
-        .cell { height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border-radius: 4px; border: 2px solid transparent; transition: 0.1s; }
+        .cell { height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border-radius: 4px; border: 2px solid transparent; transition: 0.1s; position: relative; }
         .cell.nula { background: var(--green); grid-row: span 3; height: 160px; font-size: 24px; }
         .cell.red { background: var(--red); }
         .cell.black { background: var(--black); }
-        .cell.active { border-color: white !important; box-shadow: 0 0 12px #fff; }
+        .cell.active { border-color: white !important; box-shadow: 0 0 12px #fff; z-index: 2; }
+
+        /* ROULETTE CHIP DESIGN */
+        .chip-overlay {
+            position: absolute; width: 30px; height: 30px; background: var(--orange);
+            border-radius: 50%; border: 3px dashed white; color: black; font-size: 10px;
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5); pointer-events: none; animation: chipDrop 0.2s ease-out;
+        }
+        @keyframes chipDrop { from { transform: scale(2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .btn-play { background: var(--orange); color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; }
         input { background: #000; border: 1px solid #333; color: var(--orange); padding: 10px; border-radius: 8px; text-align: center; }
@@ -207,15 +216,12 @@
                                 <div id="bj-dealer-hand" class="bj-hand"></div>
                                 <div id="bj-dealer-score" class="bj-score" style="text-align:center;"></div>
                             </div>
-
                             <div id="bj-status" style="font-size:24px; font-weight:900; color:var(--orange);">VS</div>
-
                             <div class="bj-hand-wrap">
                                 <div id="bj-player-hand" class="bj-hand"></div>
                                 <div id="bj-player-score" class="bj-score" style="text-align:center;"></div>
                                 <div style="text-align:center; font-size:12px; color:#666;">YOU</div>
                             </div>
-
                             <div id="bj-controls" style="display:flex; gap:10px; margin-top:10px;">
                                 Sázka: <input type="number" id="bj-bet" value="100" style="width:80px;">
                                 <button class="btn-play" id="bj-deal-btn" onclick="startBlackjack()">ROZDAT</button>
@@ -329,29 +335,65 @@
     }
     function cashoutMines() { if(!mActive) return; userData.chips += Math.floor(mBet * mMult); play('win'); mActive = false; updateUI(); document.getElementById('m-cash').classList.add('hidden'); document.getElementById('m-start').disabled = false; }
 
-    // ROULETTE & DICE
+    // ROULETTE LOGIC (VYLEPŠENÁ)
     const rOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
     let selectedRBet = null, isRSpinning = false;
+
     function buildRoulette() {
         const slider = document.getElementById('r-slider'); let sH = "";
         for(let i=0; i<10; i++) rOrder.forEach(n => { let c = n===0?'var(--green)':(rOrder.indexOf(n)%2===0?'var(--black)':'var(--red)'); sH += `<div class="r-num" style="background:${c}">${n}</div>`; });
         slider.innerHTML = sH;
         const b = document.getElementById('r-board'); let bH = `<div class="cell nula" onclick="setRBet('n0', this)">0</div>`;
-        for(let r=3; r>=1; r--) for(let i=1; i<=12; i++) { let n=(i-1)*3+r; let c=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(n)?'red':'black'; bH+=`<div class="cell ${c}" onclick="setRBet('n${n}', this)">${n}</div>`; }
+        for(let r=3; r>=1; r--) for(let i=1; i<=12; i++) { let n=(i-1)*3+r; let c=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(n)?'red':'black'; bH+=`<div class="cell ${c}" data-num="${n}" onclick="setRBet('n${n}', this)">${n}</div>`; }
         b.innerHTML = bH;
     }
-    function setRBet(v, el) { if(isRSpinning) return; play('click'); selectedRBet = v; document.querySelectorAll('.cell').forEach(c => c.classList.remove('active')); el.classList.add('active'); }
+
+    function setRBet(v, el) { 
+        if(isRSpinning) return; 
+        play('click'); 
+        selectedRBet = v; 
+        document.querySelectorAll('.cell').forEach(c => {
+            c.classList.remove('active');
+            const chip = c.querySelector('.chip-overlay');
+            if(chip) chip.remove();
+        });
+        el.classList.add('active');
+        const betAmt = document.getElementById('r-bet').value;
+        const chip = document.createElement('div');
+        chip.className = 'chip-overlay';
+        chip.innerText = betAmt;
+        el.appendChild(chip);
+    }
+
     function spinRoulette() {
         const amt = parseInt(document.getElementById('r-bet').value); if(isRSpinning || !selectedRBet || amt > userData.chips) return;
-        isRSpinning = true; userData.chips -= amt; updateUI(); document.getElementById('r-spin').disabled = true;
+        isRSpinning = true; userData.chips -= amt; updateUI(); 
+        document.getElementById('r-spin').disabled = true;
+        document.getElementById('r-status').innerText = "KULIČKA BĚŽÍ...";
+        
         const slider = document.getElementById('r-slider'), winNum = rOrder[Math.floor(Math.random()*rOrder.length)];
         const target = (rOrder.length * 6 + rOrder.indexOf(winNum)) * 65 - (475-32);
-        slider.style.transition = "left 4s cubic-bezier(0.1, 0, 0.1, 1)"; slider.style.left = `-${target}px`;
+        slider.style.transition = "left 4s cubic-bezier(0.1, 0, 0.1, 1)"; 
+        slider.style.left = `-${target}px`;
+
         setTimeout(() => {
-            if(selectedRBet === 'n'+winNum) { userData.chips += amt*(winNum===0?40:36); play('win'); } else play('boom');
+            document.getElementById('r-status').innerText = `VYHRÁLO ČÍSLO: ${winNum}`;
+            if(selectedRBet === 'n'+winNum) { 
+                userData.chips += amt*(winNum===0?40:36); 
+                play('win'); 
+                document.getElementById('r-status').style.color = 'var(--green)';
+            } else { 
+                play('boom'); 
+                document.getElementById('r-status').style.color = 'var(--red)';
+            }
+            setTimeout(() => {
+                document.getElementById('r-status').innerText = "PŘIPRAVTE SÁZKY";
+                document.getElementById('r-status').style.color = 'var(--orange)';
+            }, 2000);
             isRSpinning = false; document.getElementById('r-spin').disabled = false; updateUI();
         }, 4100);
     }
+
     function playDice() {
         let b = parseInt(document.getElementById('d-bet').value), n = parseInt(document.getElementById('d-num').value);
         if(b > userData.chips) return; userData.chips -= b; updateUI();
@@ -360,7 +402,6 @@
 
     // BLACKJACK LOGIC
     let deck = [], pHand = [], dHand = [], bjActive = false, bjBet = 0;
-
     function createDeck() {
         const suits = ['♠', '♣', '♥', '♦'];
         const values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
@@ -371,7 +412,6 @@
             [deck[i], deck[j]] = [deck[j], deck[i]];
         }
     }
-
     function getScore(hand) {
         let score = 0, aces = 0;
         for (let c of hand) {
@@ -383,42 +423,34 @@
         for (let i = 0; i < aces; i++) score += (score + 11 <= 21) ? 11 : 1;
         return score;
     }
-
     function renderCard(card, target) {
         const div = document.createElement('div');
         div.className = `card-ui ${['♥','♦'].includes(card.s) ? 'red' : ''}`;
         div.innerHTML = `<div>${card.v}</div><div style="font-size:12px">${card.s}</div>`;
         document.getElementById(target).appendChild(div);
     }
-
     function startBlackjack() {
         bjBet = parseInt(document.getElementById('bj-bet').value);
         if (bjBet > userData.chips || bjBet <= 0) return alert("Nedostatek čipů!");
-        
         userData.chips -= bjBet; updateUI();
         bjActive = true; createDeck();
         pHand = [deck.pop(), deck.pop()]; dHand = [deck.pop(), deck.pop()];
-        
         document.getElementById('bj-player-hand').innerHTML = '';
         document.getElementById('bj-dealer-hand').innerHTML = '';
         document.getElementById('bj-dealer-score').innerText = '';
         document.getElementById('bj-status').innerText = "HRAJETE...";
-        
         pHand.forEach(c => renderCard(c, 'bj-player-hand'));
         renderCard(dHand[0], 'bj-dealer-hand');
         const back = document.createElement('div'); back.className='card-ui'; back.id='bj-back'; back.style.background='#444'; back.innerText='?';
         document.getElementById('bj-dealer-hand').appendChild(back);
-
         toggleBJControls(true);
         updateBJScore();
         play('click');
     }
-
     function updateBJScore() {
         document.getElementById('bj-player-score').innerText = getScore(pHand);
         if (getScore(pHand) > 21) endBJ("Bust! Dealer vyhrává.");
     }
-
     function bjHit() {
         if (!bjActive) return;
         const card = deck.pop(); pHand.push(card);
@@ -426,17 +458,14 @@
         updateBJScore();
         play('click');
     }
-
     async function bjStand() {
         if (!bjActive) return;
         bjActive = false;
         const backEl = document.getElementById('bj-back');
         if(backEl) backEl.remove();
         renderCard(dHand[1], 'bj-dealer-hand');
-        
         let dScore = getScore(dHand);
         document.getElementById('bj-dealer-score').innerText = dScore;
-
         while (dScore < 17) {
             await new Promise(r => setTimeout(r, 600));
             const card = deck.pop(); dHand.push(card);
@@ -444,7 +473,6 @@
             dScore = getScore(dHand);
             document.getElementById('bj-dealer-score').innerText = dScore;
         }
-        
         const pScore = getScore(pHand);
         if (dScore > 21 || pScore > dScore) {
             userData.chips += bjBet * 2; endBJ("VÝHRA!"); play('win');
@@ -455,14 +483,12 @@
         }
         updateUI();
     }
-
     function endBJ(msg) {
         bjActive = false;
         document.getElementById('bj-status').innerText = msg;
         document.getElementById('bj-dealer-score').innerText = getScore(dHand);
         toggleBJControls(false);
     }
-
     function toggleBJControls(playing) {
         document.getElementById('bj-deal-btn').classList.toggle('hidden', playing);
         document.getElementById('bj-hit-btn').classList.toggle('hidden', !playing);
