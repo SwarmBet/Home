@@ -315,6 +315,52 @@
         setTimeout(() => { let r = Math.floor(Math.random()*6)+1; document.getElementById('d-res').innerText = r; if(r === n) { userData.chips += b*6; play('win'); } else play('boom'); updateUI(); }, 500);
     }
     window.onload = async () => { if(currentUser) { const r = await fetch(`${DB_URL}/${currentUser}.json`); userData = await r.json(); if(userData) loginSuccess(); } };
+
+/* BLACKJACK SPECIFIC */
+.bj-area { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
+.bj-hand { display: flex; gap: 10px; min-height: 120px; align-items: center; }
+.card-ui { 
+    width: 70px; height: 100px; background: white; border-radius: 8px; 
+    color: black; display: flex; flex-direction: column; justify-content: center; 
+    align-items: center; font-weight: bold; font-size: 20px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 1px solid #ddd;
+    animation: dealCard 0.3s ease-out;
+}
+.card-ui.red { color: #e74c3c; }
+.bj-score { font-size: 14px; color: var(--orange); font-weight: bold; margin-top: 5px; }
+@keyframes dealCard { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    <div class="game-card" onclick="selectGame('blackjack')">
+    <div class="icon-box" style="color:#f39c12;">🃏</div>
+    <h3>Blackjack</h3>
+    <p>beat the dealer</p>
+    <button class="btn-card-play">Play</button>
+</div>
+
+<div id="game-blackjack" class="hidden">
+    <div class="bj-area">
+        <div class="bj-hand-wrap">
+            <div style="text-align:center; font-size:12px; color:#666;">DEALER</div>
+            <div id="bj-dealer-hand" class="bj-hand"></div>
+            <div id="bj-dealer-score" class="bj-score" style="text-align:center;"></div>
+        </div>
+
+        <div id="bj-status" style="font-size:24px; font-weight:900; color:var(--orange);">VS</div>
+
+        <div class="bj-hand-wrap">
+            <div id="bj-player-hand" class="bj-hand"></div>
+            <div id="bj-player-score" class="bj-score" style="text-align:center;"></div>
+            <div style="text-align:center; font-size:12px; color:#666;">YOU</div>
+        </div>
+
+        <div id="bj-controls" style="display:flex; gap:10px; margin-top:10px;">
+            Sázka: <input type="number" id="bj-bet" value="100" style="width:80px;">
+            <button class="btn-play" id="bj-deal-btn" onclick="startBlackjack()">ROZDAT</button>
+            <button class="btn-play hidden" id="bj-hit-btn" onclick="bjHit()" style="background:#3498db; color:white;">HIT</button>
+            <button class="btn-play hidden" id="bj-stand-btn" onclick="bjStand()" style="background:#9b59b6; color:white;">STAND</button>
+        </div>
+    </div>
+</div>
 </script>
 </body>
 </html>
