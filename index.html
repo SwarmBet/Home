@@ -41,14 +41,20 @@
 
         /* RULETA DESIGN */
         .r-slider-wrap { width: 450px; height: 70px; background: #000; border: 2px solid #333; margin: 0 auto 20px; position: relative; overflow: hidden; border-radius: 8px; }
-        .r-slider-inner { display: flex; position: absolute; left: 0; align-items: center; height: 100%; }
+        .r-slider-inner { display: flex; position: absolute; left: 0; align-items: center; height: 100%; transition: 4s cubic-bezier(0.1, 0, 0.1, 1); }
         .r-table-main { display: grid; grid-template-columns: 60px repeat(12, 1fr); gap: 5px; margin: 20px 0; }
-        .r-cell { height: 50px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; border-radius: 4px; position: relative; border: 1px solid #333; }
-        .r-zero { grid-row: span 3; height: 160px; background: var(--green) !important; }
+        .r-cell { height: 55px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; border-radius: 4px; position: relative; border: 1px solid #333; }
+        .r-zero { grid-row: span 3; height: 175px; background: var(--green) !important; font-size: 20px; }
         
-        /* CHIP STACKING */
+        /* CHIP STACKING (Fyzické žetony) */
         .chip-stack { position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
-        .chip { position: absolute; width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, var(--gold) 70%, #cc7a00 100%); border: 2px dashed rgba(0,0,0,0.4); color: black; font-size: 9px; display: flex; align-items: center; justify-content: center; font-weight: 900; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .chip { 
+            position: absolute; width: 32px; height: 32px; border-radius: 50%; 
+            background: radial-gradient(circle, #fff 0%, var(--gold) 70%, #cc7a00 100%); 
+            border: 2px dashed rgba(0,0,0,0.4); color: black; font-size: 9px; 
+            display: flex; align-items: center; justify-content: center; font-weight: 900; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5); 
+        }
 
         /* COIN FLIP */
         .coin-wrap { perspective: 1000px; width: 150px; height: 150px; margin: 30px auto; }
@@ -195,3 +201,142 @@
         document.getElementById('game-coinflip').classList.add('hidden');
         if(p === 'games' || p === 'home') document.getElementById('page-games').classList.remove('hidden');
     }
+
+    function openGame(g) {
+        showPage('none');
+        document.getElementById('game-' + g).classList.remove('hidden');
+        if(g === 'roulette') buildRouletteTable();
+    }
+
+    function updateUI() {
+        document.getElementById('chips-display').innerText = chips;
+        document.getElementById('admin-btn').classList.remove('hidden');
+    }
+
+    function adminAddChips() {
+        chips += 10000; play(sfx.star); updateUI();
+    }
+
+    // COIN FLIP LOGIKA
+    function setCFSide(s) {
+        cfSide = s;
+        document.getElementById('cf-h').style.borderColor = s === 'heads' ? 'var(--gold)' : '#333';
+        document.getElementById('cf-o').style.borderColor = s === 'tails' ? 'var(--gold)' : '#333';
+    }
+
+    function playCoinFlip() {
+        if(isSpinning) return;
+        let bet = parseInt(document.getElementById('cf-bet').value);
+        if(bet > chips || bet <= 0) return alert("Nedostatek žetonů!");
+        chips -= bet; updateUI(); isSpinning = true;
+        const res = Math.random() < 0.5 ? 'heads' : 'tails';
+        const coin = document.getElementById('coin');
+        coin.style.transform = 'rotateY(0deg)';
+        setTimeout(() => { coin.style.transform = res === 'heads' ? 'rotateY(1800deg)' : 'rotateY(1980deg)'; }, 50);
+        setTimeout(() => {
+            isSpinning = false;
+            if(res === cfSide) { chips += bet*2; play(sfx.win); document.getElementById('cf-status').innerText = "VÝHRA!"; }
+            else { play(sfx.lose); document.getElementById('cf-status').innerText = "PROHRA!"; }
+            updateUI();
+        }, 2100);
+    }
+
+    // RULETA LOGIKA SE STACKOVÁNÍM ŽETONŮ
+    function buildRouletteTable() {
+        const table = document.getElementById('r-table-main');
+        let h = `<div class="r-cell r-zero" onclick="placeRChip('n0')">0<div class="chip-stack" id="stk-n0"></div></div>`;
+        for(let r=3; r>=1; r--) {
+            for(let c=1; c<=12; c++) {
+                let n = (c-1)*3+r;
+                let clr = redNums.includes(n) ? 'var(--red)' : '#222';
+                h += `<div class="r-cell" style="background:${clr}" onclick="placeRChip('n${n}')">${n}<div class="chip-stack" id="stk-n${n}"></div></div>`;
+            }
+        }
+        table.innerHTML = h;
+    }
+
+    function placeRChip(id) {
+        if(isSpinning) return;
+        let amt = parseInt(document.getElementById('r-bet-val').value);
+        if(amt > chips || amt <= 0) return;
+        
+        chips -= amt; 
+        updateUI(); 
+        play(sfx.click);
+
+        if(!rBets[id]) rBets[id] = { total: 0, count: 0 };
+        rBets[id].total += amt;
+        
+        const stk = document.getElementById('stk-' + id);
+        
+        // Vytvoření vizuálního žetonu
+        if(rBets[id].count < 6) { // Max 6 žetonů na sebe pro vizuál
+            rBets[id].count++;
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            chip.style.transform = `translateY(-${(rBets[id].count-1)*3}px)`;
+            chip.innerText = rBets[id].total;
+            
+            // Smazat text z předchozího žetonu v hromádce, aby byl jen na tom horním
+            if(stk.lastChild) stk.lastChild.innerText = "";
+            
+            stk.appendChild(chip);
+        } else {
+            // Pokud je hromádka už vysoká, jen aktualizujeme číslo na tom posledním
+            stk.lastChild.innerText = rBets[id].total;
+        }
+    }
+
+    function clearRouletteBets() {
+        if(isSpinning) return;
+        for(let k in rBets) chips += rBets[k].total;
+        rBets = {}; 
+        updateUI(); 
+        buildRouletteTable();
+    }
+
+    function spinRoulette() {
+        if(isSpinning || Object.keys(rBets).length === 0) return;
+        isSpinning = true;
+        let win = rOrder[Math.floor(Math.random()*rOrder.length)];
+        const slider = document.getElementById('r-slider');
+        
+        // Reset slideru
+        slider.style.transition = "none"; 
+        slider.style.left = "0px";
+        
+        let sH = ""; 
+        for(let i=0; i<15; i++) {
+            rOrder.forEach(n => {
+                let c = n===0?'var(--green)':(redNums.includes(n)?'var(--red)':'#222');
+                sH += `<div style="min-width:50px; height:70px; background:${c}; display:flex; align-items:center; justify-content:center; border:1px solid #000; font-weight:bold; font-size:12px;">${n}</div>`;
+            });
+        }
+        slider.innerHTML = sH;
+
+        setTimeout(() => {
+            let target = (rOrder.length * 10 + rOrder.indexOf(win)) * 50 - 200;
+            slider.style.transition = "4s cubic-bezier(0.1, 0, 0.1, 1)";
+            slider.style.left = `-${target}px`;
+        }, 50);
+
+        setTimeout(() => {
+            let payout = 0; 
+            if(rBets['n'+win]) payout = rBets['n'+win].total * 36;
+            
+            chips += payout; 
+            if(payout > 0) play(sfx.win); else play(sfx.lose);
+            
+            document.getElementById('r-status').innerText = payout > 0 ? "VYHRÁL JSI: " + payout : "PADLO ČÍSLO: " + win;
+            isSpinning = false; 
+            rBets = {}; 
+            updateUI();
+            // Počkáme 2 sekundy a pak vyčistíme stůl
+            setTimeout(buildRouletteTable, 2000);
+        }, 4500);
+    }
+
+    window.onload = updateUI;
+</script>
+</body>
+</html>
