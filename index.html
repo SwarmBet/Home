@@ -6,7 +6,8 @@
     <style>
         :root { --orange: #ff9900; --dark: #0a0a0a; --panel: #151515; --green: #27ae60; --red: #e74c3c; --black: #2c3e50; --gold: #f1c40f; }
         body { 
-            background-color: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; 
+            background-color: var(--dark);
+            color: white; font-family: 'Segoe UI', sans-serif; margin: 0; 
             display: flex; flex-direction: column; min-height: 100vh;
             background-image: radial-gradient(circle at center, rgba(255, 153, 0, 0.03) 0%, transparent 80%);
             overflow-x: hidden;
@@ -14,7 +15,8 @@
 
         /* WIN OVERLAY STYLE */
         .win-announcement {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            position: fixed;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
             z-index: 9999; text-align: center; pointer-events: none;
             animation: winPop 3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
@@ -39,7 +41,8 @@
         .user-info { display: flex; flex-direction: column; align-items: flex-end; }
         .user-name { font-weight: 900; color: var(--orange); }
         .logout-btn {
-            position: absolute; top: 100%; right: 0; background: #ff4444; color: white;
+            position: absolute;
+            top: 100%; right: 0; background: #ff4444; color: white;
             border: none; padding: 8px 15px; border-radius: 5px; font-size: 12px;
             display: none; cursor: pointer; margin-top: 5px; width: 100px; font-weight: bold;
         }
@@ -49,10 +52,18 @@
         .card { background: var(--panel); border: 1px solid #222; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .hidden { display: none !important; }
 
+        /* ADMIN STYLE */
+        .admin-box { border: 2px dashed var(--orange); padding: 20px; margin-top: 20px; border-radius: 10px; background: rgba(255,153,0,0.05); text-align: center; }
+        .admin-box input { margin: 5px; }
+
         /* GAMES CLASSICS GRID */
+        .section-title { font-size: 20px; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .section-title::before { content: ''; width: 4px; height: 20px; background: #3498db; border-radius: 2px; }
+
         .games-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 100%; }
         .game-card { 
-            background: #111; border-radius: 12px; padding: 20px 10px; text-align: center; 
+            background: #111;
+            border-radius: 12px; padding: 20px 10px; text-align: center; 
             transition: 0.3s; cursor: pointer; border: 1px solid #222;
         }
         .game-card:hover { transform: translateY(-5px); background: #181818; border-color: #444; }
@@ -63,43 +74,72 @@
             border: 1px solid rgba(255,255,255,0.05);
         }
         .game-card h3 { margin: 5px 0; font-size: 16px; color: white; }
+        .game-card p { color: #666; font-size: 11px; margin-bottom: 15px; }
+        
         .btn-card-play { 
             background: #222; color: var(--orange); border: 1px solid #333; padding: 6px 0; 
             width: 100%; border-radius: 6px; font-size: 12px; font-weight: bold; transition: 0.2s;
         }
         .game-card:hover .btn-card-play { background: var(--orange); color: black; border-color: var(--orange); }
 
-        /* COIN FLIP STYLE */
+        /* COIN FLIP ANIMATION */
         .coin { width: 100px; height: 100px; margin: 20px auto; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; border: 5px solid #d4af37; transition: transform 0.6s; }
         .coin.flipping { animation: flip 0.6s infinite linear; }
         @keyframes flip { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
 
-        /* CRASH UI */
-        .crash-display { font-size: 100px; font-weight: 900; color: var(--orange); margin: 30px 0; text-shadow: 0 0 30px rgba(255, 153, 0, 0.3); }
-
-        /* REUSABLE STYLES */
-        .btn-play { background: var(--orange); color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; }
-        input, select { background: #000; border: 1px solid #333; color: var(--orange); padding: 10px; border-radius: 8px; text-align: center; }
+        /* GAME UI DESIGN */
         .btn-back { background: #333; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
+        .btn-back:hover { background: #444; }
+
         .m-grid { display: grid; grid-template-columns: repeat(5, 60px); gap: 10px; justify-content: center; margin-top: 20px; }
         .tile { width: 60px; height: 60px; background: #000; border: 1px solid #333; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 28px; transition: 0.1s; }
         .tile:hover { background: #111; }
         
-        /* ROULETTE & BJ STYLES REMAINED UNCHANGED FROM ORIGINAL FILE */
         .r-slider-wrap { position: relative; width: 100%; height: 80px; background: #111; border: 2px solid #333; overflow: hidden; border-radius: 10px; margin-bottom: 20px; }
         .r-slider-inner { display: flex; position: absolute; left: 0; align-items: center; height: 100%; will-change: transform; }
         .r-num { min-width: 80px; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-right: 1px solid rgba(0,0,0,0.5); font-size: 24px; box-sizing: border-box; }
         .r-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--orange); z-index: 10; transform: translateX(-50%); box-shadow: 0 0 15px var(--orange); }
+
         .r-grid { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 5px; }
         .cell { height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border-radius: 4px; border: 2px solid transparent; transition: 0.1s; position: relative; font-size: 12px; }
         .cell.nula { background: var(--green); grid-row: span 3; height: 160px; font-size: 24px; }
         .cell.red { background: var(--red); }
         .cell.black { background: var(--black); }
         .cell.active { border-color: white !important; box-shadow: 0 0 12px #fff; z-index: 2; }
-        .chip-overlay { position: absolute; width: 24px; height: 24px; background: var(--orange); border-radius: 50%; border: 2px dashed white; color: black; font-size: 9px; display: flex; align-items: center; justify-content: center; font-weight: bold; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 5; }
+
+        .r-extra-bets { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-top: 10px; margin-left: 85px; }
+        .r-dozen-bets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 5px; margin-left: 85px; }
+        .btn-extra { background: #222; border: 1px solid #444; color: white; padding: 10px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 11px; transition: 0.2s; position: relative; }
+        .btn-extra:hover { border-color: var(--orange); }
+        .btn-extra.red { background: var(--red); }
+        .btn-extra.black { background: var(--black); }
+
+        .chip-overlay {
+            position: absolute;
+            width: 24px; height: 24px; background: var(--orange); border-radius: 50%; border: 2px dashed white; color: black; font-size: 9px;
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5); pointer-events: none; animation: chipDrop 0.2s ease-out;
+            top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 5;
+        }
+        @keyframes chipDrop { from { transform: translate(-50%, -50%) scale(2); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+
+        .btn-play { background: var(--orange); color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; }
+        input { background: #000; border: 1px solid #333; color: var(--orange); padding: 10px; border-radius: 8px; text-align: center; }
+
         .bj-area { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
         .bj-hand { display: flex; gap: 10px; min-height: 120px; align-items: center; }
-        .card-ui { width: 70px; height: 100px; background: white; border-radius: 8px; color: black; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; font-size: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 1px solid #ddd; }
+        .card-ui { 
+            width: 70px; height: 100px; background: white; border-radius: 8px; 
+            color: black; display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; font-weight: bold; font-size: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 1px solid #ddd;
+            animation: dealCard 0.3s ease-out;
+        }
+        .card-ui.red { color: #e74c3c; }
+        .bj-score { font-size: 14px; color: var(--orange); font-weight: bold; margin-top: 5px; }
+        @keyframes dealCard { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        footer { text-align: center; padding: 40px 20px; color: #555; font-size: 13px; line-height: 1.6; }
     </style>
 </head>
 <body onclick="initAudio()">
@@ -107,6 +147,7 @@
 <div id="auth-screen" style="display:flex; justify-content:center; align-items:center; height: 100vh;">
     <div class="card" style="width: 320px; text-align: center; border: 2px solid var(--orange);">
         <h1 style="color:var(--orange); margin:0;">SWARMBET</h1>
+        <p style="color:#555; font-size:12px; margin-bottom:20px;">EST. 2026</p>
         <input type="text" id="user" placeholder="Jméno" style="width:80%; margin-bottom:10px;"><br>
         <input type="password" id="pass" placeholder="Heslo" style="width:80%; margin-bottom:20px;"><br>
         <button class="btn-play" onclick="auth('login')" style="width:100%; margin-bottom:10px;">PŘIHLÁSIT</button>
@@ -118,9 +159,10 @@
     <nav class="navbar">
         <div style="font-size:24px; font-weight:900; color:var(--orange);">S<span>B</span></div>
         <div class="nav-links">
-            <span onclick="showPage('home')">DOMŮ</span>
-            <span class="active" onclick="showPage('games')">HRY</span>
+            <span id="link-home" onclick="showPage('home')">DOMŮ</span>
+            <span id="link-games" class="active" onclick="showPage('games')">HRY</span>
             <span id="link-admin" class="hidden" onclick="showPage('admin')">ADMIN</span>
+            <span onclick="window.open('https://discord.gg/invite','_blank')">DISCORD</span>
         </div>
         <div class="user-section">
             <div class="user-info">
@@ -132,27 +174,71 @@
     </nav>
 
     <div class="container">
-        <div id="page-home" class="card hidden"><h1>Vítej!</h1></div>
-        <div id="page-admin" class="card hidden"><h2>ADMIN PANEL</h2></div>
+        <div id="page-home" class="card hidden">
+            <h1>Vítej zpět!</h1>
+            <p>Dnes máš štěstí na své straně.</p>
+        </div>
+
+        <div id="page-admin" class="card hidden">
+            <h2 style="color:var(--orange); text-align:center;">ADMIN PANEL</h2>
+            <div class="admin-box">
+                <p>PŘIDAT ČIPY HRÁČI</p>
+                <input type="text" id="adm-target" placeholder="Jméno hráče"><br>
+                <input type="number" id="adm-amount" placeholder="Počet čipů"><br>
+                <button class="btn-play" onclick="adminGiveChips()">ODESLAT ČIPY</button>
+            </div>
+        </div>
 
         <div id="page-games">
             <div id="selection-menu">
+                <div class="section-title">CLASSICS</div>
                 <div class="games-grid">
-                    <div class="game-card" onclick="selectGame('mines')"><div class="icon-box" style="color:#e91e63;">💣</div><h3>Mines</h3><button class="btn-card-play">Play</button></div>
-                    <div class="game-card" onclick="selectGame('dice')"><div class="icon-box" style="color:#3498db;">🎲</div><h3>Dice Roll</h3><button class="btn-card-play">Play</button></div>
-                    <div class="game-card" onclick="selectGame('coinflip')"><div class="icon-box" style="color:var(--gold);">🪙</div><h3>Coin Flip</h3><button class="btn-card-play">Play</button></div>
-                    <div class="game-card" onclick="selectGame('crash')"><div class="icon-box" style="color:var(--orange);">📈</div><h3>Crash</h3><button class="btn-card-play">Play</button></div>
-                    <div class="game-card" onclick="selectGame('roulette')"><div class="icon-box" style="color:#1abc9c;">🔘</div><h3>Roulette</h3><button class="btn-card-play">Play</button></div>
-                    <div class="game-card" onclick="selectGame('blackjack')"><div class="icon-box" style="color:#f39c12;">🃏</div><h3>Blackjack</h3><button class="btn-card-play">Play</button></div>
+                    <div class="game-card" onclick="selectGame('mines')">
+                        <div class="icon-box" style="color:#e91e63;">💣</div>
+                        <h3>Mines</h3>
+                        <p>avoid the bombs</p>
+                        <button class="btn-card-play">Play</button>
+                    </div>
+                    <div class="game-card" onclick="selectGame('dice')">
+                        <div class="icon-box" style="color:#3498db;">🎲</div>
+                        <h3>Dice Roll</h3>
+                        <p>roll dice vs robot</p>
+                        <button class="btn-card-play">Play</button>
+                    </div>
+                    <div class="game-card" onclick="selectGame('coinflip')">
+                        <div class="icon-box" style="color:var(--gold);">🪙</div>
+                        <h3>Coin Flip</h3>
+                        <p>heads or tails</p>
+                        <button class="btn-card-play">Play</button>
+                    </div>
+                    <div class="game-card" onclick="selectGame('roulette')">
+                        <div class="icon-box" style="color:#1abc9c;">🔘</div>
+                        <h3>Roulette</h3>
+                        <p>spin the wheel</p>
+                        <button class="btn-card-play">Play</button>
+                    </div>
+                    <div class="game-card" onclick="selectGame('blackjack')">
+                        <div class="icon-box" style="color:#f39c12;">🃏</div>
+                        <h3>Blackjack</h3>
+                        <p>beat the dealer</p>
+                        <button class="btn-card-play">Play</button>
+                    </div>
+                    <div class="game-card" onclick="selectGame('crash')">
+                        <div class="icon-box" style="color:#2ecc71;">🚀</div>
+                        <h3>Crash</h3>
+                        <p>cash out in time</p>
+                        <button class="btn-card-play">Play</button>
+                    </div>
                 </div>
             </div>
 
             <div id="game-active-page" class="hidden">
-                <button class="btn-back" onclick="backToMenu()">← ZPĚT</button>
+                <button class="btn-back" onclick="backToMenu()">← ZPĚT DO MENU</button>
                 <div class="card" style="background:#0c0c0c;">
+                    
                     <div id="game-mines" class="hidden">
                         <div style="text-align:center;">
-                            <h2>MINES</h2>
+                            <h2 style="color:#e91e63;">MINES</h2>
                             Sázka: <input type="number" id="m-bet" value="50"> 
                             <button class="btn-play" id="m-start" onclick="startMines()">START</button>
                             <button id="m-cash" class="hidden btn-play" style="background:#2ecc71;" onclick="cashoutMines()">CASH OUT</button>
@@ -160,71 +246,130 @@
                         <div class="m-grid" id="m-board"></div>
                     </div>
 
-                    <div id="game-coinflip" class="hidden" style="text-align:center;">
-                        <h2>COIN FLIP</h2>
-                        <div id="coin-obj" class="coin">⭐</div>
-                        Tip: <select id="cf-choice"><option value="H">HEADS (⭐)</option><option value="T">TAILS (💎)</option></select>
-                        Sázka: <input type="number" id="cf-bet" value="50">
-                        <button class="btn-play" id="cf-btn" onclick="playCoinFlip()">FLIP</button>
-                    </div>
-
-                    <div id="game-crash" class="hidden" style="text-align:center;">
-                        <h2>CRASH</h2>
-                        <div id="cr-display" class="crash-display">1.00x</div>
-                        Sázka: <input type="number" id="cr-bet" value="50">
-                        <button class="btn-play" id="cr-start" onclick="startCrash()">BET</button>
-                        <button class="btn-play hidden" id="cr-cash" onclick="cashoutCrash()" style="background:#2ecc71;">CASH OUT</button>
-                    </div>
-
                     <div id="game-dice" class="hidden" style="text-align:center;">
-                        <h2>DICE ROLL</h2>
+                        <h2 style="color:#3498db;">DICE ROLL</h2>
                         Tip (1-6): <input type="number" id="d-num" value="1" min="1" max="6">
                         Sázka: <input type="number" id="d-bet" value="50">
                         <button class="btn-play" onclick="playDice()">HODIT</button>
                         <div id="d-res" style="font-size:100px; margin:20px;">🎲</div>
                     </div>
-                    
+
+                    <div id="game-coinflip" class="hidden" style="text-align:center;">
+                        <h2 style="color:var(--gold);">COIN FLIP</h2>
+                        <div id="coin-obj" class="coin">⭐</div>
+                        Tip: <select id="cf-choice" style="background:#000; color:var(--orange); border:1px solid #333; padding:10px; border-radius:8px;">
+                            <option value="H">HEADS (⭐)</option>
+                            <option value="T">TAILS (💎)</option>
+                        </select>
+                        Sázka: <input type="number" id="cf-bet" value="50">
+                        <button class="btn-play" id="cf-btn" onclick="playCoinFlip()">FLIP</button>
+                    </div>
+
                     <div id="game-roulette" class="hidden">
-                        <div id="r-status" style="text-align:center; color:var(--orange); font-weight:bold; height:20px;">PŘIPRAVTE SÁZKY</div>
-                        <div class="r-slider-wrap" id="r-wrap"><div class="r-pointer"></div><div id="r-slider" class="r-slider-inner"></div></div>
+                        <h2 style="color:#1abc9c; text-align:center;">ROULETTE</h2>
+                        <div id="r-status" style="text-align:center; color:var(--orange); font-weight:bold; margin-bottom:10px; height:20px;">PŘIPRAVTE SÁZKY</div>
+                        <div class="r-slider-wrap" id="r-wrap">
+                            <div class="r-pointer"></div>
+                            <div id="r-slider" class="r-slider-inner"></div>
+                        </div>
                         <div class="r-grid" id="r-board"></div>
-                        <div style="text-align:center; margin-top:20px;">Sázka: <input type="number" id="r-bet" value="50"> <button class="btn-play" onclick="spinRoulette()">SPIN</button></div>
+                        <div class="r-dozen-bets">
+                            <button class="btn-extra" onclick="setExtraBet('1st12', this)">1st 12 (3x)</button>
+                            <button class="btn-extra" onclick="setExtraBet('2nd12', this)">2nd 12 (3x)</button>
+                            <button class="btn-extra" onclick="setExtraBet('3rd12', this)">3rd 12 (3x)</button>
+                        </div>
+                        <div class="r-extra-bets">
+                            <button class="btn-extra" onclick="setExtraBet('1-18', this)">1 - 18 (2x)</button>
+                            <button class="btn-extra" onclick="setExtraBet('even', this)">EVEN (2x)</button>
+                            <button class="btn-extra red" onclick="setExtraBet('red', this)">RED (2x)</button>
+                            <button class="btn-extra black" onclick="setExtraBet('black', this)">BLACK (2x)</button>
+                            <button class="btn-extra" onclick="setExtraBet('odd', this)">ODD (2x)</button>
+                            <button class="btn-extra" onclick="setExtraBet('19-36', this)">19 - 36 (2x)</button>
+                        </div>
+                        <div style="display:flex; gap:10px; margin-top:20px; justify-content:center; align-items:center;">
+                            SÁZKA NA POLE: <input type="number" id="r-bet" value="50">
+                            <button class="btn-play" id="r-spin" onclick="spinRoulette()">SPIN</button>
+                            <button class="btn-play" style="background:#444; color:white;" onclick="clearRouletteBets()">SMAZAT SÁZKY</button>
+                        </div>
                     </div>
 
                     <div id="game-blackjack" class="hidden">
                         <div class="bj-area">
-                            <div id="bj-dealer-hand" class="bj-hand"></div>
-                            <div id="bj-status" style="font-size:24px; font-weight:900;">VS</div>
-                            <div id="bj-player-hand" class="bj-hand"></div>
-                            <div id="bj-controls">
-                                <input type="number" id="bj-bet" value="100">
-                                <button class="btn-play" id="bj-deal-btn" onclick="startBlackjack()">DEAL</button>
-                                <button class="btn-play hidden" id="bj-hit-btn" onclick="bjHit()">HIT</button>
-                                <button class="btn-play hidden" id="bj-stand-btn" onclick="bjStand()">STAND</button>
+                            <div class="bj-hand-wrap">
+                                <div style="text-align:center; font-size:12px; color:#666;">DEALER</div>
+                                <div id="bj-dealer-hand" class="bj-hand"></div>
+                                <div id="bj-dealer-score" class="bj-score" style="text-align:center;"></div>
                             </div>
+                            <div id="bj-status" style="font-size:24px; font-weight:900; color:var(--orange);">VS</div>
+                            <div class="bj-hand-wrap">
+                                <div id="bj-player-hand" class="bj-hand"></div>
+                                <div id="bj-player-score" class="bj-score" style="text-align:center;"></div>
+                                <div style="text-align:center; font-size:12px; color:#666;">YOU</div>
+                            </div>
+                            <div id="bj-controls" style="display:flex; gap:10px; margin-top:10px;">
+                                Sázka: <input type="number" id="bj-bet" value="100" style="width:80px;">
+                                <button class="btn-play" id="bj-deal-btn" onclick="startBlackjack()">ROZDAT</button>
+                                <button class="btn-play hidden" id="bj-hit-btn" onclick="bjHit()" style="background:#3498db; color:white;">HIT</button>
+                                <button class="btn-play hidden" id="bj-stand-btn" onclick="bjStand()" style="background:#9b59b6; color:white;">STAND</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="game-crash" class="hidden">
+                        <div style="text-align:center;">
+                            <h2 style="color:#2ecc71;">CRASH</h2>
+                            <div id="crash-display" style="font-size: 80px; font-weight: 900; margin: 30px 0; color: white;">1.00x</div>
+                            <div style="margin-bottom: 20px;">
+                                Sázka: <input type="number" id="c-bet" value="50">
+                                <button class="btn-play" id="c-start" onclick="startCrash()">START</button>
+                                <button id="c-cash" class="hidden btn-play" style="background:#2ecc71;" onclick="cashoutCrash()">CASH OUT</button>
+                            </div>
+                            <div id="crash-history" style="display:flex; justify-content:center; gap:10px; color:#555; font-size:12px;"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <footer>© 2026 Swarmbet<br>For entertainment purposes only.</footer>
 </div>
 
 <div id="win-container"></div>
 
 <script>
     const DB_URL = "https://casbss-c75a0-default-rtdb.europe-west1.firebasedatabase.app/users";
-    let currentUser = localStorage.getItem('swarm_user'), userData = null, audioReady = false;
+    let currentUser = localStorage.getItem('swarm_user');
+    let userData = null;
+    let audioReady = false;
 
-    // SFX, Auth, showWinOverlay, loginSuccess are identical to your original file
+    const sfx = {
+        star: "https://cdn.discordapp.com/attachments/1027983822702248026/1473788416624951418/Lucky_wheel_spin_sound_effect.mp3?ex=69977bec&is=69962a6c&hm=176c43d1374817d21b3f9cc8e03fade656a8791c959aa49572bbc0c0435b34c7&",
+        win: "https://www.myinstants.com/media/sounds/correct_2.mp3",
+        boom: "https://www.myinstants.com/media/sounds/explosion.mp3",
+        click: "https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3",
+        rSpin: "https://cdn.discordapp.com/attachments/1027983822702248026/1473788416624951418/Lucky_wheel_spin_sound_effect.mp3?ex=69977bec&is=69962a6c&hm=176c43d1374817d21b3f9cc8e03fade656a8791c959aa49572bbc0c0435b34c7&"
+    };
+
     function initAudio() { audioReady = true; }
-    function play(name) { if(!audioReady) return; const a = new Audio(); a.play().catch(()=>{}); } // Placeholder for your original play function
+    function play(name) {
+        if(!audioReady) return;
+        const a = new Audio(sfx[name]);
+        if(name === 'star') a.volume = 0.8;
+        else if(name === 'win') a.volume = 0.4;
+        else if(name === 'boom') a.volume = 0.2;
+        else if(name === 'rSpin') a.volume = 1.0;
+        else a.volume = 0.4;
+        a.play().catch(()=>{});
+    }
 
     function showWinOverlay(mult, amount) {
         const container = document.getElementById('win-container');
         const div = document.createElement('div');
         div.className = 'win-announcement';
-        div.innerHTML = `<p class="win-mult">${mult.toFixed(2)}x</p><p class="win-amt">+${Math.floor(amount)} ⭐️</p>`;
+        div.innerHTML = `
+            <p class="win-mult">${mult.toFixed(2)}x</p>
+            <p class="win-amt">+${Math.floor(amount)} ⭐️</p>
+        `;
         container.appendChild(div);
         setTimeout(() => div.remove(), 3000);
     }
@@ -234,80 +379,284 @@
         if(!u || !p) return;
         const res = await fetch(DB_URL + ".json"), users = await res.json() || {};
         if(type === 'reg') {
-            if(users[u]) return alert("Existuje!");
+            if(users[u]) return alert("Již existuje!");
             userData = { password: p, chips: 500 };
             await fetch(`${DB_URL}/${u}.json`, { method: 'PUT', body: JSON.stringify(userData) });
+            alert("Registrováno!");
         } else {
-            if(users[u] && users[u].password === p) { currentUser = u; userData = users[u]; localStorage.setItem('swarm_user', u); loginSuccess(); }
+            if(users[u] && users[u].password === p) { currentUser = u;
+            userData = users[u]; localStorage.setItem('swarm_user', u); loginSuccess(); }
+            else alert("Chyba!");
         }
     }
 
     function loginSuccess() { 
         document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('main-app').classList.remove('hidden');
-        document.getElementById('display-name').innerText = currentUser;
-        buildRoulette(); updateUI();
+        document.getElementById('main-app').classList.remove('hidden'); 
+        document.getElementById('display-name').innerText = currentUser; 
+        if(currentUser === "SEPIAK") { document.getElementById('link-admin').classList.remove('hidden'); }
+        buildRoulette(); 
+        updateUI();
     }
 
-    function showPage(p) { document.querySelectorAll('.container > div').forEach(d => d.classList.add('hidden')); document.getElementById('page-'+p).classList.remove('hidden'); }
-    function selectGame(g) { document.getElementById('selection-menu').classList.add('hidden'); document.getElementById('game-active-page').classList.remove('hidden'); document.querySelectorAll('#game-active-page > .card > div').forEach(d => d.classList.add('hidden')); document.getElementById('game-'+g).classList.remove('hidden'); }
-    function backToMenu() { document.getElementById('selection-menu').classList.remove('hidden'); document.getElementById('game-active-page').classList.add('hidden'); clearInterval(crTimer); }
+    function logout() { localStorage.removeItem('swarm_user'); location.reload(); }
+    function showPage(p) { play('click'); document.getElementById('page-home').classList.add('hidden'); document.getElementById('page-games').classList.add('hidden'); document.getElementById('page-admin').classList.add('hidden');
+    document.getElementById('page-'+p).classList.remove('hidden'); if(p === 'games') backToMenu(); }
+    
+    function selectGame(g) { 
+        play('click');
+        document.getElementById('selection-menu').classList.add('hidden'); 
+        document.getElementById('game-active-page').classList.remove('hidden'); 
+        ['mines','dice','roulette','blackjack','coinflip','crash'].forEach(id => document.getElementById('game-'+id).classList.add('hidden')); 
+        document.getElementById('game-'+g).classList.remove('hidden');
+    }
+
+    function backToMenu() { 
+        // Reset Crash if playing
+        if(crashActive) clearInterval(crashInterval);
+        crashActive = false;
+        document.getElementById('selection-menu').classList.remove('hidden'); 
+        document.getElementById('game-active-page').classList.add('hidden');
+    }
+
     function updateUI() { if(!userData) return; document.getElementById('display-chips').innerText = Math.floor(userData.chips); fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) }); }
 
-    // COIN FLIP LOGIC
-    function playCoinFlip() {
-        let b = parseInt(document.getElementById('cf-bet').value), choice = document.getElementById('cf-choice').value;
-        if(b > userData.chips || b <= 0) return;
-        userData.chips -= b; updateUI();
-        document.getElementById('coin-obj').classList.add('flipping');
-        setTimeout(() => {
-            document.getElementById('coin-obj').classList.remove('flipping');
-            let res = Math.random() > 0.5 ? 'H' : 'T';
-            document.getElementById('coin-obj').innerText = (res === 'H') ? '⭐' : '💎';
-            if(res === choice) { userData.chips += b * 2; showWinOverlay(2.00, b * 2); }
-            updateUI();
-        }, 1000);
+    async function adminGiveChips() {
+        const target = document.getElementById('adm-target').value.trim();
+        const amount = parseInt(document.getElementById('adm-amount').value);
+        if(!target || isNaN(amount)) return alert("Zadej jméno a počet!");
+        const res = await fetch(`${DB_URL}/${target}.json`);
+        const targetData = await res.json();
+        if(!targetData) return alert("Hráč nenalezen!");
+        targetData.chips = (targetData.chips || 0) + amount;
+        await fetch(`${DB_URL}/${target}.json`, { method: 'PUT', body: JSON.stringify(targetData) });
+        if(target === currentUser) { userData.chips = targetData.chips; updateUI(); }
+        alert(`Úspěšně přidáno ${amount} čipů hráči ${target}!`);
     }
 
-    // CRASH LOGIC
-    let crMult = 1.00, crTimer = null, crActive = false, crBet = 0;
+    // COIN FLIP
+    function playCoinFlip() {
+        let b = parseInt(document.getElementById('cf-bet').value);
+        let choice = document.getElementById('cf-choice').value;
+        let btn = document.getElementById('cf-btn');
+        let coin = document.getElementById('coin-obj');
+        if(b > userData.chips || b <= 0) return alert("Neplatná sázka!");
+        
+        userData.chips -= b;
+        updateUI();
+        btn.disabled = true;
+        coin.classList.add('flipping');
+        setTimeout(() => {
+            coin.classList.remove('flipping');
+            let res = Math.random() > 0.5 ? 'H' : 'T';
+            coin.innerText = (res === 'H') ? '⭐' : '💎';
+
+            if(res === choice) {
+                userData.chips += b * 2;
+                play('win');
+                showWinOverlay(2.00, b * 2);
+            } else {
+                play('boom');
+            }
+            btn.disabled = false;
+            updateUI();
+        }, 1200);
+    }
+
+    // CRASH GAME LOGIC
+    let crashActive = false, crashMult = 1.00, crashInterval, crashBet = 0;
     function startCrash() {
-        crBet = parseInt(document.getElementById('cr-bet').value);
-        if(crBet > userData.chips || crBet <= 0) return;
-        userData.chips -= crBet; updateUI();
-        crMult = 1.00; crActive = true;
-        document.getElementById('cr-start').classList.add('hidden');
-        document.getElementById('cr-cash').classList.remove('hidden');
-        let crashPoint = 1 + (Math.random() * 4);
-        crTimer = setInterval(() => {
-            crMult += 0.01;
-            document.getElementById('cr-display').innerText = crMult.toFixed(2) + "x";
-            if(crMult >= crashPoint) {
-                clearInterval(crTimer); crActive = false;
-                document.getElementById('cr-display').innerText = "CRASHED";
-                setTimeout(() => { document.getElementById('cr-start').classList.remove('hidden'); document.getElementById('cr-cash').classList.add('hidden'); }, 2000);
+        crashBet = parseInt(document.getElementById('c-bet').value);
+        if (crashBet > userData.chips || crashBet <= 0 || crashActive) return;
+        userData.chips -= crashBet; updateUI();
+        crashActive = true; crashMult = 1.00;
+        const display = document.getElementById('crash-display');
+        const startBtn = document.getElementById('c-start');
+        const cashBtn = document.getElementById('c-cash');
+        display.style.color = "white"; startBtn.disabled = true; cashBtn.classList.remove('hidden');
+        let crashPoint = (Math.random() < 0.05) ? 1.00 : (0.99 / (1 - Math.random()));
+        crashInterval = setInterval(() => {
+            crashMult += 0.01 + (crashMult * 0.005);
+            display.innerText = crashMult.toFixed(2) + "x";
+            if (crashMult >= crashPoint) {
+                clearInterval(crashInterval); crashActive = false;
+                display.style.color = "var(--red)"; display.innerText = "CRASHED @ " + crashMult.toFixed(2) + "x";
+                play('boom'); startBtn.disabled = false; cashBtn.classList.add('hidden');
+                addToCrashHistory(crashMult, false);
             }
         }, 100);
     }
     function cashoutCrash() {
-        if(!crActive) return;
-        clearInterval(crTimer); crActive = false;
-        let win = Math.floor(crBet * crMult);
-        userData.chips += win; showWinOverlay(crMult, win); updateUI();
-        document.getElementById('cr-start').classList.remove('hidden');
-        document.getElementById('cr-cash').classList.add('hidden');
+        if (!crashActive) return;
+        clearInterval(crashInterval); crashActive = false;
+        let win = Math.floor(crashBet * crashMult); userData.chips += win;
+        play('win'); showWinOverlay(crashMult, win); updateUI();
+        document.getElementById('c-start').disabled = false; document.getElementById('c-cash').classList.add('hidden');
+        document.getElementById('crash-display').style.color = "var(--green)";
+        addToCrashHistory(crashMult, true);
+    }
+    function addToCrashHistory(m, win) {
+        const hist = document.getElementById('crash-history');
+        const span = document.createElement('span'); span.style.color = win ? 'var(--green)' : 'var(--red)';
+        span.innerText = m.toFixed(2) + "x"; hist.prepend(span);
+        if(hist.children.length > 5) hist.removeChild(hist.lastChild);
     }
 
-    // ALL OTHER GAME LOGIC (Mines, Dice, Roulette, Blackjack)
-    // I have kept all your original logic for these games below:
-    function startMines() { /* Your original Mines Logic */ }
-    function playDice() { /* Your original Dice Logic */ }
-    function buildRoulette() { /* Your original Roulette Logic */ }
-    function spinRoulette() { /* Your original Roulette Logic */ }
-    function startBlackjack() { /* Your original BJ Logic */ }
-    // ... rest of your original code ...
+    // ROULETTE LOGIC
+    const rOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+    const redNums = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+    let currentBets = {}, isRSpinning = false;
+    function buildRoulette() {
+        const slider = document.getElementById('r-slider'); let sH = "";
+        for(let i=0; i<30; i++) rOrder.forEach(n => { let c = n===0?'var(--green)':(redNums.includes(n)?'var(--red)':'var(--black)'); sH += `<div class="r-num" style="background:${c}">${n}</div>`; });
+        slider.innerHTML = sH;
+        const b = document.getElementById('r-board'); let bH = `<div class="cell nula" onclick="handleRClick('n0', this)">0</div>`;
+        for(let r=3; r>=1; r--) for(let i=1; i<=12; i++) { let n=(i-1)*3+r; let c=redNums.includes(n)?'red':'black'; bH+=`<div class="cell ${c}" onclick="handleRClick('n${n}', this)">${n}</div>`; }
+        b.innerHTML = bH;
+    }
 
-    window.onload = async () => { if(currentUser) { const r = await fetch(`${DB_URL}/${currentUser}.json`); userData = await r.json(); if(userData) loginSuccess(); } };
+    function handleRClick(val, el) { setExtraBet(val, el); }
+    function setExtraBet(type, el) { 
+        if(isRSpinning) return;
+        const amt = parseInt(document.getElementById('r-bet').value);
+        if(amt > userData.chips) return alert("Nedostatek čipů!");
+        play('click'); if(!currentBets[type]) currentBets[type] = 0;
+        currentBets[type] += amt;
+        userData.chips -= amt; updateUI();
+        let chip = el.querySelector('.chip-overlay');
+        if(!chip) { chip = document.createElement('div'); chip.className = 'chip-overlay'; el.appendChild(chip); }
+        chip.innerText = currentBets[type]; el.classList.add('active');
+    }
+
+    function clearRouletteBets() {
+        if(isRSpinning) return;
+        for(let key in currentBets) { userData.chips += currentBets[key]; }
+        currentBets = {};
+        document.querySelectorAll('.cell, .btn-extra').forEach(el => { el.classList.remove('active'); const chip = el.querySelector('.chip-overlay'); if(chip) chip.remove(); });
+        updateUI();
+    }
+
+    function spinRoulette() {
+        if(isRSpinning || Object.keys(currentBets).length === 0) return;
+        isRSpinning = true; 
+        document.getElementById('r-spin').disabled = true;
+        document.getElementById('r-status').innerText = "KULIČKA BĚŽÍ...";
+        document.getElementById('r-status').style.color = 'var(--orange)';
+        play('rSpin'); 
+        const slider = document.getElementById('r-slider');
+        slider.style.transition = "none"; slider.style.transform = "translateX(0px)"; slider.offsetHeight; 
+        const winIndex = Math.floor(Math.random() * rOrder.length);
+        const winNum = rOrder[winIndex];
+        const CARD_WIDTH = 80; const LOOPS = 10;
+        const targetIndex = (LOOPS * rOrder.length) + winIndex;
+        const pixelOffset = targetIndex * CARD_WIDTH;
+        const wrapWidth = document.getElementById('r-wrap').offsetWidth;
+        const centerOffset = (wrapWidth / 2) - (CARD_WIDTH / 2);
+        const finalTransform = -(pixelOffset - centerOffset);
+        setTimeout(() => { slider.style.transition = "transform 5s cubic-bezier(0.1, 0, 0.1, 1)"; slider.style.transform = `translateX(${finalTransform}px)`; }, 50);
+        setTimeout(() => {
+            let totalWin = 0; let totalBetOnThisSpin = 0;
+            const isRed = redNums.includes(winNum), isBlack = winNum !== 0 && !isRed, isEven = winNum !== 0 && winNum % 2 === 0, isOdd = winNum !== 0 && winNum % 2 !== 0;
+            for(let bet in currentBets) {
+                let amt = currentBets[bet]; totalBetOnThisSpin += amt;
+                if(bet === 'n'+winNum) totalWin += amt * 36;
+                if(bet === 'red' && isRed) totalWin += amt * 2;
+                if(bet === 'black' && isBlack) totalWin += amt * 2;
+                if(bet === 'even' && isEven) totalWin += amt * 2;
+                if(bet === 'odd' && isOdd) totalWin += amt * 2;
+                if(bet === '1-18' && winNum >= 1 && winNum <= 18) totalWin += amt * 2;
+                if(bet === '19-36' && winNum >= 19 && winNum <= 36) totalWin += amt * 2;
+                if(bet === '1st12' && winNum >= 1 && winNum <= 12) totalWin += amt * 3;
+                if(bet === '2nd12' && winNum >= 13 && winNum <= 24) totalWin += amt * 3;
+                if(bet === '3rd12' && winNum >= 25 && winNum <= 36) totalWin += amt * 3;
+            }
+            document.getElementById('r-status').innerText = `VYHRÁLO ČÍSLO: ${winNum}`;
+            if(totalWin > 0) { 
+                userData.chips += totalWin; play('win'); 
+                document.getElementById('r-status').style.color = 'var(--green)'; 
+                document.getElementById('r-status').innerText += ` | VÝHRA: ${totalWin}`;
+                showWinOverlay(totalWin / totalBetOnThisSpin, totalWin);
+            } else { play('boom'); document.getElementById('r-status').style.color = 'var(--red)'; }
+            currentBets = {};
+            document.querySelectorAll('.cell, .btn-extra').forEach(el => { el.classList.remove('active'); const chip = el.querySelector('.chip-overlay'); if(chip) chip.remove(); });
+            setTimeout(() => { document.getElementById('r-status').innerText = "PŘIPRAVTE SÁZKY"; document.getElementById('r-status').style.color = 'var(--orange)'; }, 3000);
+            isRSpinning = false; document.getElementById('r-spin').disabled = false; updateUI();
+        }, 5100); 
+    }
+
+    // MINES
+    let mActive = false, mMult = 1, mBet = 0, mBombs = [];
+    function startMines() {
+        mBet = parseInt(document.getElementById('m-bet').value);
+        if(mBet > userData.chips || mBet <= 0) return;
+        userData.chips -= mBet; mActive = true; mMult = 1; mBombs = [];
+        updateUI(); document.getElementById('m-start').disabled = true;
+        const board = document.getElementById('m-board'); board.innerHTML = '';
+        while(mBombs.length < 3) { let r = Math.floor(Math.random()*25); if(!mBombs.includes(r)) mBombs.push(r); }
+        for(let i=0; i<25; i++) {
+            let t = document.createElement('div'); t.className = 'tile';
+            t.onclick = () => {
+                if(!mActive || t.innerHTML !== "") return;
+                if(mBombs.includes(i)) { t.innerHTML='💥'; play('boom'); mActive=false; document.getElementById('m-cash').classList.add('hidden'); document.getElementById('m-start').disabled=false; }
+                else { t.innerHTML='⭐'; play('star'); mMult *= 1.25; document.getElementById('m-cash').classList.remove('hidden'); }
+            };
+            board.appendChild(t);
+        }
+    }
+    function cashoutMines() { if(!mActive) return; let win = Math.floor(mBet * mMult);
+    userData.chips += win; play('win'); showWinOverlay(mMult, win); mActive = false; updateUI(); document.getElementById('m-cash').classList.add('hidden'); document.getElementById('m-start').disabled = false; }
+    
+    // DICE
+    function playDice() {
+        let b = parseInt(document.getElementById('d-bet').value), n = parseInt(document.getElementById('d-num').value);
+        if(b > userData.chips) return; userData.chips -= b; updateUI();
+        setTimeout(() => { let r = Math.floor(Math.random()*6)+1; document.getElementById('d-res').innerText = r; if(r === n) { userData.chips += b*6; play('win'); showWinOverlay(6.00, b*6); } else play('boom'); updateUI(); }, 500);
+    }
+
+    // BLACKJACK
+    let deck = [], pHand = [], dHand = [], bjActive = false, bjBet = 0;
+    function createDeck() {
+        const suits = ['♠', '♣', '♥', '♦'], values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+        deck = []; for (let s of suits) for (let v of values) deck.push({v, s});
+        for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+    }
+    function getScore(hand) {
+        let score = 0, aces = 0;
+        for (let c of hand) { if (c.v === 'A') aces++; else if (['J','Q','K'].includes(c.v)) score += 10; else if (c.v === '?') continue; else score += parseInt(c.v); }
+        for (let i = 0; i < aces; i++) score += (score + 11 <= 21) ? 11 : 1; return score;
+    }
+    function renderCard(card, target) {
+        const div = document.createElement('div');
+        div.className = `card-ui ${['♥','♦'].includes(card.s) ? 'red' : ''}`;
+        div.innerHTML = `<div>${card.v}</div><div style="font-size:12px">${card.s}</div>`; document.getElementById(target).appendChild(div);
+    }
+    function startBlackjack() {
+        bjBet = parseInt(document.getElementById('bj-bet').value);
+        if (bjBet > userData.chips || bjBet <= 0) return alert("Nedostatek čipů!");
+        userData.chips -= bjBet; updateUI(); bjActive = true; createDeck();
+        pHand = [deck.pop(), deck.pop()]; dHand = [deck.pop(), deck.pop()];
+        document.getElementById('bj-player-hand').innerHTML = ''; document.getElementById('bj-dealer-hand').innerHTML = ''; document.getElementById('bj-dealer-score').innerText = ''; document.getElementById('bj-status').innerText = "HRAJETE...";
+        pHand.forEach(c => renderCard(c, 'bj-player-hand')); renderCard(dHand[0], 'bj-dealer-hand');
+        const back = document.createElement('div'); back.className='card-ui'; back.id='bj-back'; back.style.background='#444'; back.innerText='?'; document.getElementById('bj-dealer-hand').appendChild(back);
+        toggleBJControls(true); updateBJScore(); play('click');
+    }
+    function updateBJScore() { document.getElementById('bj-player-score').innerText = getScore(pHand); if (getScore(pHand) > 21) endBJ("Bust! Dealer vyhrává."); }
+    function bjHit() { if (!bjActive) return; const card = deck.pop(); pHand.push(card); renderCard(card, 'bj-player-hand'); updateBJScore(); play('click'); }
+    async function bjStand() {
+        if (!bjActive) return;
+        bjActive = false; document.getElementById('bj-back').remove(); renderCard(dHand[1], 'bj-dealer-hand');
+        let dScore = getScore(dHand); document.getElementById('bj-dealer-score').innerText = dScore;
+        while (dScore < 17) { await new Promise(r => setTimeout(r, 600)); const card = deck.pop(); dHand.push(card); renderCard(card, 'bj-dealer-hand');
+        dScore = getScore(dHand); document.getElementById('bj-dealer-score').innerText = dScore; }
+        const pScore = getScore(pHand);
+        if (dScore > 21 || pScore > dScore) { userData.chips += bjBet * 2; endBJ("VÝHRA!"); play('win'); showWinOverlay(2.00, bjBet * 2);
+        } else if (dScore === pScore) { userData.chips += bjBet; endBJ("REMÍZA"); showWinOverlay(1.00, bjBet); } else { endBJ("PROHRA"); play('boom'); } updateUI();
+    }
+    function endBJ(msg) { bjActive = false; document.getElementById('bj-status').innerText = msg; document.getElementById('bj-dealer-score').innerText = getScore(dHand); toggleBJControls(false); }
+    function toggleBJControls(playing) { document.getElementById('bj-deal-btn').classList.toggle('hidden', playing); document.getElementById('bj-hit-btn').classList.toggle('hidden', !playing); document.getElementById('bj-stand-btn').classList.toggle('hidden', !playing); }
+
+    window.onload = async () => { if(currentUser) { const r = await fetch(`${DB_URL}/${currentUser}.json`);
+    userData = await r.json(); if(userData) loginSuccess(); } };
 </script>
 </body>
 </html>
