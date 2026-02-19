@@ -164,6 +164,12 @@
                         <p>target the rocket</p>
                         <button class="btn-card-play">Play</button>
                     </div>
+                    <div class="game-card" onclick="selectGame('tower')">
+                        <div class="icon-box" style="color:#f1c40f;">🏰</div>
+                        <h3>Tower</h3>
+                        <p>climb to the top</p>
+                        <button class="btn-card-play">Play</button>
+                    </div>
                 </div>
             </div>
 
@@ -305,6 +311,19 @@
                         <button class="btn-play" id="l-btn" onclick="playLimbo()" style="width:200px; background:#e67e22;">BET</button>
                     </div>
 
+                    <div id="game-tower" class="hidden">
+                        <div style="text-align:center;">
+                            <h2 style="color:#f1c40f;">TOWER</h2>
+                            <div id="tower-status" style="margin-bottom:10px; color:var(--orange); font-weight:bold;">VYBER DLAŽDICI A STOUPEJ</div>
+                            <div id="tower-board" style="display: flex; flex-direction: column-reverse; gap: 5px; align-items: center; margin: 20px 0;"></div>
+                            <div style="margin-top: 20px;">
+                                Bet: <input type="number" id="t-bet" value="50">
+                                <button class="btn-play" id="t-start" onclick="startTower()">START</button>
+                                <button id="t-cash" class="hidden btn-play" style="background:#2ecc71;" onclick="cashoutTower()">CASH OUT</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -327,6 +346,7 @@
         click: "https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3",
         rSpin: "https://cdn.discordapp.com/attachments/1027983822702248026/1473788416624951418/Lucky_wheel_spin_sound_effect.mp3?ex=69977bec&is=69962a6c&hm=176c43d1374817d21b3f9cc8e03fade656a8791c959aa49572bbc0c0435b34c7&"
     };
+
     function initAudio() { audioReady = true; }
     function play(name) {
         if(!audioReady) return;
@@ -368,12 +388,7 @@
         document.getElementById('auth-screen').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden'); 
         document.getElementById('display-name').innerText = currentUser; 
-        
-        // Upraveno pro přístup účtu sepiakfromsponge k admin panelu
-        if(currentUser === "sepiakfromsponge") { 
-            document.getElementById('link-admin').classList.remove('hidden'); 
-        }
-        
+        if(currentUser === "SEPIAK") { document.getElementById('link-admin').classList.remove('hidden'); }
         buildRoulette(); updateUI();
     }
 
@@ -385,7 +400,10 @@
         play('click');
         document.getElementById('selection-menu').classList.add('hidden'); 
         document.getElementById('game-active-page').classList.remove('hidden'); 
-        ['mines','dice','roulette','blackjack','coinflip','crash','limbo','baccarat'].forEach(id => document.getElementById('game-'+id).classList.add('hidden')); 
+        ['mines','dice','roulette','blackjack','coinflip','crash','limbo','baccarat','tower'].forEach(id => {
+            const el = document.getElementById('game-'+id);
+            if(el) el.classList.add('hidden');
+        }); 
         document.getElementById('game-'+g).classList.remove('hidden');
     }
 
@@ -408,8 +426,7 @@
         if(!targetData) return alert("Player not found!");
         targetData.chips = (targetData.chips || 0) + amount;
         await fetch(`${DB_URL}/${target}.json`, { method: 'PUT', body: JSON.stringify(targetData) });
-        if(target === currentUser) { userData.chips = targetData.chips; updateUI();
-        }
+        if(target === currentUser) { userData.chips = targetData.chips; updateUI(); }
         alert(`Successfully added ${amount} chips to ${target}!`);
     }
 
@@ -449,12 +466,9 @@
         if (pScore > bScore) result = "P"; else if (bScore > pScore) result = "B";
         let win = 0, mult = 0;
         if (side === result) {
-            if (result === 'P') { win = bet * 2;
-            mult = 2; }
-            else if (result === 'B') { win = Math.floor(bet * 1.95);
-            mult = 1.95; }
-            else if (result === 'T') { win = bet * 9;
-            mult = 9; }
+            if (result === 'P') { win = bet * 2; mult = 2; }
+            else if (result === 'B') { win = Math.floor(bet * 1.95); mult = 1.95; }
+            else if (result === 'T') { win = bet * 9; mult = 9; }
             userData.chips += win;
             document.getElementById('bac-status').innerText = "WINNER!"; document.getElementById('bac-status').style.color = "var(--green)";
             play('win'); showWinOverlay(mult, win);
@@ -494,7 +508,6 @@
             let res = Math.random() > 0.5 ? 'H' : 'T'; coin.innerText = (res === 'H') ? '⭐' : '💎';
             if(res === choice) { userData.chips += b * 2; play('win'); showWinOverlay(2.00, b * 2); }
             else play('boom');
-            
             btn.disabled = false; updateUI();
         }, 1200);
     }
@@ -513,8 +526,7 @@
             display.innerText = crashMult.toFixed(2) + "x";
             if (crashMult >= crashPoint) {
                 clearInterval(crashInterval); crashActive = false;
-                display.style.color = "var(--red)"; display.innerText = "CRASHED @ " + crashMult.toFixed(2) + 
-                "x";
+                display.style.color = "var(--red)"; display.innerText = "CRASHED @ " + crashMult.toFixed(2) + "x";
                 play('boom'); startBtn.disabled = false; cashBtn.classList.add('hidden');
                 addToCrashHistory(crashMult, false);
             }
@@ -585,17 +597,14 @@
             let totalWin = 0, totalBetOnThisSpin = 0, isRed = redNums.includes(winNum), isBlack = winNum !== 0 && !isRed, isEven = winNum !== 0 && winNum % 2 === 0, isOdd = winNum !== 0 && winNum % 2 !== 0;
             for(let bet in currentBets) {
                 let amt = currentBets[bet]; totalBetOnThisSpin += amt;
-                
                 if(bet === 'n'+winNum) totalWin += amt * 36;
                 if(bet === 'red' && isRed) totalWin += amt * 2;
                 if(bet === 'black' && isBlack) totalWin += amt * 2;
                 if(bet === 'even' && isEven) totalWin += amt * 2;
-                
                 if(bet === 'odd' && isOdd) totalWin += amt * 2;
                 if(bet === '1-18' && winNum >= 1 && winNum <= 18) totalWin += amt * 2;
                 if(bet === '19-36' && winNum >= 19 && winNum <= 36) totalWin += amt * 2;
-                if(bet === '1st12' && winNum >= 1 && winNum 
-                <= 12) totalWin += amt * 3;
+                if(bet === '1st12' && winNum >= 1 && winNum <= 12) totalWin += amt * 3;
                 if(bet === '2nd12' && winNum >= 13 && winNum <= 24) totalWin += amt * 3;
                 if(bet === '3rd12' && winNum >= 25 && winNum <= 36) totalWin += amt * 3;
             }
@@ -691,6 +700,88 @@
     function endBJ(msg) { bjActive = false; document.getElementById('bj-status').innerText = msg;
     toggleBJControls(false); }
     function toggleBJControls(playing) { document.getElementById('bj-deal-btn').classList.toggle('hidden', playing); document.getElementById('bj-hit-btn').classList.toggle('hidden', !playing); document.getElementById('bj-stand-btn').classList.toggle('hidden', !playing);
+    }
+
+    // TOWER GAME LOGIC
+    let tActive = false, tLevel = 0, tBet = 0, tMults = [1.20, 1.60, 2.10, 3.00, 4.50, 7.00, 12.00, 25.00];
+
+    function startTower() {
+        tBet = parseInt(document.getElementById('t-bet').value);
+        if(tBet > userData.chips || tBet <= 0) return alert("Nedostatek žetonů!");
+        
+        userData.chips -= tBet;
+        updateUI();
+        tActive = true;
+        tLevel = 0;
+        
+        document.getElementById('t-start').disabled = true;
+        document.getElementById('t-cash').classList.add('hidden');
+        document.getElementById('tower-status').innerText = "PATRO 1";
+        document.getElementById('tower-status').style.color = "var(--orange)";
+        
+        const board = document.getElementById('tower-board');
+        board.innerHTML = '';
+        
+        for(let i = 0; i < 8; i++) {
+            const floor = document.createElement('div');
+            floor.style.display = 'flex';
+            floor.style.gap = '5px';
+            floor.id = `floor-${i}`;
+            
+            for(let j = 0; j < 3; j++) {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.style.opacity = (i === 0) ? '1' : '0.3';
+                tile.onclick = () => playTower(i, j, tile);
+                floor.appendChild(tile);
+            }
+            board.appendChild(floor);
+        }
+    }
+
+    function playTower(floorIdx, tileIdx, el) {
+        if(!tActive || floorIdx !== tLevel || el.innerHTML !== "") return;
+        
+        const bombIdx = Math.floor(Math.random() * 3);
+        
+        if(tileIdx === bombIdx) {
+            el.innerHTML = '💥';
+            play('boom');
+            tActive = false;
+            document.getElementById('tower-status').innerText = "PROHRA!";
+            document.getElementById('tower-status').style.color = "var(--red)";
+            document.getElementById('t-start').disabled = false;
+            document.getElementById('t-cash').classList.add('hidden');
+        } else {
+            el.innerHTML = '⭐';
+            play('star');
+            tLevel++;
+            
+            if(tLevel === 8) {
+                cashoutTower();
+            } else {
+                document.getElementById('tower-status').innerText = `PATRO ${tLevel + 1} (${tMults[tLevel-1]}x)`;
+                document.getElementById('t-cash').classList.remove('hidden');
+                Array.from(document.getElementById(`floor-${tLevel}`).children).forEach(t => t.style.opacity = '1');
+            }
+        }
+    }
+
+    function cashoutTower() {
+        if(!tActive || tLevel === 0) return;
+        const mult = tMults[tLevel - 1];
+        const win = Math.floor(tBet * mult);
+        
+        userData.chips += win;
+        play('win');
+        showWinOverlay(mult, win);
+        
+        tActive = false;
+        updateUI();
+        document.getElementById('tower-status').innerText = "VYBRÁNO!";
+        document.getElementById('tower-status').style.color = "var(--green)";
+        document.getElementById('t-cash').classList.add('hidden');
+        document.getElementById('t-start').disabled = false;
     }
 
     window.onload = async () => { if(currentUser) { const r = await fetch(`${DB_URL}/${currentUser}.json`);
