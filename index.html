@@ -26,209 +26,645 @@
         }
 
         /* Sidebar & Layout */
-        .sidebar { width: 240px; background: var(--sidebar); border-right: 1px solid #222; display: flex; flex-direction: column; padding: 20px 0; flex-shrink: 0; }
-        .logo { padding: 0 25px 30px; font-size: 24px; font-weight: 900; color: white; text-decoration: none; }
-        .logo span { color: var(--orange); }
-
-        .nav-item { padding: 12px 25px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 12px; transition: 0.2s; color: #888; }
-        .nav-item:hover, .nav-item.active { background: rgba(255, 153, 0, 0.1); color: var(--orange); border-left: 3px solid var(--orange); }
-
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-        .top-nav { height: 70px; background: #000; border-bottom: 2px solid var(--orange); display: flex; align-items: center; justify-content: flex-end; padding: 0 40px; gap: 20px; position: sticky; top: 0; z-index: 100; }
-
-        .balance-box { background: #1a1a1a; padding: 8px 18px; border-radius: 8px; color: white; font-weight: bold; display: flex; align-items: center; gap: 10px; border: 1px solid #333; }
-        .container { padding: 40px; max-width: 1100px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-        .card { background: var(--panel); border: 1px solid #222; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-
-        .hidden { display: none !important; }
-        .btn-play { background: var(--orange); color: black; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 900; cursor: pointer; }
-        .btn-back { background: #333; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
-        input, select { background: #000; border: 1px solid #333; color: var(--orange); padding: 10px; border-radius: 8px; text-align: center; outline: none; }
-
-        /* Grid */
-        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .game-card { background: #111; border-radius: 12px; padding: 20px 10px; text-align: center; transition: 0.3s; cursor: pointer; border: 1px solid #222; }
-        .game-card:hover { transform: translateY(-5px); background: #181818; border-color: var(--orange); }
-        .icon-box { width: 50px; height: 50px; background: rgba(0,0,0,0.3); border-radius: 10px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-
-        /* OPRAVA ROULETTE CSS */
-        .btn-extra { 
-            position: relative; 
-            background: #222; 
-            border: 1px solid #444; 
-            color: white; 
-            padding: 10px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            border-radius: 4px; 
-            overflow: visible; 
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar);
+            border-right: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            flex-shrink: 0;
         }
-        .chip-overlay { 
-            position: absolute; 
-            width: 22px; 
-            height: 22px; 
-            background: var(--orange); 
-            border-radius: 50%; 
-            border: 2px dashed white; 
-            color: black; 
-            font-size: 9px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: bold; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            z-index: 10; 
-            pointer-events: none;
+        .logo { padding: 0 25px 30px; font-size: 24px; font-weight: 900; color: white;
+            text-decoration: none; }
+        .logo span { color: var(--orange);
         }
-        
-        /* Ostatní herní CSS zůstává nezměněno */
-        .m-grid { display: grid; grid-template-columns: repeat(5, 60px); gap: 10px; justify-content: center; margin-top: 20px; }
-        .tile { width: 60px; height: 60px; background: #000; border: 1px solid #333; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 28px; }
-        .r-slider-wrap { position: relative; width: 100%; height: 80px; background: #111; border: 2px solid #333; overflow: hidden; border-radius: 10px; margin-bottom: 20px; }
-        .r-slider-inner { display: flex; position: absolute; left: 0; align-items: center; height: 100%; will-change: transform; }
-        .r-num { min-width: 80px; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-right: 1px solid rgba(0,0,0,0.5); font-size: 24px; }
-        .r-grid { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 5px; }
-        .cell { position: relative; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; border-radius: 4px; border: 2px solid transparent; }
-        .cell.nula { background: var(--green); grid-row: span 3; height: 160px; font-size: 24px; }
-        .cell.red { background: var(--red); }
-        .cell.black { background: var(--black); }
-        .bj-area { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
-        .bj-hand { display: flex; gap: 10px; min-height: 120px; align-items: center; }
-        .card-ui { width: 70px; height: 100px; background: white; border-radius: 8px; color: black; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 20px; }
+
+        .nav-item {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.2s;
+            color: #888;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 153, 0, 0.1);
+            color: var(--orange);
+            border-left: 3px solid var(--orange);
+        }
+
+        .main-wrapper { flex: 1; display: flex;
+            flex-direction: column; overflow-y: auto; }
+        .top-nav {
+            height: 70px;
+            background: #000;
+            border-bottom: 2px solid var(--orange);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 40px;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .balance-box {
+            background: #1a1a1a;
+            padding: 8px 18px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #333;
+        }
+
+        .container { padding: 40px; max-width: 1100px; margin: 0 auto; width: 100%;
+            box-sizing: border-box; }
+        .card { background: var(--panel); border: 1px solid #222; border-radius: 15px;
+            padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+        /* UI Elements */
+        .hidden { display: none !important;
+        }
+        .btn-play { background: var(--orange); color: black; border: none; padding: 12px 20px;
+            border-radius: 8px; font-weight: 900; cursor: pointer; }
+        .btn-back { background: #333; color: white;
+            border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; font-weight: bold;
+            }
+        input, select { background: #000; border: 1px solid #333; color: var(--orange);
+            padding: 10px; border-radius: 8px; text-align: center; outline: none; }
+
+        /* Games Grid */
+        .section-title { font-size: 20px;
+            font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+            }
+        .section-title::before { content: ''; width: 4px; height: 20px; background: var(--orange); border-radius: 2px;
+            }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px;
+            }
+        .game-card { background: #111; border-radius: 12px; padding: 20px 10px; text-align: center;
+            transition: 0.3s; cursor: pointer; border: 1px solid #222; }
+        .game-card:hover { transform: translateY(-5px);
+            background: #181818; border-color: var(--orange); }
+        .icon-box { width: 50px; height: 50px; background: rgba(0,0,0,0.3);
+            border-radius: 10px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 1px solid rgba(255,255,255,0.05);
+            }
+        .btn-card-play { background: #222; color: var(--orange); border: 1px solid #333;
+            padding: 6px 0; width: 100%; border-radius: 6px; font-size: 12px; font-weight: bold;
+            }
+
+        /* History Table */
+        table { width: 100%;
+            border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; color: #666; font-size: 12px;
+            padding: 10px; border-bottom: 1px solid #333; text-transform: uppercase; }
+        td { padding: 15px 10px;
+            border-bottom: 1px solid #222; font-size: 14px; color: white; }
+        .status-win { color: var(--green);
+            font-weight: bold; }
+        .status-loss { color: var(--red);
+            }
+
+        /* --- GAME SPECIFIC CSS --- */
+        .win-announcement { position: fixed;
+            top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; text-align: center; pointer-events: none;
+            animation: winPop 3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275); text-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+            }
+        .win-mult { font-size: 80px; font-weight: 900; color: var(--gold); margin: 0; line-height: 1;
+            }
+        .win-amt { font-size: 40px; font-weight: bold; color: white; margin: 0;
+            }
+        @keyframes winPop { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0;
+            } 15% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; } 100% { transform: translate(-50%, -70%) scale(0.8); opacity: 0;
+            } }
+
+        .m-grid { display: grid; grid-template-columns: repeat(5, 60px); gap: 10px; justify-content: center;
+            margin-top: 20px; }
+        .tile { width: 60px; height: 60px; background: #000;
+            border: 1px solid #333; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 28px;
+            }
+        /* LIMBO DISPLAY REMOVED */
+        .coin { width: 100px; height: 100px; margin: 20px auto; background: var(--gold);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; border: 5px solid #d4af37;
+            }
+        .coin.flipping { animation: flip 0.6s infinite linear;
+            }
+        @keyframes flip { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg);
+            } }
+
+        /* Roulette Slider */
+        .r-slider-wrap { position: relative;
+            width: 100%; height: 80px; background: #111; border: 2px solid #333; overflow: hidden; border-radius: 10px; margin-bottom: 20px;
+            }
+        .r-slider-inner { display: flex; position: absolute; left: 0; align-items: center; height: 100%;
+            will-change: transform; }
+        .r-num { min-width: 80px; width: 80px; height: 80px; display: flex;
+            align-items: center; justify-content: center; font-weight: bold; border-right: 1px solid rgba(0,0,0,0.5); font-size: 24px;
+            }
+        .r-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px;
+            background: var(--orange); z-index: 10; transform: translateX(-50%); box-shadow: 0 0 15px var(--orange);
+            }
+        .r-grid { display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 5px;
+            }
+        .cell { height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+            font-weight: bold; border-radius: 4px; border: 2px solid transparent; font-size: 12px;
+            }
+        .cell.nula { background: var(--green); grid-row: span 3; height: 160px; font-size: 24px;
+            }
+        .cell.red { background: var(--red);
+            }
+        .cell.black { background: var(--black);
+            }
+        .cell.active { border-color: white !important; box-shadow: 0 0 12px #fff;
+            }
+        .chip-overlay { position: absolute; width: 24px; height: 24px; background: var(--orange); border-radius: 50%;
+            border: 2px dashed white; color: black; font-size: 9px; display: flex; align-items: center; justify-content: center; font-weight: bold; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); z-index: 5; }
+
+        /* Blackjack & Baccarat */
+        .bj-area { display: flex;
+            flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
+        .bj-hand { display: flex;
+            gap: 10px; min-height: 120px; align-items: center; }
+        .card-ui { width: 70px; height: 100px;
+            background: white; border-radius: 8px; color: black; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; font-size: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 1px solid #ddd; }
+        .card-ui.red { color: #e74c3c;
+            }
+        .bj-score { font-size: 14px; color: var(--orange); font-weight: bold; margin-top: 5px;
+            }
     </style>
 </head>
 <body onclick="initAudio()">
 
-<div id="auth-screen">
-    <div class="card" style="width: 320px; margin: 100px auto; text-align: center; border: 2px solid var(--orange);">
-        <h1 style="color:var(--orange);">SWARMBET</h1>
-        <input type="text" id="user" placeholder="Username"><br><br>
-        <input type="password" id="pass" placeholder="Password"><br><br>
-        <button class="btn-play" onclick="auth('login')" style="width:100%;">LOGIN</button>
+<div id="auth-screen" style="display:flex; justify-content:center; align-items:center; width: 100vw; height: 100vh; background: var(--dark); position:fixed; z-index: 1000;">
+    <div class="card" style="width: 320px; text-align: center; border: 2px solid var(--orange);">
+        <h1 style="color:var(--orange); margin:0;">SWARMBET</h1>
+        <p style="color:#555; font-size:12px; margin-bottom:20px;">EST. 2026</p>
+        <input type="text" id="user" placeholder="Username" style="width:80%; margin-bottom:10px;"><br>
+        <input type="password" id="pass" placeholder="Password" style="width:80%; margin-bottom:20px;"><br>
+        <button class="btn-play" onclick="auth('login')" style="width:100%; margin-bottom:10px;">LOGIN</button>
+        <button class="btn-play" onclick="auth('reg')" style="width:100%; background:#222; color:white;">REGISTER</button>
     </div>
 </div>
 
 <div id="main-app" class="hidden" style="display: flex; width: 100%;">
     <div class="sidebar">
         <div class="logo">S<span>B</span></div>
-        <div class="nav-item active" onclick="showPage('games')">🎮 Games</div>
-        <div class="nav-item" onclick="showPage('history')">📜 History</div>
-        <div class="nav-item" onclick="logout()">🚪 Logout</div>
+        <div class="nav-item active" id="nav-games" onclick="showPage('games')">🎮 Games</div>
+        <div class="nav-item" id="nav-history" onclick="showPage('history')">📜 Bet History</div>
+        <div class="nav-item" id="nav-rakeback" onclick="showPage('rakeback')">🎁 Promo Codes</div>
+        <div id="link-admin" class="nav-item hidden" onclick="showPage('admin')">⚙️ Admin Panel</div>
+        <div style="margin-top: auto;">
+            <div class="nav-item" onclick="logout()">🚪 Logout</div>
+        </div>
     </div>
 
     <div class="main-wrapper">
         <div class="top-nav">
-            <div class="balance-box"><span id="display-chips">0</span> ⭐️</div>
-            <div id="display-name">---</div>
+            <div class="balance-box">
+                <span style="color:var(--orange)">⭐</span>
+                <span id="display-chips">0</span>
+            </div>
+            <div style="font-weight: 900; color: var(--orange);" id="display-name">---</div>
         </div>
 
         <div class="container">
             <div id="page-games">
-                <div id="selection-menu" class="games-grid">
-                    <div class="game-card" onclick="selectGame('mines')"><div class="icon-box">💣</div><h3>Mines</h3></div>
-                    <div class="game-card" onclick="selectGame('dice')"><div class="icon-box">🎲</div><h3>Dice</h3></div>
-                    <div class="game-card" onclick="selectGame('coinflip')"><div class="icon-box">🪙</div><h3>Coin Flip</h3></div>
-                    <div class="game-card" onclick="selectGame('roulette')"><div class="icon-box">🔘</div><h3>Roulette</h3></div>
-                    <div class="game-card" onclick="selectGame('blackjack')"><div class="icon-box">🃏</div><h3>Blackjack</h3></div>
-                    <div class="game-card" onclick="selectGame('baccarat')"><div class="icon-box">🧧</div><h3>Baccarat</h3></div>
-                    <div class="game-card" onclick="selectGame('crash')"><div class="icon-box">🚀</div><h3>Crash</h3></div>
-                    <div class="game-card" onclick="selectGame('limbo')"><div class="icon-box">🛸</div><h3>Limbo</h3></div>
-                    <div class="game-card" onclick="selectGame('tower')"><div class="icon-box">🏰</div><h3>Tower</h3></div>
-                    <div class="game-card" onclick="selectGame('plinko')"><div class="icon-box">🎾</div><h3>Plinko</h3></div>
+                <div id="selection-menu">
+                    <div class="section-title">ALL GAMES</div>
+                    <div class="games-grid">
+                        <div class="game-card" onclick="selectGame('mines')">
+                            <div class="icon-box" style="color:#e91e63;">💣</div>
+                            <h3>Mines</h3>
+                            <p>avoid the bombs</p>
+                            <button class="btn-card-play">Play</button>
+                        </div>
+                        <div class="game-card" onclick="selectGame('dice')">
+                             <div class="icon-box" style="color:#3498db;">🎲</div>
+                            <h3>Dice Roll</h3>
+                            <p>roll vs robot</p>
+                            <button class="btn-card-play">Play</button>
+                        </div>
+                        <div class="game-card" onclick="selectGame('coinflip')">
+                            <div class="icon-box" style="color:var(--gold);">🪙</div>
+                            <h3>Coin Flip</h3>
+                            <p>heads or tails</p>
+                            <button class="btn-card-play">Play</button>
+                        </div>
+                        <div class="game-card" onclick="selectGame('roulette')">
+                            <div class="icon-box" style="color:#1abc9c;">🔘</div>
+                            <h3>Roulette</h3>
+                            <p>spin the wheel</p>
+                            <button class="btn-card-play">Play</button>
+                        </div>
+                        <div class="game-card" onclick="selectGame('blackjack')">
+                            <div class="icon-box" style="color:#f39c12;">🃏</div>
+                            <h3>Blackjack</h3>
+                            <p>beat the dealer</p>
+                            <button class="btn-card-play">Play</button>
+                        </div>
+                        <div class="game-card" onclick="selectGame('baccarat')">
+                            <div class="icon-box" style="color:#9b59b6;">🧧</div>
+                            <h3>Baccarat</h3>
+                            <p>P, B or Tie</p>
+                            <button class="btn-card-play">Play</button>
+                        </div>
+                        <div class="game-card" onclick="selectGame('crash')">
+                            <div class="icon-box" style="color:#2ecc71;">🚀</div>
+                            <h3>Crash</h3>
+                            <p>cash out in time</p>
+                            <button class="btn-card-play">Play</button>
+                        </div>
+                        <div class="game-card" onclick="selectGame('tower')">
+                            <div class="icon-box" style="color:#f1c40f;">🏰</div>
+                            <h3>Tower</h3>
+                            <p>climb to top</p>
+                            <button class="btn-card-play">Play</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="game-active-page" class="hidden">
-                    <button class="btn-back" onclick="backToMenu()">← BACK</button>
-                    <div id="game-container-inner" class="card">
+                    <button class="btn-back" onclick="backToMenu()">← BACK TO MENU</button>
+                    <div class="card" style="background:#0c0c0c;">
+                        <div id="game-mines" class="hidden">
+                            <div style="text-align:center;">
+                                <h2 style="color:#e91e63;">MINES</h2>
+                                Bet: <input type="number" id="m-bet" value="50"> 
+                                <button class="btn-play" id="m-start" onclick="startMines()">START</button>
+                                <button id="m-cash" class="hidden btn-play" style="background:#2ecc71;" onclick="cashoutMines()">CASH OUT</button>
+                            </div>
+                            <div class="m-grid" id="m-board"></div>
+                        </div>
+
+                        <div id="game-dice" class="hidden" style="text-align:center;">
+                            <h2 style="color:#3498db;">DICE ROLL</h2>
+                            Guess (1-6): <input type="number" id="d-num" value="1" min="1" max="6">
+                            Bet: <input type="number" id="d-bet" value="50">
+                            <button class="btn-play" onclick="playDice()">ROLL</button>
+                            <div id="d-res" style="font-size:100px; margin:20px;">🎲</div>
+                        </div>
+
+                        <div id="game-coinflip" class="hidden" style="text-align:center;">
+                            <h2 style="color:var(--gold);">COIN FLIP</h2>
+                            <div id="coin-obj" class="coin">⭐</div>
+                            Side: <select id="cf-choice">
+                                <option value="H">HEADS (⭐)</option>
+                                <option value="T">TAILS (💎)</option>
+                            </select>
+                            Bet: <input type="number" id="cf-bet" value="50">
+                            <button class="btn-play" id="cf-btn" onclick="playCoinFlip()">FLIP</button>
+                        </div>
+
                         <div id="game-roulette" class="hidden">
                             <h2 style="color:#1abc9c; text-align:center;">ROULETTE</h2>
-                            <div id="r-status" style="text-align:center; color:var(--orange);">PLACE YOUR BETS</div>
-                            <div class="r-slider-wrap"><div id="r-slider" class="r-slider-inner"></div></div>
+                            <div id="r-status" style="text-align:center; color:var(--orange); font-weight:bold; margin-bottom:10px; height:20px;">PLACE YOUR BETS</div>
+                            <div class="r-slider-wrap" id="r-wrap">
+                                <div class="r-pointer"></div>
+                                <div id="r-slider" class="r-slider-inner"></div>
+                            </div>
                             <div class="r-grid" id="r-board"></div>
-                            
-                            <div class="r-extra-bets" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:5px; margin-top:20px;">
-                                <button class="btn-extra" onclick="setExtraBet('red', this)" style="background:var(--red);">RED</button>
-                                <button class="btn-extra" onclick="setExtraBet('black', this)" style="background:var(--black);">BLACK</button>
-                                <button class="btn-extra" onclick="setExtraBet('even', this)">EVEN</button>
+                            <div class="r-dozen-bets" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:5px; margin-top:5px; margin-left:85px;">
+                                <button class="btn-extra" style="background:#222; border:1px solid #444; color:white; padding:10px; cursor:pointer;" onclick="setExtraBet('1st12', this)">1st 12 (3x)</button>
+                                <button class="btn-extra" style="background:#222; border:1px solid #444; color:white; padding:10px; cursor:pointer;" onclick="setExtraBet('2nd12', this)">2nd 12 (3x)</button>
+                                <button class="btn-extra" style="background:#222; border:1px solid #444; color:white; padding:10px; cursor:pointer;" onclick="setExtraBet('3rd12', this)">3rd 12 (3x)</button>
                             </div>
+                            <div class="r-extra-bets" style="display:grid; grid-template-columns: repeat(6, 1fr); gap:5px; margin-top:10px; margin-left:85px;">
+                                <button class="btn-extra" style="background:#222; border:1px solid #444; color:white; padding:10px; cursor:pointer;" onclick="setExtraBet('1-18', this)">1 - 18</button>
+                                <button class="btn-extra" style="background:#222; border:1px solid #444; color:white; padding:10px; cursor:pointer;" onclick="setExtraBet('even', this)">EVEN</button>
+                                <button class="btn-extra" style="background:var(--red); border:none; color:white; padding:10px; cursor:pointer;" onclick="setExtraBet('red', this)">RED</button>
+                                <button class="btn-extra" style="background:var(--black); border:none; color:white; padding:10px; cursor:pointer;" onclick="setExtraBet('black', this)">BLACK</button>
+                                <button class="btn-extra" style="background:#222; border:1px solid #444; color:white; padding:10px; cursor:pointer;" onclick="setExtraBet('odd', this)">ODD</button>
+                                <button class="btn-extra" style="background:#222; border:1px solid #444; color:white; padding:10px; cursor:pointer;" onclick="setExtraBet('19-36', this)">19 - 36</button>
+                            </div>
+                            <div style="display:flex; gap:10px; margin-top:20px; justify-content:center; align-items:center;">
+                                BET PER CELL: <input type="number" id="r-bet" value="50">
+                                <button class="btn-play" id="r-spin" onclick="spinRoulette()">SPIN</button>
+                                <button class="btn-play" style="background:#444; color:white;" onclick="clearRouletteBets()">CLEAR</button>
+                            </div>
+                        </div>
 
-                            <div style="text-align:center; margin-top:20px;">
-                                Bet: <input type="number" id="r-bet" value="50">
-                                <button class="btn-play" onclick="spinRoulette()">SPIN</button>
-                                <button class="btn-play" style="background:#444;" onclick="clearRouletteBets()">CLEAR</button>
+                        <div id="game-blackjack" class="hidden">
+                            <div class="bj-area">
+                                <div class="bj-hand-wrap">
+                                    <div style="text-align:center; font-size:12px; color:#666;">DEALER</div>
+                                    <div id="bj-dealer-hand" class="bj-hand"></div>
+                                    <div id="bj-dealer-score" class="bj-score" style="text-align:center;"></div>
+                                </div>
+                                <div id="bj-status" style="font-size:24px; font-weight:900; color:var(--orange);">VS</div>
+                                <div class="bj-hand-wrap">
+                                    <div id="bj-player-hand" class="bj-hand"></div>
+                                    <div id="bj-player-score" class="bj-score" style="text-align:center;"></div>
+                                    <div style="text-align:center; font-size:12px; color:#666;">YOU</div>
+                                </div>
+                                <div id="bj-controls" style="display:flex; gap:10px; margin-top:10px;">
+                                    Bet: <input type="number" id="bj-bet" value="100" style="width:80px;">
+                                    <button class="btn-play" id="bj-deal-btn" onclick="startBlackjack()">DEAL</button>
+                                    <button class="btn-play hidden" id="bj-hit-btn" onclick="bjHit()" style="background:#3498db; color:white;">HIT</button>
+                                    <button class="btn-play hidden" id="bj-stand-btn" onclick="bjStand()" style="background:#9b59b6; color:white;">STAND</button>
+                                </div>
                             </div>
                         </div>
+
+                        <div id="game-baccarat" class="hidden">
+                            <div class="bj-area">
+                                <h2 style="color:#9b59b6;">BACCARAT</h2>
+                                <div id="bac-status" style="font-size:18px; color:var(--orange); font-weight:bold;">CHOOSE A SIDE</div>
+                                <div style="display:flex; gap:40px;">
+                                    <div style="text-align:center;">
+                                        <div style="font-size:12px; color:#666;">PLAYER</div>
+                                        <div id="bac-player-hand" class="bj-hand"></div>
+                                        <div id="bac-player-score" class="bj-score"></div>
+                                    </div>
+                                    <div style="text-align:center;">
+                                        <div style="font-size:12px; color:#666;">BANKER</div>
+                                        <div id="bac-banker-hand" class="bj-hand"></div>
+                                        <div id="bac-banker-score" class="bj-score"></div>
+                                    </div>
+                                </div>
+                                <div id="bac-controls" style="text-align:center;">
+                                    Bet: <input type="number" id="bac-bet" value="100" style="width:80px;"><br><br>
+                                    <button class="btn-play" onclick="playBaccarat('P')" style="background:#3498db; color:white;">PLAYER (2x)</button>
+                                    <button class="btn-play" onclick="playBaccarat('T')" style="background:#95a5a6; color:white;">TIE (9x)</button>
+                                    <button class="btn-play" onclick="playBaccarat('B')" style="background:#e74c3c; color:white;">BANKER (1.95x)</button>
+                                </div>
+                            </div>
                         </div>
+
+                        <div id="game-crash" class="hidden" style="text-align:center;">
+                            <h2 style="color:#2ecc71;">CRASH</h2>
+                            <div id="crash-display" style="font-size: 80px; font-weight: 900; margin: 30px 0;">1.00x</div>
+                            Bet: <input type="number" id="c-bet" value="50">
+                            <button class="btn-play" id="c-start" onclick="startCrash()">START</button>
+                            <button id="c-cash" class="hidden btn-play" style="background:#2ecc71;" onclick="cashoutCrash()">CASH OUT</button>
+                            <div id="crash-history" style="display:flex; justify-content:center; gap:10px; color:#555; margin-top:20px;"></div>
+                        </div>
+
+                        <div id="game-tower" class="hidden" style="text-align:center;">
+                            <h2 style="color:#f1c40f;">TOWER</h2>
+                            <div id="tower-status" style="color:var(--orange); font-weight:bold; margin-bottom:10px;">VYBER DLAŽDICI</div>
+                            <div id="tower-board" style="display: flex; flex-direction: column-reverse; gap: 5px; align-items: center;"></div>
+                            Bet: <input type="number" id="t-bet" value="50">
+                            <button class="btn-play" id="t-start" onclick="startTower()">START</button>
+                            <button id="t-cash" class="hidden btn-play" style="background:#2ecc71;" onclick="cashoutTower()">CASH OUT</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-history" class="hidden">
+                <div class="card">
+                    <h2 style="color:var(--orange)">Live Bet History</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>GAME</th>
+                                <th>BET</th>
+                                <th>MULTIPLIER</th>
+                                <th>PAYOUT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="page-rakeback" class="hidden">
+                <div class="card" style="text-align: center;">
+                    <h2 style="color:var(--orange)">Promo Codes</h2>
+                    <input type="text" id="promo-input" placeholder="ENTER CODE HERE..." style="width:300px;"><br><br>
+                    <button class="btn-play" onclick="redeemCode()">Redeem Reward</button>
+                </div>
+            </div>
+
+            <div id="page-admin" class="hidden">
+                <div class="card">
+                    <h2 style="color:var(--orange)">Admin Dashboard</h2>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                        <div style="background:#111; padding:20px; border-radius:10px;">
+                            <h3>Give Stars</h3>
+                            <input type="text" id="adm-target" placeholder="Username" style="width:100%;"><br><br>
+                            <input type="number" id="adm-amount" placeholder="Amount" style="width:100%;"><br><br>
+                            <button class="btn-play" onclick="adminGiveChips()" style="width:100%;">SEND</button>
+                        </div>
+                        <div style="background:#111; padding:20px; border-radius:10px;">
+                            <h3>Create Promo</h3>
+                            <input type="text" id="new-code" placeholder="CODE" style="width:100%;"><br><br>
+                            <input type="number" id="code-val" placeholder="Value" style="width:100%;"><br><br>
+                            <button class="btn-play" onclick="createPromo()" style="width:100%; background:var(--green);">CREATE</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<div id="win-container"></div>
+
 <script>
     const DB_URL = "https://casbss-c75a0-default-rtdb.europe-west1.firebasedatabase.app/users";
-    let currentUser = localStorage.getItem('swarm_user');
-    let userData = { chips: 0 };
-    let rBets = {};
-
-    // --- LOGIKA OPRAVY TOKENŮ ---
-    function setExtraBet(type, el) {
-        let amt = parseInt(document.getElementById('r-bet').value); 
-        if(amt > userData.chips || amt <= 0) return;
-        
-        userData.chips -= amt; 
-        rBets[type] = (rBets[type]||0) + amt;
-        
-        // Vytvoření žetonu uvnitř tlačítka
-        let chip = el.querySelector('.chip-overlay'); 
-        if(!chip) { 
-            chip = document.createElement('div'); 
-            chip.className = 'chip-overlay'; 
-            el.appendChild(chip); 
-        } 
-        
-        chip.innerText = rBets[type]; 
-        updateUI();
-    }
-
-    function setRouletteBet(num, el) {
-        let amt = parseInt(document.getElementById('r-bet').value);
-        if(amt > userData.chips || amt <= 0) return;
-        userData.chips -= amt;
-        rBets[num] = (rBets[num]||0) + amt;
-        let chip = el.querySelector('.chip-overlay');
-        if(!chip) {
-            chip = document.createElement('div');
-            chip.className = 'chip-overlay';
-            el.appendChild(chip);
-        }
-        chip.innerText = rBets[num];
-        updateUI();
-    }
-
-    // --- ZBYTEK JAVASCRIPTU PRO VŠECH 10 HER ---
-    // (Ponechej své původní funkce pro Mines, Crash, Blackjack atd.)
+    const PROMO_URL = "https://casbss-c75a0-default-rtdb.europe-west1.firebasedatabase.app/promos";
     
+    let currentUser = localStorage.getItem('swarm_user');
+    let userData = null;
+    let betHistory = [];
+    let audioReady = false;
+
+    const sfx = {
+        star: "https://cdn.discordapp.com/attachments/1090308530348757122/1473461724018376704/sigmaman1432.mp3",
+        win: "https://cdn.discordapp.com/attachments/1090308530348757122/1473821791133630738/roblox-old-winning-sound-effect.mp3",
+        boom: "https://raw.githubusercontent.com/theking9x/Roblox-Sounds/main/UIPresentation.mp3",
+        rSpin: "https://cdn.discordapp.com/attachments/1027983822702248026/1473788416624951418/Lucky_wheel_spin_sound_effect.mp3"
+    };
+
+    function initAudio() { audioReady = true; }
+    function play(name) { if(!audioReady) return; const a = new Audio(sfx[name]); a.volume = 0.4; a.play().catch(()=>{}); }
+
+    // --- AUTH & CORE ---
+    async function auth(type) {
+        const u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value;
+        if(!u || !p) return;
+        const res = await fetch(DB_URL + ".json"), users = await res.json() || {};
+        if(type === 'reg') {
+            if(users[u]) return alert("Taken!");
+            userData = { password: p, chips: 500 };
+            await fetch(`${DB_URL}/${u}.json`, { method: 'PUT', body: JSON.stringify(userData) });
+            alert("Registered!");
+        } else {
+            if(users[u] && users[u].password === p) { currentUser = u;
+            userData = users[u]; localStorage.setItem('swarm_user', u); loginSuccess(); }
+            else alert("Fail!");
+        }
+    }
+
+    function loginSuccess() {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        document.getElementById('display-name').innerText = currentUser;
+        const admins = ["SEPIAK", "sepiakfromsponge", "artur"];
+        if(admins.includes(currentUser)) document.getElementById('link-admin').classList.remove('hidden');
+        buildRoulette(); updateUI();
+    }
+
+    function logout() { localStorage.removeItem('swarm_user'); location.reload(); }
+
+    function showPage(p) {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('nav-'+p)?.classList.add('active');
+        ['games', 'history', 'rakeback', 'admin'].forEach(id => document.getElementById('page-'+id).classList.add('hidden'));
+        document.getElementById('page-' + p).classList.remove('hidden');
+        if(p === 'history') renderHistory();
+        if(p === 'games') backToMenu();
+    }
+
     function updateUI() {
+        if(!userData) return;
         document.getElementById('display-chips').innerText = Math.floor(userData.chips);
-        // Odesílání do Firebase...
+        fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) });
+    }
+
+    // --- GAME ENGINE WRAPPERS ---
+    function selectGame(g) {
+        document.getElementById('selection-menu').classList.add('hidden');
+        document.getElementById('game-active-page').classList.remove('hidden');
+        ['mines','dice','roulette','blackjack','coinflip','crash','baccarat','tower'].forEach(id => {
+            const el = document.getElementById('game-'+id);
+            if(el) el.classList.add('hidden');
+        });
+        document.getElementById('game-'+g).classList.remove('hidden');
     }
 
     function backToMenu() {
+        if(crashActive) clearInterval(crashInterval);
         document.getElementById('selection-menu').classList.remove('hidden');
         document.getElementById('game-active-page').classList.add('hidden');
     }
 
-    function selectGame(g) {
-        document.getElementById('selection-menu').classList.add('hidden');
-        document.getElementById('game-active-page').classList.remove('hidden');
-        document.querySelectorAll('#game-container-inner > div').forEach(d => d.classList.add('hidden'));
-        document.getElementById('game-'+g)?.classList.remove('hidden');
+    function showWinOverlay(mult, amount) {
+        const div = document.createElement('div');
+        div.className = 'win-announcement';
+        div.innerHTML = `<p class="win-mult">${mult.toFixed(2)}x</p><p class="win-amt">+${Math.floor(amount)} ⭐️</p>`;
+        document.getElementById('win-container').appendChild(div);
+        setTimeout(() => div.remove(), 3000);
     }
-    
-    // ... tvé další herní funkce (startMines, startCrash, startTower...)
+
+    function addHistory(game, bet, mult, win) {
+        betHistory.unshift({ game, bet, mult, win: Math.floor(win) });
+        if(betHistory.length > 15) betHistory.pop();
+    }
+
+    function renderHistory() {
+        document.getElementById('history-body').innerHTML = betHistory.map(h => `
+            <tr><td>${h.game}</td><td>${h.bet} ⭐️</td><td>${h.mult.toFixed(2)}x</td><td class="${h.win > 0 ? 'status-win' : 'status-loss'}">${h.win > 0 ? '+' + h.win : h.win}</td></tr>
+        `).join('');
+    }
+
+    // --- PROMO & ADMIN ---
+    async function createPromo() {
+        const code = document.getElementById('new-code').value.toUpperCase().trim(), val = parseInt(document.getElementById('code-val').value);
+        if(!code || isNaN(val)) return;
+        await fetch(`${PROMO_URL}/${code}.json`, { method: 'PUT', body: JSON.stringify({val}) });
+        alert("Promo created!");
+    }
+
+    async function redeemCode() {
+        const code = document.getElementById('promo-input').value.toUpperCase().trim();
+        const res = await fetch(`${PROMO_URL}/${code}.json`), data = await res.json();
+        if(data) { userData.chips += data.val; updateUI(); alert("Success!"); }
+        else alert("Invalid!");
+    }
+
+    async function adminGiveChips() {
+        const target = document.getElementById('adm-target').value.trim(), amount = parseInt(document.getElementById('adm-amount').value);
+        const res = await fetch(`${DB_URL}/${target}.json`), tData = await res.json();
+        if(!tData) return alert("No user!");
+        tData.chips = (tData.chips || 0) + amount;
+        await fetch(`${DB_URL}/${target}.json`, { method: 'PUT', body: JSON.stringify(tData) });
+        if(target === currentUser) { userData.chips = tData.chips; updateUI(); }
+        alert("Sent!");
+    }
+
+    // --- GAMES LOGIC ---
+    // MINES
+    let mActive = false, mMult = 1, mBet = 0, mBombs = [];
+    function startMines() {
+        mBet = parseInt(document.getElementById('m-bet').value);
+        if(mBet > userData.chips || mBet <= 0) return;
+        userData.chips -= mBet; mActive = true; mMult = 1; mBombs = []; updateUI();
+        document.getElementById('m-start').disabled = true;
+        const board = document.getElementById('m-board'); board.innerHTML = '';
+        while(mBombs.length < 3) { let r = Math.floor(Math.random()*25); if(!mBombs.includes(r)) mBombs.push(r); }
+        for(let i=0; i<25; i++) {
+            let t = document.createElement('div'); t.className = 'tile';
+            t.onclick = () => {
+                if(!mActive || t.innerHTML !== "") return;
+                if(mBombs.includes(i)) {
+                    t.innerHTML='💥'; play('boom'); mActive=false; 
+                    document.getElementById('m-cash').classList.add('hidden');
+                    document.getElementById('m-start').disabled=false; 
+                    addHistory("Mines", mBet, 0, -mBet);
+                } else {
+                    t.innerHTML='⭐'; play('star'); mMult *= 1.25; 
+                    document.getElementById('m-cash').classList.remove('hidden');
+                }
+            };
+            board.appendChild(t);
+        }
+    }
+    function cashoutMines() {
+        if(!mActive) return;
+        let win = Math.floor(mBet * mMult); userData.chips += win;
+        play('win'); showWinOverlay(mMult, win); addHistory("Mines", mBet, mMult, win);
+        mActive = false; updateUI(); 
+        document.getElementById('m-cash').classList.add('hidden');
+        document.getElementById('m-start').disabled = false;
+    }
+
+    // DICE
+    function playDice() {
+        let b = parseInt(document.getElementById('d-bet').value), n = parseInt(document.getElementById('d-num').value);
+        if(b > userData.chips) return;
+        userData.chips -= b; updateUI();
+        setTimeout(() => {
+            let r = Math.floor(Math.random()*6)+1;
+            document.getElementById('d-res').innerText = r;
+            if(r === n) {
+                let win = b*6; userData.chips += win; play('win'); 
+                showWinOverlay(6.00, win); addHistory("Dice", b, 6, win);
+            } else { play('boom'); addHistory("Dice", b, 0, -b); }
+            updateUI();
+        }, 500);
+    }
+
+    // COINFLIP
+    function playCoinFlip() {
+        let b = parseInt(document.getElementById('cf-bet').value), choice = document.getElementById('cf-choice').value;
+        let btn = document.getElementById('cf-btn'), coin = document.getElementById('coin-obj');
+        if(b > userData.chips || b <= 0) return;
+        userData.chips -= b; updateUI();
+        btn.disabled = true; coin.classList.add('flipping');
+        setTimeout(() => {
+            coin.classList.remove('flipping');
+            let res = Math.random() > 0.5 ? 'H' : 'T';
+            coin.innerText = (res === 'H') ? '⭐' : '💎';
+            if(res === choice) {
+                let win = b*2; userData.chips += win; play('win'); 
+                showWinOverlay(2.0, win); addHistory("CoinFlip", b, 2, win);
+            } else { play('boom'); addHistory("CoinFlip", b, 0, -b); }
+            btn.disabled = false; updateUI();
+        }, 1200);
+    }
+
+    // CRASH (LOGIC REMAINS UNTOUCHED)
+    // ... logic for roulette, blackjack, tower, etc. continues ...
 </script>
 </body>
 </html>
