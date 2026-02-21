@@ -174,7 +174,7 @@
         .card-ui { width: 70px; height: 100px; background: white; border-radius: 8px; color: black; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; font-size: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 1px solid #ddd; }
         .card-ui.red { color: #e74c3c; }
         .card-anim { animation: cardDeal 0.35s ease-out forwards; }
-        .card-flip-anim { animation: cardFlip 0.35s ease-out forwards; transform-style: preserve-3d; }
+        .card-flip-anim { animation: cardFlip 0.35s ease-out forwards; }
 
         /* Card deal animation */
         @keyframes cardDeal {
@@ -197,12 +197,18 @@
             transform-style: preserve-3d;
         }
         .bj-score { font-size: 14px; color: var(--orange); font-weight: bold; margin-top: 5px; }
-        .site-footer { width:100%; background:#111; border-top:1px solid #222; padding:10px 0 8px; text-align:center; }
-        .site-footer .footer-brand { color:#444; font-size:10px; margin-bottom:3px; letter-spacing:0.3px; }
-        .site-footer .footer-links a { color:#555; font-size:10px; text-decoration:underline; cursor:pointer; }
-        .site-footer .footer-links a:hover { color:#888; }
-        .site-footer .footer-disclaimer { color:#333; font-size:9px; margin-top:2px; }
-        #tc-modal iframe { background:#fff; }
+        .site-footer {
+            width: 100%;
+            background: var(--dark);
+            border-top: 1px solid #1e1e1e;
+            padding: 14px 0 12px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .site-footer .footer-brand { color: #3a3a3a; font-size: 10px; margin-bottom: 3px; }
+        .site-footer .footer-links a { color: #4a4a4a; font-size: 10px; text-decoration: underline; cursor: pointer; }
+        .site-footer .footer-links a:hover { color: #777; }
+        .site-footer .footer-disclaimer { color: #2e2e2e; font-size: 9px; margin-top: 2px; }
     </style>
 </head>
 <body onclick="initAudio()">
@@ -1012,6 +1018,11 @@
                 </div>
             </div>
         </div>
+    <footer class="site-footer">
+        <div class="footer-brand">&#169; 2026 https://swarmbet.github.io/Home</div>
+        <div class="footer-links"><a href="#" onclick="document.getElementById('tc-modal').style.display='flex'; return false;">Terms &amp; Conditions</a></div>
+        <div class="footer-disclaimer">For entertainment purposes only. No real money involved.</div>
+    </footer>
     </div>
 </div>
 
@@ -1236,7 +1247,7 @@
             const playerName = userData?.displayName || currentUser || "Unknown";
             const payout = isWin ? Math.floor(win) : 0;
             const embed = {
-                title: isWin ? ("WIN — " + game) : ("LOSS — " + game),
+                title: isWin ? ("WIN - " + game) : ("LOSS - " + game),
                 color: isWin ? 0x27ae60 : 0xe74c3c,
                 fields: [
                     { name: "Player", value: playerName, inline: true },
@@ -2461,18 +2472,11 @@
         }
     };
 </script>
-
-    <footer class="site-footer">
-        <div class="footer-brand">&#169; 2026 https://swarmbet.github.io/Home</div>
-        <div class="footer-links"><a href="#" onclick="document.getElementById('tc-modal').style.display='flex'; return false;">Terms &amp; Conditions</a></div>
-        <div class="footer-disclaimer">For entertainment purposes only. No real money involved.</div>
-    </footer>
-
     <div id="tc-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; justify-content:center; align-items:center;">
-        <div style="background:#111; border:1px solid #222; border-radius:10px; width:90vw; max-width:860px; height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,0.8);">
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-bottom:1px solid #222;">
-                <span style="color:#aaa; font-weight:600; font-size:14px;">Terms &amp; Conditions</span>
-                <button onclick="document.getElementById('tc-modal').style.display='none'" style="background:none; border:none; color:#666; font-size:20px; cursor:pointer; line-height:1; padding:0 4px;">&#x2715;</button>
+        <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; width:90vw; max-width:860px; height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,0.8);">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-bottom:1px solid #2a2a2a;">
+                <span style="color:#888; font-weight:600; font-size:14px;">Terms &amp; Conditions</span>
+                <button onclick="document.getElementById('tc-modal').style.display='none'" style="background:none; border:none; color:#555; font-size:20px; cursor:pointer; line-height:1; padding:0 4px;">&#x2715;</button>
             </div>
             <iframe src="data:application/pdf;base64,JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUgo+PgplbmRvYmoKMiAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYSAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyAvTmFtZSAvRjEgL1N1YnR5cGUgL1R5cGUxIC9UeXBlIC9Gb250Cj4+CmVuZG9iagozIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhLUJvbGQgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0YyIC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKNCAwIG9iago8PAovQ29udGVudHMgOSAwIFIgL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gL1BhcmVudCA4IDAgUiAvUmVzb3VyY2VzIDw8Ci9Gb250IDEgMCBSIC9Qcm9jU2V0IFsgL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSSBdCj4+IC9Sb3RhdGUgMCAvVHJhbnMgPDwKCj4+IAogIC9UeXBlIC9QYWdlCj4+CmVuZG9iago1IDAgb2JqCjw8Ci9Db250ZW50cyAxMCAwIFIgL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gL1BhcmVudCA4IDAgUiAvUmVzb3VyY2VzIDw8Ci9Gb250IDEgMCBSIC9Qcm9jU2V0IFsgL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSSBdCj4+IC9Sb3RhdGUgMCAvVHJhbnMgPDwKCj4+IAogIC9UeXBlIC9QYWdlCj4+CmVuZG9iago2IDAgb2JqCjw8Ci9QYWdlTW9kZSAvVXNlTm9uZSAvUGFnZXMgOCAwIFIgL1R5cGUgL0NhdGFsb2cKPj4KZW5kb2JqCjcgMCBvYmoKPDwKL0F1dGhvciAoXChhbm9ueW1vdXNcKSkgL0NyZWF0aW9uRGF0ZSAoRDoyMDI2MDIyMTAyNTUyNyswMCcwMCcpIC9DcmVhdG9yIChcKHVuc3BlY2lmaWVkXCkpIC9LZXl3b3JkcyAoKSAvTW9kRGF0ZSAoRDoyMDI2MDIyMTAyNTUyNyswMCcwMCcpIC9Qcm9kdWNlciAoUmVwb3J0TGFiIFBERiBMaWJyYXJ5IC0gXChvcGVuc291cmNlXCkpIAogIC9TdWJqZWN0IChcKHVuc3BlY2lmaWVkXCkpIC9UaXRsZSAoXChhbm9ueW1vdXNcKSkgL1RyYXBwZWQgL0ZhbHNlCj4+CmVuZG9iago4IDAgb2JqCjw8Ci9Db3VudCAyIC9LaWRzIFsgNCAwIFIgNSAwIFIgXSAvVHlwZSAvUGFnZXMKPj4KZW5kb2JqCjkgMCBvYmoKPDwKL0ZpbHRlciBbIC9BU0NJSTg1RGVjb2RlIC9GbGF0ZURlY29kZSBdIC9MZW5ndGggMTg2MQo+PgpzdHJlYW0KR2F0bTs5OTdnYyZBSVY6KSFtcjghXzN1Ol1tU1UwZSJUOS8rQmMwQkpRdWxGW15oTWtMU1g7NWhmamc+VjAqR2lncVg1WGE7LGpSbzAkXjArTkQxP3MnKWwycEMkY2RCKktvPGA8b11jVjZHMVBEXGI6KERrXTRMazlXTUlCKE1NbklPcllmImdicD9JV21dclU4NWtOLXJVbkgscV8lVjxcSkJHJTFMazcxQWpBWWRRKV5NamJDU21wU0xOSGlJXm4jT0tnYztBcEZIJj4jXSpSOGdjZFddWjItcyspWldfbnNsUCokMTk4c3BiTjtARWBkaWBVcERWP1ZcIyxQJ2ZjSl5qUzVYRy8yMi0nJ0kvQiVNaE9cRW5WJ00rLktkbGNCTzd0R2hfL2AzNFJCVW1tdEgpaE1hcG1eS05HKT9aIldVUEtaJyVPK1ZlLDFRcFI3SD1ZWU9XOlBwdT0/XEZZc086W282QSE/XEwkOl1kbDZXc2NFPjJaRThmMzZfUThaaD1yaFQ9TENpVDFAKyhgbjdIaTQhPywlLkxgZiw0OFNwUylLLkJfdEVdT29AXD9HT1dPJlZNNCU8NScsSkY/ZydIKDVqaFBVImtvXU1GLUdmL041Tls+IzVpdVJkNTYubDpAQkVMRWNpdVEyaSY5JCM/N2A0IyFeOUI3N19uREQwS1dFb2dRKyJiRTZvVkNxa1drdSZiVD5jSExDXXQpbmx0VkdAIigrR3ReOCEkWSxhWXAhY0BQLjpsK3EuOkIuRi9NJUVXSj9UKmhMNDk/QFk1SFxUIyxQVj9JNHNDXChFUzw4W2JOamhYOFg1MyNERmtkYzhyX0ZVW0txIjUqK3BeTCFJajk4WU5tJTFyKSlmSENiUiI4TCFxLilWPUtgPz9hQnA8PzohJkdrNF89aUcncXM1WCFCVGtDVCtLQkVPblBedXBRKjY2IzRqSDdLREpfWTI+dGZfJzViYSNIOllEQkJpVyg4MXU2KXBvWDVLaUNAaCRLSldxVCJqJSpDcGIiNmY0dXMuZmhQXyIrSmE7VVxXXUwtWVhRWCVEUyZDaV1iLyk1Q3FHRWA0O1UjNS84dVEnXUNjQU1CK1dbW1g8YFBtUEktVDUyLT5mQ1FpWSdcXkNvYFtoSDgrKnJYUUxOTTxhK2FIZS9zSltzU21UKEVxW1VnJGtoU1VjVCwmTEhAZ19naSwlRFdlRDonSlJBJl0tTUJDRkMqYUBjVmowWV0lJGE0XE9rUjY9VEdZKyxQT1JjSihOLWRiMGozLFswLjlER2onTSxcQnVXXi1FNV5jOjQ1UChybF9XVHUzNS1bLmVgOC1kOlYjSi42XGhGNzVVNipMUE4vPWFtOGJYWThTL2Q7K2U5P0xGMXJNUFQ3QEhoUENpUk5fPlErY1QhZjteZWI4dSszV2k3LjVwSj9RWlAhYExHbi5DbFInXTE+bWhxKmUsSClTTDdaMiFWVUdnJSNXUThLVjRFYTNKPiNuVkQuPC1iPE4+dEIrb0dnLS40Wl9yJl51Ly5WPFwnJF4qMz9OXiolPkM7MTBvRlptKD8zbkRxQFQrcF1Jby5HPyc+bG00O0dsU2FSPTFLWWJnM0ZmQUdeS1xhOFUuOyJXRSYjS0ZaXy1MXiNbdDxvVkliJVIuR19iMCstUyV1M0Y+XE5TTnNQXnRhKihBRlZCUCVHZz1XMD4+Sks8ZkAtbUA7RWJlTi9bSW1ibztYdG9aWC0pXy1wQzVrWzwibmcsaGA/QyNuLWwkXCxTXzVPUVFRZk0kbEpIL0RTNUg3UThNSmJvS1s+dUNGI0RyUUxRN1ZDNVU8Q0Q3IkNJbjtSLmFRLyVPZDsxYl1XXDo+dSFSOXJcOGciPjBMSCxDQlZuO10jWHMiXEhPNyE/OCtrLHJGNGxzXCdLKCZCUm1tI2FjSDxQSCh1Qig/QTtdUkU4TG5Ba3FxJVE6N1ZdYjtGbVdSLU42OWZOQ1A3WFBNXS1YNVBoUXAuMjk9b3FJIVdwKzdSSlJvV2VQPUUiNUxoXV9cSz5qLFpfQUkuVkdoNEFIWE07LDwkMlA3bicjYGhgZVo5cFRdTW9mMC4ycWk0XCE0ZUdgNCokalUjLT87QVFLamFUKzNkQ1NDaDpwWjQ5XVAiaCxLNUE4Y246ViEjSkQycllVMkJkSygxayI5SSxKN0YyaUJIRnVyI2VhIzNIL2Zgak8yTVc/blo1OW81bkwoJjhZakVDTEs5N0UlXytHOVJsbTlKbzlLTSIjXC5gN2FYRFFyPTtmcUBjO0VjT1guRTgxLjNzIyIuNG1OZVY5PzlsUDUmY3EwNXM7Y1BrLitDYGxcMjZAP2JMKyl1MUM4KjlCZCs/YW9ePiw8T0RfPldxZ2NpXkIpJlc0LDdVPzNKUzVCTydvImxHUFohIlw7QmwlLytIJVYhSCs4X2BbKzlmV1ImPi1TOzxjLDU8ZkxFOllgJzxNNCt+PmVuZHN0cmVhbQplbmRvYmoKMTAgMCBvYmoKPDwKL0ZpbHRlciBbIC9BU0NJSTg1RGVjb2RlIC9GbGF0ZURlY29kZSBdIC9MZW5ndGggNDI1Cj4+CnN0cmVhbQpHYXRtdTpKXGhtJkI0LDonXnF0RzozWC5ZbUZFTT1CVCtaQ0hLNS41NVlfOGQ+OUo8P0xQY1dVb2pqUSNdOkc/c2hnOG9fM091bz5RLCMoQDMrQipdW0slNyVhSVtAOyJXbWFvWCY5MTNgRypQWFhgTjNoPVUla2pELFgoZ1lxX2JXRV9dZFdPMlc1JCVDI0lwPGhBJDYnWC42M0BqZVRQUEVnbXBdV2VKLjgkUmZxYUI8J2FVaUdsSiw1PFFGT1s6JW9PYkZyKWJwJ2tUbilTZm1qLXNDWjksSjdUOWJiXkhraC8yTDdGUloiPXNxO3MyPGteNjxmJldbK1RkTFs6SiIvakFZNV5fNmUka3NSMnI3ZDh1LyElRUFhYThwbzxwWzJwSkMkPGBqOi9Ga3VtMEZdSWM3Y2FCLjMoK0FMa211Xl0rXSVIaj4+cEZcZDJTZFFgOk9eWi8lTzFSUSVeX29oWi82JDw9dV1eTSh1c0daLj5QWFQ3LUlgcWg3QzkvX3ROU0NqdVpjL2guZWFAXUZIJUtkW3B0UmkvUyFRSGllJzRQYFl+PmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDExCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MSAwMDAwMCBuIAowMDAwMDAwMTAyIDAwMDAwIG4gCjAwMDAwMDAyMDkgMDAwMDAgbiAKMDAwMDAwMDMyMSAwMDAwMCBuIAowMDAwMDAwNTI0IDAwMDAwIG4gCjAwMDAwMDA3MjggMDAwMDAgbiAKMDAwMDAwMDc5NiAwMDAwMCBuIAowMDAwMDAxMDc2IDAwMDAwIG4gCjAwMDAwMDExNDEgMDAwMDAgbiAKMDAwMDAwMzA5MyAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9JRCAKWzw2MGZlZjE4M2E0YThkN2QzYWNlOTA0NWVjMDhkNTUyYj48NjBmZWYxODNhNGE4ZDdkM2FjZTkwNDVlYzA4ZDU1MmI+XQolIFJlcG9ydExhYiBnZW5lcmF0ZWQgUERGIGRvY3VtZW50IC0tIGRpZ2VzdCAob3BlbnNvdXJjZSkKCi9JbmZvIDcgMCBSCi9Sb290IDYgMCBSCi9TaXplIDExCj4+CnN0YXJ0eHJlZgozNjA5CiUlRU9GCg==" style="flex:1; border:none; width:100%; background:#fff;" type="application/pdf"></iframe>
         </div>
