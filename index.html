@@ -297,6 +297,27 @@
             font-family: 'Courier New', monospace;
         }
         .pf-float-shield { font-size: 14px; }
+
+        /* ── Toast Notifications ── */
+        #toast-container { position:fixed; bottom:80px; right:18px; z-index:9000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+        .toast { background:#1a1a1a; border:1px solid #333; border-radius:10px; padding:12px 18px; font-size:13px; font-weight:600; color:white; max-width:280px; display:flex; align-items:center; gap:10px; animation:toastIn .3s ease; box-shadow:0 4px 20px rgba(0,0,0,0.5); pointer-events:all; }
+        .toast.toast-success { border-color:#27ae60; }
+        .toast.toast-error   { border-color:#e74c3c; }
+        .toast.toast-warn    { border-color:#f39c12; }
+        .toast.toast-info    { border-color:#3498db; }
+        .toast.toast-exit    { animation:toastOut .3s ease forwards; }
+        @keyframes toastIn  { from { opacity:0; transform:translateX(60px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes toastOut { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(60px); } }
+
+        /* ── Anticheat warning overlay ── */
+        #ac-warning { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.97); z-index:99999; align-items:center; justify-content:center; flex-direction:column; color:white; text-align:center; }
+        #ac-warning.show { display:flex; }
+        #ac-warning h1 { color:#e74c3c; font-size:36px; margin-bottom:12px; }
+        #ac-warning p  { color:#888; font-size:14px; max-width:400px; line-height:1.6; }
+
+        /* ── Balance pulse animation ── */
+        @keyframes balPulse { 0%{transform:scale(1)} 40%{transform:scale(1.25)} 100%{transform:scale(1)} }
+        .bal-pulse { animation: balPulse 0.4s ease; }
     </style>
 </head>
 <body onclick="initAudio()">
@@ -1262,6 +1283,8 @@
         const admins = ["discord_595767263374737409", "discord_863482425417662475"];
         if(admins.includes(currentUser)) document.getElementById('link-admin').classList.remove('hidden');
         buildRoulette(); updateUI();
+        // Start anticheat after a brief delay (let updateUI settle)
+        setTimeout(() => acInit(userData.chips), 1500);
         // Tower risk change → rebuild board preview
         document.getElementById('t-risk')?.addEventListener('change', function() {
             if(!tActive) { tCurrentRisk = this.value; buildTowerBoard(); }
@@ -1297,7 +1320,16 @@
 
     function updateUI() {
         if(!userData) return;
-        document.getElementById('display-chips').innerText = Math.floor(userData.chips);
+        const chips = Math.floor(userData.chips);
+        const el = document.getElementById('display-chips');
+        if(el && el.innerText !== String(chips)) {
+            el.innerText = chips;
+            el.classList.remove('bal-pulse');
+            void el.offsetWidth; // reflow
+            el.classList.add('bal-pulse');
+        }
+        // Sync anticheat snapshot on every legitimate updateUI call
+        if(_acEnabled) acLegitChange(userData.chips);
         fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) });
     }
 
@@ -1378,8 +1410,20 @@
 
     async function redeemCode() {
         const code = document.getElementById('promo-input').value.toUpperCase().trim();
+        if(!code) return toast('Enter a code!', 'warn');
+        // Check if this user already redeemed this code
+        const usedKey = `${PROMO_URL}/used/${currentUser}_${code}.json`;
+        const usedRes = await fetch(usedKey), usedData = await usedRes.json();
+        if(usedData) return toast('You already redeemed this code!', 'error');
         const res = await fetch(`${PROMO_URL}/${code}.json`), data = await res.json();
-        if(data) { userData.chips += data.val; updateUI(); alert("Success!"); } else alert("Invalid!");
+        if(data && data.val) {
+            // Mark as used
+            await fetch(usedKey, { method: 'PUT', body: JSON.stringify({ by: currentUser, at: Date.now() }) });
+            userData.chips += data.val; updateUI();
+            toast('✅ Code redeemed! +' + data.val + ' ⭐', 'success');
+        } else {
+            toast('Invalid or expired code!', 'error');
+        }
     }
 
     function admLog(msg) {
@@ -1463,13 +1507,15 @@
     });
 
     function startMines() {
+        if(!acquireBetLock()) return;
         mBet = clampBet(document.getElementById('m-bet').value);
         document.getElementById('m-bet').value = mBet;
-        if(mBet > userData.chips || mBet < MIN_BET) { alert('Min bet: ' + MIN_BET + ' ⭐'); return; }
+        if(mBet > userData.chips || mBet < MIN_BET) { toast('Not enough ⭐! Min bet: ' + MIN_BET, 'error'); releaseBetLock(); return; }
         const risk = document.getElementById('m-risk').value;
         const bombCount = mRiskMines[risk][mGridSize];
         userData.chips -= mBet; mActive = true; mMult = 1; mBombs = []; mGemsFound = 0; updateUI();
         addProfit('mines', -mBet);
+        releaseBetLock();
         document.getElementById('m-start').disabled = true;
         document.getElementById('m-bet').disabled = true;
         document.getElementById('m-risk').disabled = true;
@@ -1523,54 +1569,85 @@
 
     // DICE
     function playDice() {
+        if(!acquireBetLock()) return;
         let b = clampBet(document.getElementById('d-bet').value);
         document.getElementById('d-bet').value = b;
         let n = parseInt(document.getElementById('d-num').value);
-        if(b > userData.chips) return; userData.chips -= b; addProfit('dice', -b); updateUI();
-        setTimeout(() => { let r = Math.floor(Math.random()*6)+1; document.getElementById('d-res').innerText = r; if(r === n) { let win = b*6; userData.chips += win; play('win'); showWinOverlay(6.00, win); addHistory("Dice", b, 6, win); addProfit('dice', win); } else { play('boom'); addHistory("Dice", b, 0, -b); } updateUI(); }, 500);
+        if(b > userData.chips) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
+        userData.chips -= b; addProfit('dice', -b); updateUI();
+        const btn = document.querySelector('#game-dice .btn-play');
+        if(btn) btn.disabled = true;
+        setTimeout(() => {
+            let r = Math.floor(Math.random()*6)+1;
+            document.getElementById('d-res').innerText = r;
+            if(r === n) {
+                let win = b*6; userData.chips += win; play('win');
+                showWinOverlay(6.00, win); addHistory("Dice", b, 6, win); addProfit('dice', win);
+                toast('🎲 Rolled ' + r + '! You win +' + win + ' ⭐', 'success');
+            } else {
+                play('boom'); addHistory("Dice", b, 0, -b);
+                toast('🎲 Rolled ' + r + '. Better luck next time!', 'error');
+            }
+            if(btn) btn.disabled = false;
+            releaseBetLock(); updateUI();
+        }, 500);
     }
 
     // COINFLIP
     function playCoinFlip() {
+        if(!acquireBetLock()) return;
         let b = clampBet(document.getElementById('cf-bet').value), choice = document.getElementById('cf-choice').value;
         document.getElementById('cf-bet').value = b;
         let btn = document.getElementById('cf-btn'), coin = document.getElementById('coin-obj');
-        if(b > userData.chips || b < MIN_BET) return;
+        if(b > userData.chips || b < MIN_BET) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
         userData.chips -= b; addProfit('coinflip', -b); updateUI(); btn.disabled = true; coin.classList.add('flipping');
         setTimeout(() => {
             coin.classList.remove('flipping');
             let res = Math.random() > 0.5 ? 'H' : 'T'; coin.innerText = (res === 'H') ? '⭐' : '💎';
-            if(res === choice) { let win = b*2; userData.chips += win; play('win'); showWinOverlay(2.0, win); addHistory("CoinFlip", b, 2, win); addProfit('coinflip', win); }
-            else { play('boom'); addHistory("CoinFlip", b, 0, -b); }
-            btn.disabled = false; updateUI();
+            if(res === choice) {
+                let win = b*2; userData.chips += win; play('win');
+                showWinOverlay(2.0, win); addHistory("CoinFlip", b, 2, win); addProfit('coinflip', win);
+                toast((res==='H'?'⭐ Heads':'💎 Tails') + '! You win +' + win + ' ⭐', 'success');
+            } else {
+                play('boom'); addHistory("CoinFlip", b, 0, -b);
+                toast((res==='H'?'⭐ Heads':'💎 Tails') + ' — you lose!', 'error');
+            }
+            btn.disabled = false; releaseBetLock(); updateUI();
         }, 1200);
     }
 
     // CRASH
     let crashActive = false, crashMult = 1.0, crashInterval, crashBet = 0;
     function startCrash() {
+        if(!acquireBetLock()) return;
         crashBet = clampBet(document.getElementById('c-bet').value);
         document.getElementById('c-bet').value = crashBet;
-        if (crashBet > userData.chips || crashBet < MIN_BET || crashActive) return;
+        if (crashBet > userData.chips || crashBet < MIN_BET || crashActive) { releaseBetLock(); return; }
         userData.chips -= crashBet; addProfit('crash', -crashBet); updateUI(); crashActive = true; crashMult = 1.00;
         const display = document.getElementById('crash-display'); display.style.color = "white";
         document.getElementById('c-start').disabled = true; document.getElementById('c-cash').classList.remove('hidden');
         let crashPoint = (Math.random() < 0.05) ? 1.00 : (0.99 / (1 - Math.random()));
+        releaseBetLock();
         crashInterval = setInterval(() => {
             crashMult += 0.01 + (crashMult * 0.005);
             display.innerText = crashMult.toFixed(2) + "x";
             if (crashMult >= crashPoint) {
                 clearInterval(crashInterval); crashActive = false;
-                display.style.color = "var(--red)"; play('boom'); addHistory("Crash", crashBet, 0, -crashBet);
+                display.style.color = "var(--red)"; play('boom');
+                addHistory("Crash", crashBet, 0, -crashBet);
+                toast('💥 Crashed at ' + crashMult.toFixed(2) + 'x!', 'error');
                 document.getElementById('c-start').disabled = false; document.getElementById('c-cash').classList.add('hidden');
             }
         }, 100);
     }
     function cashoutCrash() {
-        if (!crashActive) return; clearInterval(crashInterval); crashActive = false;
+        if (!crashActive) return;
+        clearInterval(crashInterval); crashActive = false;
         let win = Math.floor(crashBet * crashMult); userData.chips += win;
         play('win'); showWinOverlay(crashMult, win); addHistory("Crash", crashBet, crashMult, win);
-        addProfit('crash', win); updateUI();
+        addProfit('crash', win);
+        toast('✈️ Cashed out at ' + crashMult.toFixed(2) + 'x! +' + win + ' ⭐', 'success');
+        updateUI();
         document.getElementById('c-start').disabled = false; document.getElementById('c-cash').classList.add('hidden');
     }
 
@@ -1598,7 +1675,7 @@
     }
     function clearRouletteBets() {
         if(isRSpinning) return; let refund = 0; for(let key in currentBets) { refund += currentBets[key]; userData.chips += currentBets[key]; }
-        addProfit('roulette', refund);
+        // Don't call addProfit here — we're just refunding chips, not a game outcome
         currentBets = {}; document.querySelectorAll('.cell, .btn-extra').forEach(el => { el.classList.remove('active'); const c = el.querySelector('.chip-overlay'); if(c) c.remove(); }); updateUI();
     }
     function spinRoulette() {
@@ -1732,11 +1809,13 @@
     }
 
     function startTower() {
+        if(!acquireBetLock()) return;
         tBet = clampBet(document.getElementById('t-bet').value);
         document.getElementById('t-bet').value = tBet;
-        if(tBet > userData.chips || tBet < MIN_BET) return;
+        if(tBet > userData.chips || tBet < MIN_BET) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
         tCurrentRisk = document.getElementById('t-risk').value;
         userData.chips -= tBet; addProfit('tower', -tBet); updateUI();
+        releaseBetLock();
         tActive = true; tLevel = 0;
         document.getElementById('t-start').disabled = true;
         document.getElementById('t-risk').disabled = true;
@@ -1871,10 +1950,12 @@
         document.getElementById('bj-dealer-count').textContent = bjDealer.length > 0 ? `(${bjDealer.length} cards)` : '';
     }
     function startBlackjack() {
+        if(!acquireBetLock()) return;
         bjBet = clampBet(document.getElementById('bj-bet').value);
         document.getElementById('bj-bet').value = bjBet;
-        if(bjBet > userData.chips) return;
+        if(bjBet > userData.chips) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
         userData.chips -= bjBet; addProfit('blackjack', -bjBet); updateUI(); bjActive=true; createDeck(); bjWinAmount=0; bjGambleAmount=0;
+        releaseBetLock();
         document.getElementById('bj-gamble-area').classList.add('hidden');
         bjHand = [deck.pop(), deck.pop()]; bjDealer = [deck.pop(), deck.pop()];
         document.getElementById('bj-player-hand').innerHTML = ''; document.getElementById('bj-dealer-hand').innerHTML = '';
@@ -1915,12 +1996,15 @@
             play('boom'); addHistory("Blackjack", bjBet, 0, -bjBet);
             document.getElementById('bj-status').textContent = '💥 BUST!';
             document.querySelector('.bj-area')?.classList.remove('win-glow'); document.querySelector('.bj-area')?.classList.add('lose-shake');
-        } else if(ds > 21 || ps === ds) {
-            if(ps === ds) { userData.chips += bjBet; addProfit('blackjack', bjBet); document.getElementById('bj-status').textContent = '🤝 TIE'; }
-            else { play('boom'); addHistory("Blackjack", bjBet, 0, -bjBet); document.getElementById('bj-status').textContent = '😞 DEALER WINS'; document.querySelector('.bj-area')?.classList.remove('win-glow'); document.querySelector('.bj-area')?.classList.add('lose-shake'); }
+        } else if(ps === ds) {
+            userData.chips += bjBet; addProfit('blackjack', bjBet);
+            addHistory("Blackjack", bjBet, 1, bjBet);
+            document.getElementById('bj-status').textContent = '🤝 TIE — Bet Returned';
+            updateUI();
         } else {
             play('boom'); addHistory("Blackjack", bjBet, 0, -bjBet);
             document.getElementById('bj-status').textContent = '😞 DEALER WINS';
+            document.querySelector('.bj-area')?.classList.remove('win-glow'); document.querySelector('.bj-area')?.classList.add('lose-shake');
         }
         document.getElementById('bj-deal-btn').classList.remove('hidden');
         document.getElementById('bj-hit-btn').classList.add('hidden');
@@ -1969,10 +2053,12 @@
         return s % 10;
     }
     function playBaccarat(side) {
+        if(!acquireBetLock()) return;
         const bet = clampBet(document.getElementById('bac-bet').value);
         document.getElementById('bac-bet').value = bet;
-        if(bet > userData.chips || bet < MIN_BET) return;
+        if(bet > userData.chips || bet < MIN_BET) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
         userData.chips -= bet; addProfit('baccarat', -bet); updateUI();
+        releaseBetLock();
         createDeck();
         document.getElementById('bac-player-hand').innerHTML = '';
         document.getElementById('bac-banker-hand').innerHTML = '';
@@ -2583,6 +2669,110 @@
     }
 
     // ══════════════════════════════════════════════
+    // TOAST NOTIFICATION SYSTEM
+    // ══════════════════════════════════════════════
+    function toast(msg, type = 'info', duration = 3000) {
+        const icons = { success:'✅', error:'❌', warn:'⚠️', info:'ℹ️' };
+        const container = document.getElementById('toast-container');
+        const el = document.createElement('div');
+        el.className = `toast toast-${type}`;
+        el.innerHTML = `<span>${icons[type]||''}</span><span>${msg}</span>`;
+        container.appendChild(el);
+        setTimeout(() => {
+            el.classList.add('toast-exit');
+            setTimeout(() => el.remove(), 320);
+        }, duration);
+    }
+
+    // ══════════════════════════════════════════════
+    // BET LOCK — prevents double-click chip drain
+    // ══════════════════════════════════════════════
+    let _betLocked = false;
+    let _lastBetTime = 0;
+    const BET_COOLDOWN_MS = 600;
+
+    function acquireBetLock() {
+        const now = Date.now();
+        if(_betLocked) { toast('Please wait…', 'warn', 1200); return false; }
+        if(now - _lastBetTime < BET_COOLDOWN_MS) { toast('Slow down!', 'warn', 1200); return false; }
+        _betLocked = true;
+        _lastBetTime = now;
+        return true;
+    }
+    function releaseBetLock() { _betLocked = false; }
+
+    // ══════════════════════════════════════════════
+    // ANTICHEAT ENGINE
+    // ══════════════════════════════════════════════
+    let _acChipsSnapshot = 0;
+    let _acEnabled = false;
+    let _acCheckInterval = null;
+    const _acAllowedSources = new Set(); // timestamps of legitimate chip changes
+
+    function acInit(chips) {
+        _acChipsSnapshot = chips;
+        _acEnabled = true;
+        // Check every 2s if chips match our snapshot
+        _acCheckInterval = setInterval(acCheck, 2000);
+        // DevTools size detection
+        setInterval(acDevToolsCheck, 1500);
+    }
+
+    function acLegitChange(newChips) {
+        _acChipsSnapshot = newChips;
+        _acAllowedSources.add(Date.now());
+    }
+
+    function acCheck() {
+        if(!_acEnabled || !userData) return;
+        const actual = Math.floor(userData.chips);
+        const snap = Math.floor(_acChipsSnapshot);
+        // Allow small floating point differences
+        if(Math.abs(actual - snap) > 1 && !_acPendingLegit()) {
+            acTrigger('Chip value tampered: expected ' + snap + ' got ' + actual);
+        }
+    }
+
+    function _acPendingLegit() {
+        const now = Date.now();
+        for(let ts of _acAllowedSources) {
+            if(now - ts < 4000) return true;
+        }
+        // Cleanup old entries
+        _acAllowedSources.forEach(ts => { if(now - ts > 4000) _acAllowedSources.delete(ts); });
+        return false;
+    }
+
+    let _devToolsOpen = false;
+    function acDevToolsCheck() {
+        const threshold = 160;
+        const widthDiff = window.outerWidth - window.innerWidth;
+        const heightDiff = window.outerHeight - window.innerHeight;
+        if((widthDiff > threshold || heightDiff > threshold) && !_devToolsOpen) {
+            _devToolsOpen = true;
+            toast('⚠️ DevTools detected — cheating is not allowed!', 'warn', 5000);
+        } else if(widthDiff <= threshold && heightDiff <= threshold) {
+            _devToolsOpen = false;
+        }
+    }
+
+    function acTrigger(reason) {
+        _acEnabled = false;
+        clearInterval(_acCheckInterval);
+        console.warn('[AC]', reason);
+        document.getElementById('ac-warning').classList.add('show');
+        // Reset to snapshot value and save
+        if(userData) {
+            userData.chips = _acChipsSnapshot;
+            fetch(`${DB_URL}/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(userData) });
+        }
+    }
+
+    // Wrap updateUI to track chip snapshots
+    const _origUpdateUI = updateUI;
+    // We'll patch updateUI after defining it — see below
+
+    // ══════════════════════════════════════════════
     // PROVABLY FAIR ENGINE
     // ══════════════════════════════════════════════
     const pfState = {
@@ -2788,6 +2978,16 @@
             <iframe src="data:application/pdf;base64,JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUgo+PgplbmRvYmoKMiAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYSAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyAvTmFtZSAvRjEgL1N1YnR5cGUgL1R5cGUxIC9UeXBlIC9Gb250Cj4+CmVuZG9iagozIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhLUJvbGQgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0YyIC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKNCAwIG9iago8PAovQ29udGVudHMgOSAwIFIgL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gL1BhcmVudCA4IDAgUiAvUmVzb3VyY2VzIDw8Ci9Gb250IDEgMCBSIC9Qcm9jU2V0IFsgL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSSBdCj4+IC9Sb3RhdGUgMCAvVHJhbnMgPDwKCj4+IAogIC9UeXBlIC9QYWdlCj4+CmVuZG9iago1IDAgb2JqCjw8Ci9Db250ZW50cyAxMCAwIFIgL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gL1BhcmVudCA4IDAgUiAvUmVzb3VyY2VzIDw8Ci9Gb250IDEgMCBSIC9Qcm9jU2V0IFsgL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSSBdCj4+IC9Sb3RhdGUgMCAvVHJhbnMgPDwKCj4+IAogIC9UeXBlIC9QYWdlCj4+CmVuZG9iago2IDAgb2JqCjw8Ci9QYWdlTW9kZSAvVXNlTm9uZSAvUGFnZXMgOCAwIFIgL1R5cGUgL0NhdGFsb2cKPj4KZW5kb2JqCjcgMCBvYmoKPDwKL0F1dGhvciAoXChhbm9ueW1vdXNcKSkgL0NyZWF0aW9uRGF0ZSAoRDoyMDI2MDIyMTAyNTUyNyswMCcwMCcpIC9DcmVhdG9yIChcKHVuc3BlY2lmaWVkXCkpIC9LZXl3b3JkcyAoKSAvTW9kRGF0ZSAoRDoyMDI2MDIyMTAyNTUyNyswMCcwMCcpIC9Qcm9kdWNlciAoUmVwb3J0TGFiIFBERiBMaWJyYXJ5IC0gXChvcGVuc291cmNlXCkpIAogIC9TdWJqZWN0IChcKHVuc3BlY2lmaWVkXCkpIC9UaXRsZSAoXChhbm9ueW1vdXNcKSkgL1RyYXBwZWQgL0ZhbHNlCj4+CmVuZG9iago4IDAgb2JqCjw8Ci9Db3VudCAyIC9LaWRzIFsgNCAwIFIgNSAwIFIgXSAvVHlwZSAvUGFnZXMKPj4KZW5kb2JqCjkgMCBvYmoKPDwKL0ZpbHRlciBbIC9BU0NJSTg1RGVjb2RlIC9GbGF0ZURlY29kZSBdIC9MZW5ndGggMTg2MQo+PgpzdHJlYW0KR2F0bTs5OTdnYyZBSVY6KSFtcjghXzN1Ol1tU1UwZSJUOS8rQmMwQkpRdWxGW15oTWtMU1g7NWhmamc+VjAqR2lncVg1WGE7LGpSbzAkXjArTkQxP3MnKWwycEMkY2RCKktvPGA8b11jVjZHMVBEXGI6KERrXTRMazlXTUlCKE1NbklPcllmImdicD9JV21dclU4NWtOLXJVbkgscV8lVjxcSkJHJTFMazcxQWpBWWRRKV5NamJDU21wU0xOSGlJXm4jT0tnYztBcEZIJj4jXSpSOGdjZFddWjItcyspWldfbnNsUCokMTk4c3BiTjtARWBkaWBVcERWP1ZcIyxQJ2ZjSl5qUzVYRy8yMi0nJ0kvQiVNaE9cRW5WJ00rLktkbGNCTzd0R2hfL2AzNFJCVW1tdEgpaE1hcG1eS05HKT9aIldVUEtaJyVPK1ZlLDFRcFI3SD1ZWU9XOlBwdT0/XEZZc086W282QSE/XEwkOl1kbDZXc2NFPjJaRThmMzZfUThaaD1yaFQ9TENpVDFAKyhgbjdIaTQhPywlLkxgZiw0OFNwUylLLkJfdEVdT29AXD9HT1dPJlZNNCU8NScsSkY/ZydIKDVqaFBVImtvXU1GLUdmL041Tls+IzVpdVJkNTYubDpAQkVMRWNpdVEyaSY5JCM/N2A0IyFeOUI3N19uREQwS1dFb2dRKyJiRTZvVkNxa1drdSZiVD5jSExDXXQpbmx0VkdAIigrR3ReOCEkWSxhWXAhY0BQLjpsK3EuOkIuRi9NJUVXSj9UKmhMNDk/QFk1SFxUIyxQVj9JNHNDXChFUzw4W2JOamhYOFg1MyNERmtkYzhyX0ZVW0txIjUqK3BeTCFJajk4WU5tJTFyKSlmSENiUiI4TCFxLilWPUtgPz9hQnA8PzohJkdrNF89aUcncXM1WCFCVGtDVCtLQkVPblBedXBRKjY2IzRqSDdLREpfWTI+dGZfJzViYSNIOllEQkJpVyg4MXU2KXBvWDVLaUNAaCRLSldxVCJqJSpDcGIiNmY0dXMuZmhQXyIrSmE7VVxXXUwtWVhRWCVEUyZDaV1iLyk1Q3FHRWA0O1UjNS84dVEnXUNjQU1CK1dbW1g8YFBtUEktVDUyLT5mQ1FpWSdcXkNvYFtoSDgrKnJYUUxOTTxhK2FIZS9zSltzU21UKEVxW1VnJGtoU1VjVCwmTEhAZ19naSwlRFdlRDonSlJBJl0tTUJDRkMqYUBjVmowWV0lJGE0XE9rUjY9VEdZKyxQT1JjSihOLWRiMGozLFswLjlER2onTSxcQnVXXi1FNV5jOjQ1UChybF9XVHUzNS1bLmVgOC1kOlYjSi42XGhGNzVVNipMUE4vPWFtOGJYWThTL2Q7K2U5P0xGMXJNUFQ3QEhoUENpUk5fPlErY1QhZjteZWI4dSszV2k3LjVwSj9RWlAhYExHbi5DbFInXTE+bWhxKmUsSClTTDdaMiFWVUdnJSNXUThLVjRFYTNKPiNuVkQuPC1iPE4+dEIrb0dnLS40Wl9yJl51Ly5WPFwnJF4qMz9OXiolPkM7MTBvRlptKD8zbkRxQFQrcF1Jby5HPyc+bG00O0dsU2FSPTFLWWJnM0ZmQUdeS1xhOFUuOyJXRSYjS0ZaXy1MXiNbdDxvVkliJVIuR19iMCstUyV1M0Y+XE5TTnNQXnRhKihBRlZCUCVHZz1XMD4+Sks8ZkAtbUA7RWJlTi9bSW1ibztYdG9aWC0pXy1wQzVrWzwibmcsaGA/QyNuLWwkXCxTXzVPUVFRZk0kbEpIL0RTNUg3UThNSmJvS1s+dUNGI0RyUUxRN1ZDNVU8Q0Q3IkNJbjtSLmFRLyVPZDsxYl1XXDo+dSFSOXJcOGciPjBMSCxDQlZuO10jWHMiXEhPNyE/OCtrLHJGNGxzXCdLKCZCUm1tI2FjSDxQSCh1Qig/QTtdUkU4TG5Ba3FxJVE6N1ZdYjtGbVdSLU42OWZOQ1A3WFBNXS1YNVBoUXAuMjk9b3FJIVdwKzdSSlJvV2VQPUUiNUxoXV9cSz5qLFpfQUkuVkdoNEFIWE07LDwkMlA3bicjYGhgZVo5cFRdTW9mMC4ycWk0XCE0ZUdgNCokalUjLT87QVFLamFUKzNkQ1NDaDpwWjQ5XVAiaCxLNUE4Y246ViEjSkQycllVMkJkSygxayI5SSxKN0YyaUJIRnVyI2VhIzNIL2Zgak8yTVc/blo1OW81bkwoJjhZakVDTEs5N0UlXytHOVJsbTlKbzlLTSIjXC5gN2FYRFFyPTtmcUBjO0VjT1guRTgxLjNzIyIuNG1OZVY5PzlsUDUmY3EwNXM7Y1BrLitDYGxcMjZAP2JMKyl1MUM4KjlCZCs/YW9ePiw8T0RfPldxZ2NpXkIpJlc0LDdVPzNKUzVCTydvImxHUFohIlw7QmwlLytIJVYhSCs4X2BbKzlmV1ImPi1TOzxjLDU8ZkxFOllgJzxNNCt+PmVuZHN0cmVhbQplbmRvYmoKMTAgMCBvYmoKPDwKL0ZpbHRlciBbIC9BU0NJSTg1RGVjb2RlIC9GbGF0ZURlY29kZSBdIC9MZW5ndGggNDI1Cj4+CnN0cmVhbQpHYXRtdTpKXGhtJkI0LDonXnF0RzozWC5ZbUZFTT1CVCtaQ0hLNS41NVlfOGQ+OUo8P0xQY1dVb2pqUSNdOkc/c2hnOG9fM091bz5RLCMoQDMrQipdW0slNyVhSVtAOyJXbWFvWCY5MTNgRypQWFhgTjNoPVUla2pELFgoZ1lxX2JXRV9dZFdPMlc1JCVDI0lwPGhBJDYnWC42M0BqZVRQUEVnbXBdV2VKLjgkUmZxYUI8J2FVaUdsSiw1PFFGT1s6JW9PYkZyKWJwJ2tUbilTZm1qLXNDWjksSjdUOWJiXkhraC8yTDdGUloiPXNxO3MyPGteNjxmJldbK1RkTFs6SiIvakFZNV5fNmUka3NSMnI3ZDh1LyElRUFhYThwbzxwWzJwSkMkPGBqOi9Ga3VtMEZdSWM3Y2FCLjMoK0FMa211Xl0rXSVIaj4+cEZcZDJTZFFgOk9eWi8lTzFSUSVeX29oWi82JDw9dV1eTSh1c0daLj5QWFQ3LUlgcWg3QzkvX3ROU0NqdVpjL2guZWFAXUZIJUtkW3B0UmkvUyFRSGllJzRQYFl+PmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDExCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MSAwMDAwMCBuIAowMDAwMDAwMTAyIDAwMDAwIG4gCjAwMDAwMDAyMDkgMDAwMDAgbiAKMDAwMDAwMDMyMSAwMDAwMCBuIAowMDAwMDAwNTI0IDAwMDAwIG4gCjAwMDAwMDA3MjggMDAwMDAgbiAKMDAwMDAwMDc5NiAwMDAwMCBuIAowMDAwMDAxMDc2IDAwMDAwIG4gCjAwMDAwMDExNDEgMDAwMDAgbiAKMDAwMDAwMzA5MyAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9JRCAKWzw2MGZlZjE4M2E0YThkN2QzYWNlOTA0NWVjMDhkNTUyYj48NjBmZWYxODNhNGE4ZDdkM2FjZTkwNDVlYzA4ZDU1MmI+XQolIFJlcG9ydExhYiBnZW5lcmF0ZWQgUERGIGRvY3VtZW50IC0tIGRpZ2VzdCAob3BlbnNvdXJjZSkKCi9JbmZvIDcgMCBSCi9Sb290IDYgMCBSCi9TaXplIDExCj4+CnN0YXJ0eHJlZgozNjA5CiUlRU9GCg==" style="flex:1; border:none; width:100%; background:#fff;" type="application/pdf"></iframe>
         </div>
     </div>
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Anticheat warning -->
+<div id="ac-warning">
+    <h1>⚠️ Cheat Detected</h1>
+    <p>Unauthorized modification of game data was detected. Your session has been locked.<br><br>If you believe this is a mistake, please reload the page.</p>
+    <button onclick="location.reload()" style="margin-top:24px;background:#e74c3c;border:none;color:white;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:900;cursor:pointer;">Reload</button>
+</div>
+
 <!-- Floating Provably Fair Button -->
 <div class="pf-float-btn" onclick="pfOpen()">
     <span class="pf-float-dot"></span>
