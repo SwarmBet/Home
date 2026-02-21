@@ -209,6 +209,52 @@
         .site-footer .footer-links a { color: #4a4a4a; font-size: 10px; text-decoration: underline; cursor: pointer; }
         .site-footer .footer-links a:hover { color: #777; }
         .site-footer .footer-disclaimer { color: #2e2e2e; font-size: 9px; margin-top: 2px; }
+
+        /* ── Provably Fair ── */
+        .pf-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.78); z-index:5000; justify-content:center; align-items:center; }
+        .pf-overlay.open { display:flex; }
+        .pf-modal { background:#0d0f12; border:1px solid #1f2937; border-radius:16px; width:520px; max-width:95vw; max-height:90vh; overflow-y:auto; font-family:'Courier New',monospace; }
+        .pf-header { display:flex; align-items:center; gap:10px; padding:18px 22px 14px; border-bottom:1px solid #1f2937; position:sticky; top:0; background:#0d0f12; z-index:2; }
+        .pf-shield { font-size:20px; color:#22c55e; }
+        .pf-title { font-size:18px; font-weight:800; color:#f0fdf4; flex:1; letter-spacing:-0.5px; }
+        .pf-close { background:none; border:none; color:#6b7280; cursor:pointer; font-size:20px; line-height:1; padding:0 4px; }
+        .pf-close:hover { color:#e2e8f0; }
+        .pf-tabs { display:flex; border-bottom:1px solid #1f2937; }
+        .pf-tab { flex:1; background:none; border:none; color:#6b7280; padding:11px 0; cursor:pointer; font-size:12px; letter-spacing:1px; border-bottom:2px solid transparent; transition:all .2s; text-transform:uppercase; font-family:inherit; }
+        .pf-tab.active { color:#22c55e; border-bottom:2px solid #22c55e; }
+        .pf-panel { padding:18px 22px; }
+        .pf-label { display:block; font-size:10px; font-weight:700; letter-spacing:1.5px; color:#4b5563; margin-bottom:6px; text-transform:uppercase; }
+        .pf-hint { font-size:12px; color:#6b7280; margin:0 0 10px; line-height:1.5; }
+        .pf-hash-box { background:#111827; border:1px solid #1f2937; border-radius:8px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+        .pf-hash-text { flex:1; color:#9ca3af; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .pf-copy-btn { background:none; border:none; cursor:pointer; color:#6b7280; padding:2px 6px; border-radius:4px; font-size:13px; transition:color .2s; }
+        .pf-copy-btn:hover { color:#22c55e; }
+        .pf-nonce-row { display:flex; justify-content:space-between; align-items:center; background:#0a0c10; border:1px solid #1f2937; border-radius:8px; padding:8px 14px; margin-bottom:12px; font-size:12px; }
+        .pf-nonce-label { color:#6b7280; }
+        .pf-nonce-badge { background:#14532d; color:#4ade80; font-size:13px; font-weight:700; padding:2px 10px; border-radius:99px; }
+        .pf-btn { width:100%; padding:11px; background:#111827; border:1px solid #1f2937; color:#e2e8f0; border-radius:8px; cursor:pointer; font-size:13px; transition:all .2s; font-family:inherit; margin-bottom:8px; }
+        .pf-btn:hover { border-color:#374151; }
+        .pf-btn-green { width:100%; padding:11px; background:#15803d; border:none; color:#fff; border-radius:8px; cursor:pointer; font-size:13px; font-weight:700; transition:all .2s; font-family:inherit; box-shadow:0 0 18px rgba(34,197,94,.18); }
+        .pf-btn-green:hover { background:#16a34a; }
+        .pf-input { width:100%; background:#111827; border:1px solid #1f2937; border-radius:8px; padding:10px 12px; color:#e2e8f0; font-family:inherit; font-size:12px; outline:none; box-sizing:border-box; margin-bottom:10px; }
+        .pf-input-row { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+        .pf-input-row .pf-input { margin-bottom:0; }
+        .pf-icon-btn { background:#111827; border:1px solid #1f2937; border-radius:8px; color:#6b7280; width:36px; height:36px; cursor:pointer; font-size:15px; flex-shrink:0; }
+        .pf-divider { height:1px; background:#1f2937; margin:4px 0 18px; }
+        .pf-result-box { background:#0a0c10; border:1px solid #14532d; border-radius:10px; padding:14px 16px; margin-top:12px; }
+        .pf-reveal-box { background:#0a0c10; border:1px solid #1d4ed8; border-radius:10px; padding:14px 16px; margin-top:12px; }
+        .pf-result-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+        .pf-result-title { font-size:13px; font-weight:700; color:#4ade80; }
+        .pf-roll-badge { background:#14532d; color:#4ade80; font-size:12px; font-weight:900; padding:3px 10px; border-radius:99px; }
+        .pf-row { display:flex; gap:10px; align-items:flex-start; margin-bottom:5px; }
+        .pf-rl { font-size:10px; color:#4b5563; width:50px; flex-shrink:0; padding-top:1px; text-transform:uppercase; }
+        .pf-rv { font-size:11px; color:#9ca3af; word-break:break-all; }
+        .pf-history-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid #111827; }
+        .pf-section { margin-bottom:18px; }
+        .pf-footer { padding:10px 22px; border-top:1px solid #111827; background:#0a0c10; }
+        .pf-footer-code { font-size:10px; color:#374151; }
+        .nav-item.pf-nav { color:#22c55e !important; }
+        .nav-item.pf-nav:hover { border-color:#22c55e !important; }
     </style>
 </head>
 <body onclick="initAudio()">
@@ -258,6 +304,7 @@
         <div class="nav-item" id="nav-history" onclick="showPage('history')">📜 Bet History</div>
         <div class="nav-item" id="nav-rakeback" onclick="showPage('rakeback')">🎁 Promo Codes</div>
         <div id="link-admin" class="nav-item hidden" onclick="showPage('admin')">⚙️ Admin Panel</div>
+        <div class="nav-item pf-nav" onclick="pfOpen()">🛡️ Fairness</div>
         <div style="margin-top: auto;">
             <div class="nav-item" onclick="logout()">🚪 Logout</div>
         </div>
@@ -2494,7 +2541,187 @@
         setTimeout(()=>bwBack(), 1200);
     }
 
+    // ══════════════════════════════════════════════
+    // PROVABLY FAIR ENGINE
+    // ══════════════════════════════════════════════
+    const pfState = {
+        serverSeed: '',
+        serverSeedHash: '',
+        prevServerSeed: null,
+        clientSeed: 'client-seed-' + Math.random().toString(36).slice(2,8),
+        nonce: 0,
+        history: [],
+        copied: null,
+        activeTab: 'seeds'
+    };
+
+    function pfBytesToHex(bytes) {
+        return Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+    function pfHexToBytes(hex) {
+        const a = new Uint8Array(hex.length/2);
+        for(let i=0;i<hex.length;i+=2) a[i/2]=parseInt(hex.slice(i,i+2),16);
+        return a;
+    }
+    function pfRandomHex(len=64){
+        const a=new Uint8Array(len/2); crypto.getRandomValues(a); return pfBytesToHex(a);
+    }
+    async function pfSha256(hex){
+        const h=await crypto.subtle.digest('SHA-256', pfHexToBytes(hex));
+        return pfBytesToHex(new Uint8Array(h));
+    }
+    async function pfHmac(key, msg){
+        const enc=new TextEncoder();
+        const ck=await crypto.subtle.importKey('raw',enc.encode(key),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+        const sig=await crypto.subtle.sign('HMAC',ck,enc.encode(msg));
+        return pfBytesToHex(new Uint8Array(sig));
+    }
+    function pfHmacToFloat(hmac){ return parseInt(hmac.slice(0,8),16)/0x100000000; }
+
+    // Public: call this instead of Math.random() from game code
+    async function pfRoll(){
+        const msg = `${pfState.clientSeed}:${pfState.nonce}`;
+        const hmac = await pfHmac(pfState.serverSeed, msg);
+        const float = pfHmacToFloat(hmac);
+        const roll = Math.floor(float*10000)/100;
+        const entry = {
+            serverSeedHash: pfState.serverSeedHash,
+            clientSeed: pfState.clientSeed,
+            nonce: pfState.nonce,
+            hmac, float, roll,
+            ts: new Date().toLocaleTimeString()
+        };
+        pfState.history.unshift(entry);
+        if(pfState.history.length>30) pfState.history.pop();
+        pfState.nonce++;
+        pfRenderNonce();
+        pfRenderResult(entry);
+        pfRenderHistory();
+        return float; // [0,1)
+    }
+
+    async function pfInit(){
+        const seed = pfRandomHex(64);
+        const hash = await pfSha256(seed);
+        pfState.serverSeed = seed;
+        pfState.serverSeedHash = hash;
+        pfState.nonce = 0;
+        document.getElementById('pf-hash-display').textContent = hash.slice(0,28)+'…';
+        document.getElementById('pf-client-input').value = pfState.clientSeed;
+        pfRenderNonce();
+    }
+
+    function pfRenderNonce(){
+        document.getElementById('pf-nonce-display').textContent = pfState.nonce;
+    }
+
+    function pfRenderResult(e){
+        document.getElementById('pf-result-area').innerHTML = `
+            <div class="pf-result-box">
+                <div class="pf-result-header">
+                    <span class="pf-result-title">Last Roll</span>
+                    <span class="pf-roll-badge">${e.roll.toFixed(2)}</span>
+                </div>
+                <div class="pf-row"><span class="pf-rl">HMAC</span><span class="pf-rv">${e.hmac.slice(0,26)}… <button class="pf-copy-btn" onclick="pfCopy('${e.hmac}','lhmac')">⧉</button></span></div>
+                <div class="pf-row"><span class="pf-rl">Nonce</span><span class="pf-rv">${e.nonce}</span></div>
+                <div class="pf-row"><span class="pf-rl">Float</span><span class="pf-rv">${e.float.toFixed(8)}</span></div>
+            </div>`;
+    }
+
+    function pfRenderHistory(){
+        const el = document.getElementById('pf-history-list');
+        if(!pfState.history.length){ el.innerHTML='<p class="pf-hint">No rolls yet.</p>'; return; }
+        el.innerHTML = pfState.history.map((h,i)=>`
+            <div class="pf-history-row">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="pf-roll-badge">${h.roll.toFixed(2)}</span>
+                    <div>
+                        <div style="font-size:11px;color:#9ca3af;">Nonce ${h.nonce} · ${h.ts}</div>
+                        <div style="font-size:11px;color:#6b7280;">${h.hmac.slice(0,22)}…</div>
+                    </div>
+                </div>
+                <button class="pf-copy-btn" onclick="pfCopy(JSON.stringify(pfState.history[${i}],null,2),'hist${i}')">⧉</button>
+            </div>`).join('');
+    }
+
+    async function pfRotate(){
+        const btn = document.getElementById('pf-rotate-btn');
+        btn.textContent='Rotating…'; btn.disabled=true;
+        pfState.prevServerSeed = { seed: pfState.serverSeed, hash: pfState.serverSeedHash, clientSeed: pfState.clientSeed, nonce: pfState.nonce };
+        const seed = pfRandomHex(64);
+        const hash = await pfSha256(seed);
+        pfState.serverSeed = seed;
+        pfState.serverSeedHash = hash;
+        pfState.nonce = 0;
+        document.getElementById('pf-hash-display').textContent = hash.slice(0,28)+'…';
+        pfRenderNonce();
+        // show revealed seed
+        const prev = pfState.prevServerSeed;
+        document.getElementById('pf-reveal-area').innerHTML = `
+            <div class="pf-reveal-box">
+                <span style="display:block;font-size:13px;font-weight:700;color:#60a5fa;margin-bottom:8px;">🔓 Previous Seed Revealed</span>
+                <div class="pf-row"><span class="pf-rl">Seed</span><span class="pf-rv">${prev.seed.slice(0,24)}… <button class="pf-copy-btn" onclick="pfCopy('${prev.seed}','prev')">⧉</button></span></div>
+                <div class="pf-row"><span class="pf-rl">Hash</span><span class="pf-rv">${prev.hash.slice(0,24)}…</span></div>
+                <p class="pf-hint" style="margin-top:6px;">SHA256(revealed seed) = hash you saw before — verify it independently!</p>
+            </div>`;
+        btn.textContent='⟳ Rotate Server Seed'; btn.disabled=false;
+    }
+
+    function pfUpdateClient(){
+        const v = document.getElementById('pf-client-input').value.trim();
+        if(v) { pfState.clientSeed = v; pfState.nonce = 0; pfRenderNonce(); }
+    }
+    function pfRandomizeClient(){
+        const v = 'client-'+pfRandomHex(8);
+        document.getElementById('pf-client-input').value = v;
+        pfState.clientSeed = v; pfState.nonce = 0; pfRenderNonce();
+    }
+
+    async function pfVerify(){
+        const seed = document.getElementById('pfv-seed').value.trim();
+        const client = document.getElementById('pfv-client').value.trim();
+        const nonce = parseInt(document.getElementById('pfv-nonce').value)||0;
+        if(!seed||!client){ document.getElementById('pfv-result').innerHTML='<p style="color:#ef4444;">Fill in all fields.</p>'; return; }
+        try {
+            const hmac = await pfHmac(seed, `${client}:${nonce}`);
+            const float = pfHmacToFloat(hmac);
+            const roll = Math.floor(float*10000)/100;
+            const hash = await pfSha256(seed);
+            document.getElementById('pfv-result').innerHTML = `
+                <div class="pf-result-box" style="margin-top:14px;">
+                    <div class="pf-result-header"><span class="pf-result-title">✓ Verified</span><span class="pf-roll-badge">${roll.toFixed(2)}</span></div>
+                    <div class="pf-row"><span class="pf-rl">HMAC</span><span class="pf-rv">${hmac.slice(0,28)}…</span></div>
+                    <div class="pf-row"><span class="pf-rl">Hash</span><span class="pf-rv">${hash.slice(0,28)}…</span></div>
+                    <div class="pf-row"><span class="pf-rl">Float</span><span class="pf-rv">${float.toFixed(8)}</span></div>
+                </div>`;
+        } catch(e) {
+            document.getElementById('pfv-result').innerHTML='<p style="color:#ef4444;">Verification failed.</p>';
+        }
+    }
+
+    function pfCopy(text, key){
+        navigator.clipboard.writeText(text);
+        // flash feedback via alert-less approach
+        const prev = pfState.copied;
+        pfState.copied = key;
+        setTimeout(()=>{ if(pfState.copied===key) pfState.copied=null; },1500);
+    }
+
+    function pfTab(t){
+        pfState.activeTab = t;
+        ['seeds','verify','history'].forEach(n=>{
+            document.getElementById('pftab-'+n).classList.toggle('active', n===t);
+            document.getElementById('pfpanel-'+n).style.display = n===t ? '' : 'none';
+        });
+        if(t==='history') pfRenderHistory();
+    }
+
+    function pfOpen(){ document.getElementById('pf-overlay').classList.add('open'); }
+    function pfClose(){ document.getElementById('pf-overlay').classList.remove('open'); }
+    function pfOverlayClick(e){ if(e.target===document.getElementById('pf-overlay')) pfClose(); }
+
     window.onload = async () => {
+        pfInit();
         if(window.location.hash && window.location.hash.includes('access_token')) {
             const handled = await handleDiscordCallback();
             if(handled) return;
@@ -2520,5 +2747,76 @@
             <iframe src="data:application/pdf;base64,JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUgo+PgplbmRvYmoKMiAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYSAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyAvTmFtZSAvRjEgL1N1YnR5cGUgL1R5cGUxIC9UeXBlIC9Gb250Cj4+CmVuZG9iagozIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhLUJvbGQgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0YyIC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKNCAwIG9iago8PAovQ29udGVudHMgOSAwIFIgL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gL1BhcmVudCA4IDAgUiAvUmVzb3VyY2VzIDw8Ci9Gb250IDEgMCBSIC9Qcm9jU2V0IFsgL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSSBdCj4+IC9Sb3RhdGUgMCAvVHJhbnMgPDwKCj4+IAogIC9UeXBlIC9QYWdlCj4+CmVuZG9iago1IDAgb2JqCjw8Ci9Db250ZW50cyAxMCAwIFIgL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gL1BhcmVudCA4IDAgUiAvUmVzb3VyY2VzIDw8Ci9Gb250IDEgMCBSIC9Qcm9jU2V0IFsgL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSSBdCj4+IC9Sb3RhdGUgMCAvVHJhbnMgPDwKCj4+IAogIC9UeXBlIC9QYWdlCj4+CmVuZG9iago2IDAgb2JqCjw8Ci9QYWdlTW9kZSAvVXNlTm9uZSAvUGFnZXMgOCAwIFIgL1R5cGUgL0NhdGFsb2cKPj4KZW5kb2JqCjcgMCBvYmoKPDwKL0F1dGhvciAoXChhbm9ueW1vdXNcKSkgL0NyZWF0aW9uRGF0ZSAoRDoyMDI2MDIyMTAyNTUyNyswMCcwMCcpIC9DcmVhdG9yIChcKHVuc3BlY2lmaWVkXCkpIC9LZXl3b3JkcyAoKSAvTW9kRGF0ZSAoRDoyMDI2MDIyMTAyNTUyNyswMCcwMCcpIC9Qcm9kdWNlciAoUmVwb3J0TGFiIFBERiBMaWJyYXJ5IC0gXChvcGVuc291cmNlXCkpIAogIC9TdWJqZWN0IChcKHVuc3BlY2lmaWVkXCkpIC9UaXRsZSAoXChhbm9ueW1vdXNcKSkgL1RyYXBwZWQgL0ZhbHNlCj4+CmVuZG9iago4IDAgb2JqCjw8Ci9Db3VudCAyIC9LaWRzIFsgNCAwIFIgNSAwIFIgXSAvVHlwZSAvUGFnZXMKPj4KZW5kb2JqCjkgMCBvYmoKPDwKL0ZpbHRlciBbIC9BU0NJSTg1RGVjb2RlIC9GbGF0ZURlY29kZSBdIC9MZW5ndGggMTg2MQo+PgpzdHJlYW0KR2F0bTs5OTdnYyZBSVY6KSFtcjghXzN1Ol1tU1UwZSJUOS8rQmMwQkpRdWxGW15oTWtMU1g7NWhmamc+VjAqR2lncVg1WGE7LGpSbzAkXjArTkQxP3MnKWwycEMkY2RCKktvPGA8b11jVjZHMVBEXGI6KERrXTRMazlXTUlCKE1NbklPcllmImdicD9JV21dclU4NWtOLXJVbkgscV8lVjxcSkJHJTFMazcxQWpBWWRRKV5NamJDU21wU0xOSGlJXm4jT0tnYztBcEZIJj4jXSpSOGdjZFddWjItcyspWldfbnNsUCokMTk4c3BiTjtARWBkaWBVcERWP1ZcIyxQJ2ZjSl5qUzVYRy8yMi0nJ0kvQiVNaE9cRW5WJ00rLktkbGNCTzd0R2hfL2AzNFJCVW1tdEgpaE1hcG1eS05HKT9aIldVUEtaJyVPK1ZlLDFRcFI3SD1ZWU9XOlBwdT0/XEZZc086W282QSE/XEwkOl1kbDZXc2NFPjJaRThmMzZfUThaaD1yaFQ9TENpVDFAKyhgbjdIaTQhPywlLkxgZiw0OFNwUylLLkJfdEVdT29AXD9HT1dPJlZNNCU8NScsSkY/ZydIKDVqaFBVImtvXU1GLUdmL041Tls+IzVpdVJkNTYubDpAQkVMRWNpdVEyaSY5JCM/N2A0IyFeOUI3N19uREQwS1dFb2dRKyJiRTZvVkNxa1drdSZiVD5jSExDXXQpbmx0VkdAIigrR3ReOCEkWSxhWXAhY0BQLjpsK3EuOkIuRi9NJUVXSj9UKmhMNDk/QFk1SFxUIyxQVj9JNHNDXChFUzw4W2JOamhYOFg1MyNERmtkYzhyX0ZVW0txIjUqK3BeTCFJajk4WU5tJTFyKSlmSENiUiI4TCFxLilWPUtgPz9hQnA8PzohJkdrNF89aUcncXM1WCFCVGtDVCtLQkVPblBedXBRKjY2IzRqSDdLREpfWTI+dGZfJzViYSNIOllEQkJpVyg4MXU2KXBvWDVLaUNAaCRLSldxVCJqJSpDcGIiNmY0dXMuZmhQXyIrSmE7VVxXXUwtWVhRWCVEUyZDaV1iLyk1Q3FHRWA0O1UjNS84dVEnXUNjQU1CK1dbW1g8YFBtUEktVDUyLT5mQ1FpWSdcXkNvYFtoSDgrKnJYUUxOTTxhK2FIZS9zSltzU21UKEVxW1VnJGtoU1VjVCwmTEhAZ19naSwlRFdlRDonSlJBJl0tTUJDRkMqYUBjVmowWV0lJGE0XE9rUjY9VEdZKyxQT1JjSihOLWRiMGozLFswLjlER2onTSxcQnVXXi1FNV5jOjQ1UChybF9XVHUzNS1bLmVgOC1kOlYjSi42XGhGNzVVNipMUE4vPWFtOGJYWThTL2Q7K2U5P0xGMXJNUFQ3QEhoUENpUk5fPlErY1QhZjteZWI4dSszV2k3LjVwSj9RWlAhYExHbi5DbFInXTE+bWhxKmUsSClTTDdaMiFWVUdnJSNXUThLVjRFYTNKPiNuVkQuPC1iPE4+dEIrb0dnLS40Wl9yJl51Ly5WPFwnJF4qMz9OXiolPkM7MTBvRlptKD8zbkRxQFQrcF1Jby5HPyc+bG00O0dsU2FSPTFLWWJnM0ZmQUdeS1xhOFUuOyJXRSYjS0ZaXy1MXiNbdDxvVkliJVIuR19iMCstUyV1M0Y+XE5TTnNQXnRhKihBRlZCUCVHZz1XMD4+Sks8ZkAtbUA7RWJlTi9bSW1ibztYdG9aWC0pXy1wQzVrWzwibmcsaGA/QyNuLWwkXCxTXzVPUVFRZk0kbEpIL0RTNUg3UThNSmJvS1s+dUNGI0RyUUxRN1ZDNVU8Q0Q3IkNJbjtSLmFRLyVPZDsxYl1XXDo+dSFSOXJcOGciPjBMSCxDQlZuO10jWHMiXEhPNyE/OCtrLHJGNGxzXCdLKCZCUm1tI2FjSDxQSCh1Qig/QTtdUkU4TG5Ba3FxJVE6N1ZdYjtGbVdSLU42OWZOQ1A3WFBNXS1YNVBoUXAuMjk9b3FJIVdwKzdSSlJvV2VQPUUiNUxoXV9cSz5qLFpfQUkuVkdoNEFIWE07LDwkMlA3bicjYGhgZVo5cFRdTW9mMC4ycWk0XCE0ZUdgNCokalUjLT87QVFLamFUKzNkQ1NDaDpwWjQ5XVAiaCxLNUE4Y246ViEjSkQycllVMkJkSygxayI5SSxKN0YyaUJIRnVyI2VhIzNIL2Zgak8yTVc/blo1OW81bkwoJjhZakVDTEs5N0UlXytHOVJsbTlKbzlLTSIjXC5gN2FYRFFyPTtmcUBjO0VjT1guRTgxLjNzIyIuNG1OZVY5PzlsUDUmY3EwNXM7Y1BrLitDYGxcMjZAP2JMKyl1MUM4KjlCZCs/YW9ePiw8T0RfPldxZ2NpXkIpJlc0LDdVPzNKUzVCTydvImxHUFohIlw7QmwlLytIJVYhSCs4X2BbKzlmV1ImPi1TOzxjLDU8ZkxFOllgJzxNNCt+PmVuZHN0cmVhbQplbmRvYmoKMTAgMCBvYmoKPDwKL0ZpbHRlciBbIC9BU0NJSTg1RGVjb2RlIC9GbGF0ZURlY29kZSBdIC9MZW5ndGggNDI1Cj4+CnN0cmVhbQpHYXRtdTpKXGhtJkI0LDonXnF0RzozWC5ZbUZFTT1CVCtaQ0hLNS41NVlfOGQ+OUo8P0xQY1dVb2pqUSNdOkc/c2hnOG9fM091bz5RLCMoQDMrQipdW0slNyVhSVtAOyJXbWFvWCY5MTNgRypQWFhgTjNoPVUla2pELFgoZ1lxX2JXRV9dZFdPMlc1JCVDI0lwPGhBJDYnWC42M0BqZVRQUEVnbXBdV2VKLjgkUmZxYUI8J2FVaUdsSiw1PFFGT1s6JW9PYkZyKWJwJ2tUbilTZm1qLXNDWjksSjdUOWJiXkhraC8yTDdGUloiPXNxO3MyPGteNjxmJldbK1RkTFs6SiIvakFZNV5fNmUka3NSMnI3ZDh1LyElRUFhYThwbzxwWzJwSkMkPGBqOi9Ga3VtMEZdSWM3Y2FCLjMoK0FMa211Xl0rXSVIaj4+cEZcZDJTZFFgOk9eWi8lTzFSUSVeX29oWi82JDw9dV1eTSh1c0daLj5QWFQ3LUlgcWg3QzkvX3ROU0NqdVpjL2guZWFAXUZIJUtkW3B0UmkvUyFRSGllJzRQYFl+PmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDExCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA2MSAwMDAwMCBuIAowMDAwMDAwMTAyIDAwMDAwIG4gCjAwMDAwMDAyMDkgMDAwMDAgbiAKMDAwMDAwMDMyMSAwMDAwMCBuIAowMDAwMDAwNTI0IDAwMDAwIG4gCjAwMDAwMDA3MjggMDAwMDAgbiAKMDAwMDAwMDc5NiAwMDAwMCBuIAowMDAwMDAxMDc2IDAwMDAwIG4gCjAwMDAwMDExNDEgMDAwMDAgbiAKMDAwMDAwMzA5MyAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9JRCAKWzw2MGZlZjE4M2E0YThkN2QzYWNlOTA0NWVjMDhkNTUyYj48NjBmZWYxODNhNGE4ZDdkM2FjZTkwNDVlYzA4ZDU1MmI+XQolIFJlcG9ydExhYiBnZW5lcmF0ZWQgUERGIGRvY3VtZW50IC0tIGRpZ2VzdCAob3BlbnNvdXJjZSkKCi9JbmZvIDcgMCBSCi9Sb290IDYgMCBSCi9TaXplIDExCj4+CnN0YXJ0eHJlZgozNjA5CiUlRU9GCg==" style="flex:1; border:none; width:100%; background:#fff;" type="application/pdf"></iframe>
         </div>
     </div>
+<!-- ══════════════ PROVABLY FAIR MODAL ══════════════ -->
+<div id="pf-overlay" class="pf-overlay" onclick="pfOverlayClick(event)">
+  <div class="pf-modal">
+    <div class="pf-header">
+      <span class="pf-shield">⬡</span>
+      <span class="pf-title">Provably Fair</span>
+      <button class="pf-close" onclick="pfClose()">✕</button>
+    </div>
+    <div class="pf-tabs">
+      <button class="pf-tab active" id="pftab-seeds" onclick="pfTab('seeds')">Seeds</button>
+      <button class="pf-tab" id="pftab-verify" onclick="pfTab('verify')">Verify</button>
+      <button class="pf-tab" id="pftab-history" onclick="pfTab('history')">History</button>
+    </div>
+
+    <!-- SEEDS -->
+    <div id="pfpanel-seeds" class="pf-panel">
+      <div class="pf-section">
+        <span class="pf-label">Server Seed (Hashed)</span>
+        <p class="pf-hint">The server seed is hidden until you rotate. Only the SHA-256 hash is shown to you.</p>
+        <div class="pf-hash-box">
+          <span class="pf-hash-text" id="pf-hash-display">Generating…</span>
+          <button class="pf-copy-btn" onclick="pfCopy(pfState.serverSeedHash,'hash')">⧉</button>
+        </div>
+        <div class="pf-nonce-row">
+          <span class="pf-nonce-label">Active Nonce</span>
+          <span class="pf-nonce-badge" id="pf-nonce-display">0</span>
+        </div>
+        <button class="pf-btn" id="pf-rotate-btn" onclick="pfRotate()">⟳ Rotate Server Seed</button>
+      </div>
+      <div class="pf-divider"></div>
+      <div class="pf-section">
+        <span class="pf-label">Client Seed</span>
+        <p class="pf-hint">You control this seed. Change it any time before playing.</p>
+        <div class="pf-input-row">
+          <input class="pf-input" id="pf-client-input" placeholder="client seed…" />
+          <button class="pf-icon-btn" onclick="pfRandomizeClient()" title="Randomize">⟳</button>
+        </div>
+        <button class="pf-btn-green" onclick="pfUpdateClient()">✓ Update Client Seed</button>
+      </div>
+      <div id="pf-result-area"></div>
+      <div id="pf-reveal-area"></div>
+    </div>
+
+    <!-- VERIFY -->
+    <div id="pfpanel-verify" class="pf-panel" style="display:none">
+      <div class="pf-section">
+        <span class="pf-label">Verify a Past Result</span>
+        <p class="pf-hint">After rotating seeds the old server seed is revealed. Enter it along with the client seed and nonce to reproduce any bet.</p>
+        <span class="pf-label" style="font-size:10px;">Revealed Server Seed</span>
+        <input class="pf-input" id="pfv-seed" placeholder="Enter revealed server seed…"/>
+        <span class="pf-label" style="font-size:10px;">Client Seed</span>
+        <input class="pf-input" id="pfv-client" placeholder="Enter client seed…"/>
+        <span class="pf-label" style="font-size:10px;">Nonce</span>
+        <input class="pf-input" id="pfv-nonce" placeholder="0" type="number"/>
+        <button class="pf-btn-green" onclick="pfVerify()">✓ Verify</button>
+        <div id="pfv-result"></div>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div id="pfpanel-history" class="pf-panel" style="display:none">
+      <span class="pf-label">Roll History (last 30)</span>
+      <div id="pf-history-list" style="max-height:380px;overflow-y:auto;"></div>
+    </div>
+
+    <div class="pf-footer">
+      <span class="pf-footer-code">HMAC_SHA256(server_seed, client_seed:nonce)</span>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
