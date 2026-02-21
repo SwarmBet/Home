@@ -387,13 +387,13 @@
                     <!-- BEE SWARM SECTION -->
                     <div class="section-title bee-section">🐝 BEE SWARM SIMULATOR</div>
                     <div class="games-grid" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="game-card" onclick="selectGame('killabug')" style="border-color: #1a2e00;">
-                            <div class="icon-box" style="background: linear-gradient(135deg, #0d1a00, #1e3300); border: 1px solid rgba(100,200,50,0.2);">
-                                <span style="font-size:46px; line-height:1; display:block; margin-top:6px;">🐛</span>
+                        <div class="game-card" onclick="selectGame('killabug')" style="border-color: #2a1a00;">
+                            <div class="icon-box" style="background: linear-gradient(135deg, #1a0a00, #3d1500); border: 1px solid rgba(231,76,60,0.18);">
+                                <span style="font-size:52px; filter:drop-shadow(0 0 8px rgba(231,76,60,0.5));">🐞</span>
                             </div>
-                            <h3 style="color:#7ecc2a;">Kill a Bug</h3>
-                            <p style="color:#888;">squash bugs for tokens</p>
-                            <button class="btn-card-play" style="border-color:#7ecc2a; color:#7ecc2a;">Play</button>
+                            <h3 style="color:#e74c3c;">Kill a Bug</h3>
+                            <p style="color:#888;">select · bet · eliminate</p>
+                            <button class="btn-card-play" style="border-color:#e74c3c; color:#e74c3c;">Play</button>
                         </div>
                         <div class="game-card" onclick="selectGame('royaljelly')" style="border-color: #2a2200;">
                             <div class="icon-box" style="background: linear-gradient(135deg, #1a1000, #3d2800); border: 1px solid rgba(241,196,15,0.15);">
@@ -968,132 +968,194 @@
                             </div>
                         </div>
 
-                        <!-- ══════════════ KILL A BUG GAME ══════════════ -->
+                        <!-- ══════════ KILL A BUG GAME ══════════ -->
                         <div id="game-killabug" class="hidden">
-                        <style>
-                            .kab-wrap { display:flex; gap:24px; padding:16px; flex-wrap:wrap; justify-content:center; align-items:flex-start; }
-                            .kab-controls { background:#0d1a00; border:1px solid #2a4400; border-radius:14px; padding:20px; width:230px; flex-shrink:0; }
-                            .kab-arena { flex:1; min-width:280px; display:flex; flex-direction:column; align-items:center; }
-                            .kab-title { font-size:11px; color:#7ecc2a; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; margin-top:14px; }
-                            .kab-bug-btns { display:flex; flex-direction:column; gap:8px; }
-                            .kab-bug-btn { background:#111; border:2px solid #2a4400; border-radius:10px; padding:10px 12px; cursor:pointer; text-align:left; transition:0.2s; display:flex; align-items:center; gap:10px; }
-                            .kab-bug-btn:hover, .kab-bug-btn.active { border-color:#7ecc2a; background:#0d2200; }
-                            .kab-bug-btn.active { box-shadow:0 0 10px rgba(126,204,42,0.3); }
-                            .kab-bug-icon { font-size:28px; line-height:1; }
-                            .kab-bug-info { flex:1; }
-                            .kab-bug-name { font-weight:900; font-size:13px; color:white; }
-                            .kab-bug-stats { font-size:10px; color:#888; }
-                            .kab-bet-row { display:flex; align-items:center; background:#0a0e06; border:1px solid #2a4400; border-radius:8px; overflow:hidden; }
-                            .kab-bet-row input { border:none; background:transparent; color:#7ecc2a; padding:10px 12px; font-size:14px; font-weight:600; flex:1; width:0; outline:none; text-align:center; }
-                            .kab-bet-btn { background:#1a2e00; border:none; color:#aaa; padding:8px 12px; cursor:pointer; font-size:12px; font-weight:700; }
-                            .kab-bet-btn:hover { background:#2a4400; color:white; }
-                            .kab-kill-btn { width:100%; background:linear-gradient(135deg,#5a1a00,#8b2a00); border:2px solid #cc4400; color:#ffaa55; padding:14px; border-radius:10px; font-size:16px; font-weight:900; cursor:pointer; margin-top:16px; letter-spacing:1px; transition:0.2s; text-shadow:0 1px 3px rgba(0,0,0,0.5); }
-                            .kab-kill-btn:hover:not(:disabled) { background:linear-gradient(135deg,#7a2400,#b03600); box-shadow:0 0 20px rgba(200,80,0,0.5); }
-                            .kab-kill-btn:disabled { opacity:0.5; cursor:not-allowed; }
+                            <style>
+                                .kab-container { max-width: 860px; margin: 0 auto; padding: 10px; }
+                                .kab-title { font-size: 36px; font-weight: 900; text-align: center; letter-spacing: 4px; color: white; margin-bottom: 4px; }
+                                .kab-title span { color: #e74c3c; }
+                                .kab-subtitle { text-align: center; color: #555; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 32px; }
+                                .kab-section-label { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #555; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
+                                .kab-section-label::after { content: ''; flex: 1; height: 1px; background: #1e1e1e; }
+                                .kab-bug-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
+                                .kab-bug-card { background: #0f0f0f; border: 1px solid #1e1e1e; border-radius: 14px; padding: 24px 14px 20px; text-align: center; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
+                                .kab-bug-card[data-bug="ladybug"]:hover, .kab-bug-card[data-bug="ladybug"].kab-active { border-color: #e74c3c; box-shadow: 0 0 20px rgba(231,76,60,0.2); transform: translateY(-3px); }
+                                .kab-bug-card[data-bug="spider"]:hover, .kab-bug-card[data-bug="spider"].kab-active { border-color: #9b59b6; box-shadow: 0 0 20px rgba(155,89,182,0.2); transform: translateY(-3px); }
+                                .kab-bug-card[data-bug="beetle"]:hover, .kab-bug-card[data-bug="beetle"].kab-active { border-color: #f39c12; box-shadow: 0 0 20px rgba(243,156,18,0.2); transform: translateY(-3px); }
+                                .kab-bug-emoji { font-size: 48px; margin-bottom: 10px; display: block; transition: transform 0.3s; }
+                                .kab-bug-card:hover .kab-bug-emoji, .kab-bug-card.kab-active .kab-bug-emoji { transform: scale(1.1) rotate(-5deg); }
+                                .kab-bug-name { font-size: 17px; font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; }
+                                .kab-bug-card[data-bug="ladybug"] .kab-bug-name { color: #e74c3c; }
+                                .kab-bug-card[data-bug="spider"] .kab-bug-name { color: #9b59b6; }
+                                .kab-bug-card[data-bug="beetle"] .kab-bug-name { color: #f39c12; }
+                                .kab-bug-meta { font-size: 12px; color: #555; line-height: 1.6; }
+                                .kab-bug-meta span { color: #ccc; font-weight: 600; }
+                                .kab-bug-badge { position: absolute; top: 9px; right: 9px; font-size: 9px; letter-spacing: 1px; padding: 3px 7px; border-radius: 4px; font-weight: 700; }
+                                .kab-bug-card[data-bug="ladybug"] .kab-bug-badge { background: rgba(231,76,60,0.2); color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); }
+                                .kab-bug-card[data-bug="spider"] .kab-bug-badge { background: rgba(155,89,182,0.2); color: #9b59b6; border: 1px solid rgba(155,89,182,0.3); }
+                                .kab-bug-card[data-bug="beetle"] .kab-bug-badge { background: rgba(243,156,18,0.2); color: #f39c12; border: 1px solid rgba(243,156,18,0.3); }
+                                .kab-sel-check { position: absolute; top: 9px; left: 9px; width: 18px; height: 18px; border-radius: 50%; background: #2ecc71; display: flex; align-items: center; justify-content: center; font-size: 10px; opacity: 0; transform: scale(0); transition: all 0.2s; }
+                                .kab-bug-card.kab-active .kab-sel-check { opacity: 1; transform: scale(1); }
+                                .kab-bet-area { background: #0f0f0f; border: 1px solid #1e1e1e; border-radius: 14px; padding: 22px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: end; }
+                                .kab-bet-label-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+                                .kab-bet-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #555; }
+                                .kab-min-badge { font-size: 11px; color: #555; background: #151515; padding: 3px 8px; border-radius: 4px; border: 1px solid #222; }
+                                .kab-min-badge span { color: var(--orange); }
+                                .kab-input-wrap { display: flex; align-items: center; background: #050505; border: 1px solid #2a2a2a; border-radius: 9px; overflow: hidden; transition: border-color 0.2s; }
+                                .kab-input-wrap:focus-within { border-color: var(--orange); box-shadow: 0 0 0 2px rgba(255,153,0,0.1); }
+                                .kab-currency { padding: 0 12px; color: #f1c40f; font-size: 17px; font-weight: 700; }
+                                .kab-input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 20px; padding: 12px 0; min-width: 0; }
+                                .kab-quickbtns { display: flex; gap: 5px; padding-right: 8px; }
+                                .kab-qbtn { background: #1a1a1a; border: 1px solid #2a2a2a; color: #555; font-size: 11px; font-weight: 700; padding: 5px 8px; border-radius: 5px; cursor: pointer; transition: all 0.15s; }
+                                .kab-qbtn:hover { background: rgba(255,153,0,0.1); border-color: var(--orange); color: var(--orange); }
+                                .kab-kill-btn { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; border-radius: 11px; padding: 0 36px; height: 54px; font-size: 16px; font-weight: 900; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+                                .kab-kill-btn:hover:not(:disabled) { transform: scale(1.04); box-shadow: 0 6px 20px rgba(231,76,60,0.4); }
+                                .kab-kill-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+                                .kab-error { font-size: 12px; color: #e74c3c; margin-top: 6px; display: none; }
+                                .kab-error.visible { display: block; }
+                                .kab-arena { background: #080808; border: 1px solid #1e1e1e; border-radius: 14px; min-height: 130px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; transition: border-color 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; }
+                                .kab-arena-idle { text-align: center; color: #333; }
+                                .kab-arena-idle .idle-icon { font-size: 40px; display: block; margin-bottom: 8px; }
+                                .kab-arena-idle p { font-size: 13px; letter-spacing: 1px; }
+                                .kab-arena-live { display: flex; align-items: center; gap: 20px; padding: 20px; }
+                                .kab-arena-bug { font-size: 64px; animation: kabBugFloat 2s ease-in-out infinite; }
+                                @keyframes kabBugFloat { 0%,100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-8px) rotate(5deg); } }
+                                .kab-arena-bug-name { font-size: 22px; font-weight: 900; letter-spacing: 3px; }
+                                .kab-arena-bug-desc { font-size: 12px; color: #555; margin-top: 4px; }
+                                .kab-arena-kill { text-align: center; padding: 20px; }
+                                .kab-splat { font-size: 52px; animation: kabSplat 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+                                @keyframes kabSplat { 0% { transform: scale(0) rotate(-20deg); } 100% { transform: scale(1) rotate(0deg); } }
+                                .kab-kill-text { font-size: 22px; font-weight: 900; letter-spacing: 4px; color: #e74c3c; margin-top: 8px; animation: kabPulse 0.5s ease; }
+                                @keyframes kabPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+                                .kab-tokens-area { margin-bottom: 20px; }
+                                .kab-tokens-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+                                .kab-tokens-title { font-size: 13px; font-weight: 700; color: var(--orange); letter-spacing: 1px; }
+                                .kab-tokens-total { font-size: 13px; color: #555; }
+                                .kab-tokens-total span { color: #f1c40f; font-weight: 700; }
+                                .kab-tokens-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+                                .kab-token { width: 64px; height: 64px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--kab-tok-color, #333); background: #0a0a0a; animation: kabTokenPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+                                @keyframes kabTokenPop { 0% { transform: scale(0) rotate(-10deg); opacity: 0; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+                                .kab-token .tok-mult { font-size: 15px; font-weight: 900; color: var(--kab-tok-color); font-family: monospace; }
+                                .kab-token .tok-label { font-size: 8px; color: #333; letter-spacing: 1px; }
+                                .kab-result-banner { background: #0f0f0f; border: 1px solid #1e1e1e; border-radius: 12px; padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; }
+                                .kab-result-banner.kab-win { border-color: #2ecc71; background: #091a0f; }
+                                .kab-result-banner.kab-loss { border-color: #e74c3c; background: #1a0909; }
+                                .kab-result-label { font-size: 11px; color: #555; letter-spacing: 2px; margin-bottom: 4px; }
+                                .kab-result-amount { font-size: 26px; font-weight: 900; }
+                                .kab-result-banner.kab-win .kab-result-amount { color: #2ecc71; }
+                                .kab-result-banner.kab-loss .kab-result-amount { color: #e74c3c; }
+                                .kab-result-mult { font-size: 12px; color: #555; margin-top: 2px; }
+                                .kab-result-mult span { color: #ccc; }
+                                .kab-history { margin-top: 20px; }
+                                .kab-history-header { font-size: 13px; font-weight: 700; color: #555; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+                                .kab-history-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                                .kab-history-table th { padding: 6px 10px; color: #333; text-align: left; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid #1a1a1a; }
+                                .kab-history-table td { padding: 6px 10px; border-bottom: 1px solid #111; }
+                                .kab-col-win { color: #2ecc71; font-weight: 700; font-family: monospace; }
+                                .kab-col-loss { color: #e74c3c; font-weight: 700; font-family: monospace; }
+                                .kab-col-mult { font-family: monospace; color: #3498db; }
+                                .kab-history-empty { color: #333; font-size: 12px; padding: 16px 10px; }
+                            </style>
+                            <div class="kab-container">
+                                <h2 class="kab-title">Kill A <span>Bug</span></h2>
+                                <p class="kab-subtitle">Select · Bet · Eliminate · Collect</p>
 
-                            .kab-bug-display { width:200px; height:200px; background:radial-gradient(circle, #0d1a00 0%, #050e00 100%); border:2px solid #2a4400; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:16px auto; position:relative; cursor:pointer; transition:0.1s; overflow:hidden; }
-                            .kab-bug-display:hover { border-color:#7ecc2a; box-shadow:0 0 20px rgba(126,204,42,0.2); }
-                            .kab-bug-sprite { font-size:80px; line-height:1; transition:transform 0.1s; position:relative; z-index:2; user-select:none; }
-                            .kab-bug-display.squash .kab-bug-sprite { animation: bugSquash 0.4s forwards; }
-                            @keyframes bugSquash {
-                                0%  { transform:scale(1) rotate(0deg); }
-                                20% { transform:scale(1.3) rotate(-10deg); }
-                                40% { transform:scale(0.3, 0.15) rotate(5deg); filter:blur(2px); }
-                                60% { transform:scale(0.2, 0.1) rotate(-3deg); opacity:0.6; }
-                                100%{ transform:scale(0.1) rotate(0deg); opacity:0; }
-                            }
-                            .kab-splat { position:absolute; font-size:100px; opacity:0; pointer-events:none; z-index:1; }
-                            .kab-splat.show { animation: splatReveal 0.5s 0.3s forwards; }
-                            @keyframes splatReveal { 0%{opacity:0;transform:scale(0.5)} 50%{opacity:0.8;transform:scale(1.2)} 100%{opacity:0.5;transform:scale(1)} }
-                            .kab-splat-particles { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-                            .kab-particle { position:absolute; width:6px; height:6px; border-radius:50%; background:#4a8a00; }
+                                <p class="kab-section-label">Choose your target</p>
+                                <div class="kab-bug-grid">
+                                    <div class="kab-bug-card" data-bug="ladybug" onclick="kabSelectBug('ladybug')">
+                                        <div class="kab-sel-check">✓</div>
+                                        <span class="kab-bug-badge">EASY</span>
+                                        <span class="kab-bug-emoji">🐞</span>
+                                        <div class="kab-bug-name">Ladybug</div>
+                                        <div class="kab-bug-meta"><span>5</span> tokens/kill<br>Min bet: <span>50</span> ⭐</div>
+                                    </div>
+                                    <div class="kab-bug-card" data-bug="spider" onclick="kabSelectBug('spider')">
+                                        <div class="kab-sel-check">✓</div>
+                                        <span class="kab-bug-badge">MEDIUM</span>
+                                        <span class="kab-bug-emoji">🕷️</span>
+                                        <div class="kab-bug-name">Spider</div>
+                                        <div class="kab-bug-meta"><span>7</span> tokens/kill<br>Min bet: <span>100</span> ⭐</div>
+                                    </div>
+                                    <div class="kab-bug-card" data-bug="beetle" onclick="kabSelectBug('beetle')">
+                                        <div class="kab-sel-check">✓</div>
+                                        <span class="kab-bug-badge">HARD</span>
+                                        <span class="kab-bug-emoji">🪲</span>
+                                        <div class="kab-bug-name">King Beetle</div>
+                                        <div class="kab-bug-meta"><span>15</span> tokens/kill<br>Min bet: <span>300</span> ⭐</div>
+                                    </div>
+                                </div>
 
-                            .kab-tokens-area { width:100%; max-width:480px; }
-                            .kab-tokens-title { font-size:13px; color:#888; text-align:center; margin-bottom:8px; }
-                            .kab-tokens-grid { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; min-height:48px; }
-                            .kab-token { background:linear-gradient(135deg,#1a2e00,#2a4400); border:1px solid #5a8a00; border-radius:8px; padding:6px 10px; font-size:13px; font-weight:900; color:#7ecc2a; display:inline-flex; align-items:center; gap:4px; animation:tokenPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275) forwards; opacity:0; transform:scale(0.5); }
-                            .kab-token.rare { background:linear-gradient(135deg,#1a1500,#2a2200); border-color:#f1c40f; color:#f1c40f; }
-                            .kab-token.epic { background:linear-gradient(135deg,#1a0028,#2a0040); border-color:#9b59b6; color:#c084fc; }
-                            .kab-token.legendary { background:linear-gradient(135deg,#1a0800,#2e1000); border-color:#ff6600; color:#ff9944; box-shadow:0 0 8px rgba(255,100,0,0.4); }
-                            @keyframes tokenPop { to{ opacity:1; transform:scale(1); } }
+                                <p class="kab-section-label">Place your bet</p>
+                                <div class="kab-bet-area">
+                                    <div>
+                                        <div class="kab-bet-label-row">
+                                            <span class="kab-bet-label">Bet Amount</span>
+                                            <span class="kab-min-badge" id="kabMinBet">Min: <span>50</span> ⭐</span>
+                                        </div>
+                                        <div class="kab-input-wrap" id="kabInputWrap">
+                                            <span class="kab-currency">⭐</span>
+                                            <input class="kab-input" id="kabBetInput" type="number" value="50" min="1">
+                                            <div class="kab-quickbtns">
+                                                <button class="kab-qbtn" onclick="kabMultBet(2)">×2</button>
+                                                <button class="kab-qbtn" onclick="kabMultBet(0.5)">½</button>
+                                                <button class="kab-qbtn" onclick="kabMaxBet()">MAX</button>
+                                            </div>
+                                        </div>
+                                        <div class="kab-error" id="kabError"></div>
+                                    </div>
+                                    <button class="kab-kill-btn" id="kabKillBtn" onclick="kabKill()" disabled>☠️ KILL IT</button>
+                                </div>
 
-                            .kab-result-bar { background:#0d1a00; border:1px solid #2a4400; border-radius:10px; padding:12px 18px; text-align:center; margin:12px 0; font-size:18px; font-weight:900; }
-                            .kab-result-bar.win { border-color:#27ae60; color:#2ecc71; background:#0a1f0a; }
-                            .kab-result-bar.lose { border-color:#e74c3c; color:#e74c3c; background:#1a0a0a; }
-                            .kab-mult-total { font-size:28px; color:#f1c40f; font-weight:900; text-align:center; }
-                            .kab-ground { width:100%; height:8px; background:linear-gradient(90deg,#1a2e00,#2a4400,#1a2e00); border-radius:4px; margin-top:8px; }
-                        </style>
-
-                        <div style="text-align:center; margin-bottom:4px;">
-                            <h2 style="color:#7ecc2a; margin:0; font-size:26px; letter-spacing:2px;">🐛 KILL A BUG</h2>
-                            <p style="color:#888; font-size:12px; margin:4px 0;">Select a bug, place your bet, and squash it for tokens!</p>
-                            <div class="profit-bar" style="max-width:420px; margin:8px auto;">
-                                <span style="color:#888;">Session Profit</span>
-                                <span class="profit-val zero" id="kab-profit">+0 ⭐</span>
-                            </div>
-                        </div>
-
-                        <div class="kab-wrap">
-                            <div class="kab-controls">
-                                <div class="kab-title">Choose Bug</div>
-                                <div class="kab-bug-btns">
-                                    <div class="kab-bug-btn active" id="kab-btn-ladybug" onclick="kabSelectBug('ladybug')">
-                                        <span class="kab-bug-icon">🐞</span>
-                                        <div class="kab-bug-info">
-                                            <div class="kab-bug-name">Ladybug</div>
-                                            <div class="kab-bug-stats">5 tokens · min 50 ⭐</div>
+                                <p class="kab-section-label">Arena</p>
+                                <div class="kab-arena" id="kabArena">
+                                    <div class="kab-arena-idle" id="kabArenaIdle">
+                                        <span class="idle-icon">🎯</span>
+                                        <p>Select a bug target above to begin</p>
+                                    </div>
+                                    <div class="kab-arena-live hidden" id="kabArenaLive">
+                                        <div class="kab-arena-bug" id="kabArenaBug">🐞</div>
+                                        <div>
+                                            <div class="kab-arena-bug-name" id="kabArenaBugName">LADYBUG</div>
+                                            <div class="kab-arena-bug-desc">Ready to be eliminated</div>
                                         </div>
                                     </div>
-                                    <div class="kab-bug-btn" id="kab-btn-spider" onclick="kabSelectBug('spider')">
-                                        <span class="kab-bug-icon">🕷️</span>
-                                        <div class="kab-bug-info">
-                                            <div class="kab-bug-name">Spider</div>
-                                            <div class="kab-bug-stats">7 tokens · min 100 ⭐</div>
-                                        </div>
-                                    </div>
-                                    <div class="kab-bug-btn" id="kab-btn-kingbeetle" onclick="kabSelectBug('kingbeetle')">
-                                        <span class="kab-bug-icon">🦗</span>
-                                        <div class="kab-bug-info">
-                                            <div class="kab-bug-name">King Beetle</div>
-                                            <div class="kab-bug-stats">15 tokens · min 300 ⭐</div>
-                                        </div>
+                                    <div class="kab-arena-kill hidden" id="kabArenaKill">
+                                        <div class="kab-splat">💀</div>
+                                        <div class="kab-kill-text">ELIMINATED!</div>
                                     </div>
                                 </div>
 
-                                <div class="kab-title" style="margin-top:18px;">Bet Amount</div>
-                                <div class="kab-bet-row">
-                                    <span style="color:#888; padding:0 8px;">⭐</span>
-                                    <input type="number" id="kab-bet" value="50" min="50">
-                                    <button class="kab-bet-btn" onclick="document.getElementById('kab-bet').value=Math.max(kabGetMinBet(),Math.floor(parseInt(document.getElementById('kab-bet').value||50)/2))">½</button>
-                                    <button class="kab-bet-btn" onclick="document.getElementById('kab-bet').value=Math.min(5000,parseInt(document.getElementById('kab-bet').value||50)*2)">2×</button>
+                                <div class="kab-tokens-area hidden" id="kabTokensArea">
+                                    <div class="kab-tokens-header">
+                                        <span class="kab-tokens-title">⚡ Tokens Collected</span>
+                                        <span class="kab-tokens-total" id="kabTokensTotal">Total multiplier: <span>0×</span></span>
+                                    </div>
+                                    <div class="kab-tokens-grid" id="kabTokensGrid"></div>
+                                    <div class="kab-result-banner" id="kabResultBanner">
+                                        <div>
+                                            <div class="kab-result-label" id="kabResultLabel">REWARD</div>
+                                            <div class="kab-result-amount" id="kabResultAmount">+0</div>
+                                            <div class="kab-result-mult" id="kabResultMult"></div>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div style="font-size:11px;color:#555;letter-spacing:1px;margin-bottom:6px;">NEW BALANCE</div>
+                                            <div style="font-family:monospace;font-size:18px;color:#f1c40f" id="kabNewBalance">0</div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <button class="kab-kill-btn" id="kab-kill-btn" onclick="playKillABug()">🔨 KILL!</button>
-
-                                <div class="profit-bar" style="margin-top:14px; margin-bottom:0;">
-                                    <span style="color:#888; font-size:11px;">Total Mult</span>
-                                    <span id="kab-mult-label" style="color:#f1c40f; font-weight:900;">—</span>
-                                </div>
-                            </div>
-
-                            <div class="kab-arena">
-                                <div class="kab-bug-display" id="kab-bug-display" onclick="playKillABug()">
-                                    <div class="kab-splat" id="kab-splat">💚</div>
-                                    <div class="kab-splat-particles" id="kab-particles"></div>
-                                    <span class="kab-bug-sprite" id="kab-bug-sprite">🐞</span>
-                                </div>
-                                <div class="kab-ground"></div>
-
-                                <div id="kab-result-bar" class="kab-result-bar" style="display:none; width:100%; max-width:420px;"></div>
-
-                                <div class="kab-tokens-area" style="margin-top:14px;">
-                                    <div class="kab-tokens-title" id="kab-tokens-title" style="display:none;">Tokens Collected</div>
-                                    <div class="kab-tokens-grid" id="kab-tokens-grid"></div>
+                                <div class="kab-history">
+                                    <div class="kab-history-header">Recent Kills</div>
+                                    <table class="kab-history-table">
+                                        <thead><tr><th>Bug</th><th>Bet</th><th>Total ×</th><th>Reward</th><th>Balance</th></tr></thead>
+                                        <tbody id="kabHistoryBody"><tr><td colspan="5" class="kab-history-empty">No kills yet. Select a bug and start hunting!</td></tr></tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                        </div>
-                        <!-- ══ END KILL A BUG ══ -->
+                        <!-- ══════════ END KILL A BUG ══════════ -->
+
+                        <div id="game-beequip" class="hidden">
                             <style>
                                 .bw-wrap { display:flex; gap:30px; padding:10px; flex-wrap:wrap; }
                                 .bw-left { flex:1; min-width:280px; }
@@ -1478,6 +1540,7 @@
         document.getElementById('game-'+g).classList.remove('hidden');
         if(g==='royaljelly') rjInit();
         if(g==='tower') buildTowerBoard();
+        if(g==='killabug') kabInit();
     }
 
     function backToMenu() {
@@ -1929,13 +1992,7 @@
                 // mults[i] where i=0 is floor 1 (bottom, lowest mult), i=8 is top (highest mult)
                 // Visual order: i=8 renders first (top of board), i=0 renders last (bottom)
                 // So badge should show mults[i] — floor i reached = mult mults[i]
-                if(j === 0) {
-                    const badge = document.createElement('span');
-                    badge.className = 'tw-tile-badge';
-                    badge.id = `t-badge-${i}`;
-                    badge.textContent = 'x' + mults[i].toFixed(2);
-                    tile.appendChild(badge);
-                }
+                // multiplier badges hidden
                 row.appendChild(tile);
             }
             board.appendChild(row);
@@ -2455,10 +2512,11 @@
                 resultEl.className = 'rj-result win';
                 resultEl.innerHTML = `🌹 YOUR BEE WINS! +${win} ⭐ <span style="color:#aaa;font-size:13px;">(bet × ${playerBee.coins} coins × 0.02 = ${mult.toFixed(2)}×)</span><br><small>${playerBee.name} (${playerBee.coins}) beats ${botBee.name} (${botBee.coins})</small>`;
             } else if(playerBee.coins === botBee.coins) {
-                userData.chips += bet; addProfit('royaljelly', bet);
+                const halfBet = Math.floor(bet / 2);
+                userData.chips += halfBet; addProfit('royaljelly', halfBet);
                 resultEl.className = 'rj-result';
                 resultEl.style.background = '#1a1a00'; resultEl.style.border = '2px solid #f1c40f';
-                resultEl.innerHTML = `🤝 TIE! Bet returned.<br><small>${playerBee.name} = ${botBee.name} (${playerBee.coins} coins each)</small>`;
+                resultEl.innerHTML = `🤝 TIE! Half bet returned: +${halfBet} ⭐<br><small>${playerBee.name} = ${botBee.name} (${playerBee.coins} coins each)</small>`;
             } else {
                 play('boom');
                 addHistory("Royal Jelly", bet, 0, -bet);
@@ -3103,185 +3161,150 @@
         }
     };
 
-    // ══════════════════════════════════════════
-    // KILL A BUG GAME
-    // ══════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
+    //  KILL A BUG GAME
+    // ═══════════════════════════════════════════════════════════
     const KAB_BUGS = {
-        ladybug: {
-            icon: '🐞', tokens: 5, minBet: 50,
-            table: [
-                { mult: 0.1, w: 25 }, { mult: 0.2, w: 20 }, { mult: 0.3, w: 15 },
-                { mult: 0.4, w: 12 }, { mult: 0.5, w: 10 }, { mult: 0.6, w: 7 },
-                { mult: 1.0, w: 5 },  { mult: 2.0, w: 3 },  { mult: 5.0, w: 2.6 },
-                { mult: 10,  w: 0.4 }
-            ]
-        },
-        spider: {
-            icon: '🕷️', tokens: 7, minBet: 100,
-            table: [
-                { mult: 0.1, w: 20 }, { mult: 0.2, w: 18 }, { mult: 0.3, w: 15 },
-                { mult: 0.4, w: 12 }, { mult: 0.5, w: 10 }, { mult: 0.6, w: 8 },
-                { mult: 1.0, w: 6 },  { mult: 2.0, w: 5 },  { mult: 5.0, w: 5.8 },
-                { mult: 10,  w: 0.2 }
-            ]
-        },
-        kingbeetle: {
-            icon: '🦗', tokens: 15, minBet: 300,
-            table: [
-                { mult: 0.1, w: 15 }, { mult: 0.2, w: 14 }, { mult: 0.3, w: 12 },
-                { mult: 0.4, w: 10 }, { mult: 0.5, w: 9 },  { mult: 0.6, w: 8 },
-                { mult: 1.0, w: 7 },  { mult: 2.0, w: 6 },  { mult: 5.0, w: 7.8 },
-                { mult: 10,  w: 0.2 }
-            ]
-        }
+        ladybug: { emoji:'🐞', name:'LADYBUG', label:'Ladybug', tokens:5, minBet:50, color:'#e74c3c',
+            weights:[{mult:0.1,prob:25},{mult:0.2,prob:20},{mult:0.3,prob:15},{mult:0.4,prob:12},{mult:0.5,prob:10},{mult:0.6,prob:7},{mult:1,prob:5},{mult:2,prob:3},{mult:5,prob:2.6},{mult:10,prob:0.2}] },
+        spider: { emoji:'🕷️', name:'SPIDER', label:'Spider', tokens:7, minBet:100, color:'#9b59b6',
+            weights:[{mult:0.1,prob:20},{mult:0.2,prob:18},{mult:0.3,prob:15},{mult:0.4,prob:12},{mult:0.5,prob:10},{mult:0.6,prob:8},{mult:1,prob:6},{mult:2,prob:5},{mult:5,prob:5.8},{mult:10,prob:0.2}] },
+        beetle: { emoji:'🪲', name:'KING BEETLE', label:'King Beetle', tokens:15, minBet:300, color:'#f39c12',
+            weights:[{mult:0.1,prob:15},{mult:0.2,prob:14},{mult:0.3,prob:12},{mult:0.4,prob:10},{mult:0.5,prob:9},{mult:0.6,prob:8},{mult:1,prob:7},{mult:2,prob:6},{mult:5,prob:7.8},{mult:10,prob:0.2}] }
     };
-    let kabCurrentBug = 'ladybug';
+    let kabSelectedBug = null;
+    let kabAnimating = false;
+    let kabHistoryRows = [];
 
-    function kabSelectBug(bug) {
-        kabCurrentBug = bug;
-        document.querySelectorAll('.kab-bug-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('kab-btn-' + bug).classList.add('active');
-        const icon = KAB_BUGS[bug].icon;
-        document.getElementById('kab-bug-sprite').textContent = icon;
-        const minBet = KAB_BUGS[bug].minBet;
-        const curBet = parseInt(document.getElementById('kab-bet').value) || 0;
-        if(curBet < minBet) document.getElementById('kab-bet').value = minBet;
-        // reset UI
-        document.getElementById('kab-result-bar').style.display = 'none';
-        document.getElementById('kab-tokens-grid').innerHTML = '';
-        document.getElementById('kab-tokens-title').style.display = 'none';
-        document.getElementById('kab-mult-label').textContent = '—';
-        const display = document.getElementById('kab-bug-display');
-        display.classList.remove('squash');
-        document.getElementById('kab-splat').classList.remove('show');
-        document.getElementById('kab-particles').innerHTML = '';
+    function kabInit() {
+        kabSelectedBug = null;
+        kabAnimating = false;
+        document.querySelectorAll('.kab-bug-card').forEach(c => c.classList.remove('kab-active'));
+        document.getElementById('kabArenaIdle').classList.remove('hidden');
+        document.getElementById('kabArenaLive').classList.add('hidden');
+        document.getElementById('kabArenaKill').classList.add('hidden');
+        document.getElementById('kabTokensArea').classList.add('hidden');
+        document.getElementById('kabKillBtn').disabled = true;
+        const arena = document.getElementById('kabArena');
+        arena.style.borderColor = '';
+        arena.style.boxShadow = '';
     }
 
-    function kabGetMinBet() { return KAB_BUGS[kabCurrentBug].minBet; }
+    function kabSelectBug(bugKey) {
+        if (kabAnimating) return;
+        kabSelectedBug = bugKey;
+        const bug = KAB_BUGS[bugKey];
+        document.querySelectorAll('.kab-bug-card').forEach(c => c.classList.remove('kab-active'));
+        document.querySelector(`.kab-bug-card[data-bug="${bugKey}"]`).classList.add('kab-active');
+        document.getElementById('kabArenaIdle').classList.add('hidden');
+        document.getElementById('kabArenaKill').classList.add('hidden');
+        document.getElementById('kabArenaLive').classList.remove('hidden');
+        document.getElementById('kabArenaBug').textContent = bug.emoji;
+        document.getElementById('kabArenaBugName').textContent = bug.name;
+        document.getElementById('kabArenaBugName').style.color = bug.color;
+        const arena = document.getElementById('kabArena');
+        arena.style.borderColor = bug.color + '44';
+        arena.style.boxShadow = `0 0 24px ${bug.color}15`;
+        document.getElementById('kabMinBet').innerHTML = `Min: <span>${bug.minBet}</span> ⭐`;
+        const betVal = parseFloat(document.getElementById('kabBetInput').value);
+        if (betVal < bug.minBet) document.getElementById('kabBetInput').value = bug.minBet;
+        document.getElementById('kabKillBtn').disabled = false;
+        document.getElementById('kabTokensArea').classList.add('hidden');
+        document.getElementById('kabError').classList.remove('visible');
+    }
 
-    function kabRollToken(bug) {
-        const table = KAB_BUGS[bug].table;
-        const total = table.reduce((s, e) => s + e.w, 0);
+    function kabMultBet(f) {
+        const inp = document.getElementById('kabBetInput');
+        let v = Math.round((parseFloat(inp.value) || 0) * f);
+        if (v < 1) v = 1;
+        if (v > userData.chips) v = userData.chips;
+        inp.value = v;
+    }
+
+    function kabMaxBet() { document.getElementById('kabBetInput').value = userData.chips; }
+
+    function kabWeightedRandom(weights) {
+        const total = weights.reduce((s,w) => s+w.prob, 0);
         let r = Math.random() * total;
-        for(const entry of table) {
-            r -= entry.w;
-            if(r <= 0) return entry.mult;
+        for (const w of weights) { r -= w.prob; if (r <= 0) return w.mult; }
+        return weights[weights.length-1].mult;
+    }
+
+    function kabTokenColor(m) {
+        if (m >= 10) return '#f1c40f';
+        if (m >= 5) return '#e67e22';
+        if (m >= 2) return '#3498db';
+        if (m >= 1) return '#2ecc71';
+        return '#555';
+    }
+
+    async function kabKill() {
+        if (!kabSelectedBug || kabAnimating) return;
+        const bug = KAB_BUGS[kabSelectedBug];
+        const betRaw = parseFloat(document.getElementById('kabBetInput').value);
+        const errEl = document.getElementById('kabError');
+        errEl.classList.remove('visible');
+        if (isNaN(betRaw) || betRaw < bug.minBet) {
+            errEl.textContent = `Minimum bet for ${bug.label} is ${bug.minBet} ⭐`;
+            errEl.classList.add('visible'); return;
         }
-        return table[0].mult;
-    }
-
-    function kabTokenClass(mult) {
-        if(mult >= 10) return 'kab-token legendary';
-        if(mult >= 5)  return 'kab-token epic';
-        if(mult >= 2)  return 'kab-token rare';
-        return 'kab-token';
-    }
-
-    function kabSpawnParticles() {
-        const container = document.getElementById('kab-particles');
-        container.innerHTML = '';
-        for(let i = 0; i < 14; i++) {
-            const p = document.createElement('div');
-            p.className = 'kab-particle';
-            const angle = (Math.random() * 360) * Math.PI / 180;
-            const dist = 40 + Math.random() * 60;
-            const x = 50 + Math.cos(angle) * dist;
-            const y = 50 + Math.sin(angle) * dist;
-            p.style.cssText = `left:50%;top:50%;transform:translate(-50%,-50%);background:${Math.random()>0.5?'#7ecc2a':'#4a8a00'};animation:none;transition:all 0.4s ease;`;
-            container.appendChild(p);
-            setTimeout(() => { p.style.left = x+'%'; p.style.top = y+'%'; p.style.opacity='0'; }, 50);
+        if (betRaw > userData.chips) {
+            errEl.textContent = `Not enough chips.`;
+            errEl.classList.add('visible'); return;
         }
-    }
-
-    function playKillABug() {
-        const btn = document.getElementById('kab-kill-btn');
-        if(btn.disabled) return;
-        const bet = clampBet(document.getElementById('kab-bet').value);
-        document.getElementById('kab-bet').value = bet;
-        const minBet = KAB_BUGS[kabCurrentBug].minBet;
-        if(bet < minBet) { toast('Minimum bet for this bug is ' + minBet + ' ⭐!', 'error'); return; }
-        if(bet > userData.chips) { toast('Not enough ⭐!', 'error'); return; }
-        if(!acquireBetLock()) return;
-
-        btn.disabled = true;
-        document.getElementById('kab-bug-display').style.pointerEvents = 'none';
-        userData.chips -= bet; addProfit('killabug', -bet); updateUI(); releaseBetLock();
-
-        // Reset UI
-        document.getElementById('kab-result-bar').style.display = 'none';
-        document.getElementById('kab-tokens-grid').innerHTML = '';
-        document.getElementById('kab-tokens-title').style.display = 'none';
-        document.getElementById('kab-mult-label').textContent = '—';
-
-        // Animate squash
-        const display = document.getElementById('kab-bug-display');
-        display.classList.remove('squash');
-        document.getElementById('kab-splat').classList.remove('show');
-        document.getElementById('kab-splat').textContent = '💚';
-        void display.offsetWidth; // reflow
-        display.classList.add('squash');
-        kabSpawnParticles();
-
-        setTimeout(() => {
-            document.getElementById('kab-splat').classList.add('show');
-        }, 300);
-
-        // Roll tokens
-        const bugData = KAB_BUGS[kabCurrentBug];
+        const bet = Math.floor(betRaw);
+        kabAnimating = true;
+        document.getElementById('kabKillBtn').disabled = true;
+        document.getElementById('kabTokensArea').classList.add('hidden');
+        userData.chips -= bet;
+        addProfit('killabug', -bet);
+        updateUI();
+        document.getElementById('kabArenaLive').classList.add('hidden');
+        document.getElementById('kabArenaIdle').classList.add('hidden');
+        document.getElementById('kabArenaKill').classList.remove('hidden');
+        await new Promise(r => setTimeout(r, 700));
         const tokens = [];
-        for(let i = 0; i < bugData.tokens; i++) {
-            tokens.push(kabRollToken(kabCurrentBug));
+        for (let i = 0; i < bug.tokens; i++) tokens.push(kabWeightedRandom(bug.weights));
+        const totalMult = tokens.reduce((s,m) => s+m, 0);
+        const reward = parseFloat((totalMult * bet).toFixed(2));
+        const isWin = reward >= bet;
+        const area = document.getElementById('kabTokensArea');
+        const grid = document.getElementById('kabTokensGrid');
+        area.classList.remove('hidden');
+        grid.innerHTML = '';
+        for (let i = 0; i < tokens.length; i++) {
+            await new Promise(r => setTimeout(r, 80));
+            const m = tokens[i];
+            const color = kabTokenColor(m);
+            const tok = document.createElement('div');
+            tok.className = 'kab-token';
+            tok.style.setProperty('--kab-tok-color', color);
+            tok.innerHTML = `<div class="tok-mult">${m}×</div><div class="tok-label">TOKEN</div>`;
+            grid.appendChild(tok);
         }
-        const totalMult = tokens.reduce((s, m) => s + m, 0);
-        const win = Math.floor(bet * totalMult);
-
-        setTimeout(() => {
-            // Show tokens with stagger
-            const grid = document.getElementById('kab-tokens-grid');
-            document.getElementById('kab-tokens-title').style.display = 'block';
-            tokens.forEach((mult, i) => {
-                setTimeout(() => {
-                    const tok = document.createElement('div');
-                    tok.className = kabTokenClass(mult);
-                    tok.style.animationDelay = '0s';
-                    tok.innerHTML = `<span>🍯</span><span>${mult}×</span>`;
-                    grid.appendChild(tok);
-                }, i * 80);
-            });
-
-            // Show result
-            setTimeout(() => {
-                document.getElementById('kab-mult-label').textContent = totalMult.toFixed(2) + '×';
-                const resultBar = document.getElementById('kab-result-bar');
-                resultBar.style.display = 'block';
-
-                if(win > 0) {
-                    userData.chips += win; play('win');
-                    addProfit('killabug', win);
-                    addHistory('Kill a Bug', bet, totalMult, win);
-                    updateUI();
-                    resultBar.className = 'kab-result-bar win';
-                    resultBar.innerHTML = `🐛 Squashed! Total: <strong>${totalMult.toFixed(2)}×</strong> → <strong>+${win} ⭐</strong>`;
-                    showWinOverlay(totalMult, win);
-                } else {
-                    addHistory('Kill a Bug', bet, totalMult, -bet);
-                    resultBar.className = 'kab-result-bar lose';
-                    resultBar.innerHTML = `💔 Tough luck! Total mult: <strong>${totalMult.toFixed(2)}×</strong> — not enough to profit.`;
-                }
-
-                // Reset bug display for next round
-                setTimeout(() => {
-                    display.classList.remove('squash');
-                    document.getElementById('kab-splat').classList.remove('show');
-                    document.getElementById('kab-particles').innerHTML = '';
-                    document.getElementById('kab-bug-sprite').textContent = bugData.icon;
-                    btn.disabled = false;
-                    document.getElementById('kab-bug-display').style.pointerEvents = 'auto';
-                }, 800);
-            }, bugData.tokens * 80 + 200);
-        }, 700);
-    }
-</script>
+        await new Promise(r => setTimeout(r, 200));
+        document.getElementById('kabTokensTotal').innerHTML = `Total multiplier: <span>${totalMult.toFixed(2)}×</span>`;
+        const banner = document.getElementById('kabResultBanner');
+        banner.className = `kab-result-banner ${isWin ? 'kab-win' : 'kab-loss'}`;
+        document.getElementById('kabResultLabel').textContent = isWin ? '🎉 REWARD' : '💸 REWARD';
+        document.getElementById('kabResultAmount').textContent = `+${reward.toLocaleString()}`;
+        document.getElementById('kabResultMult').innerHTML = `<span>${totalMult.toFixed(2)}×</span> on <span>${bet.toLocaleString()}</span> bet`;
+        userData.chips += reward;
+        addProfit('killabug', reward);
+        updateUI();
+        document.getElementById('kabNewBalance').textContent = userData.chips.toLocaleString();
+        // history
+        kabHistoryRows.unshift({bug, bet, totalMult, reward, bal: userData.chips, isWin});
+        if (kabHistoryRows.length > 20) kabHistoryRows.pop();
+        document.getElementById('kabHistoryBody').innerHTML = kabHistoryRows.map(row =>
+            `<tr><td>${row.bug.emoji}</td><td style="font-family:monospace;font-size:12px">${row.bet.toLocaleString()}</td><td class="kab-col-mult">${row.totalMult.toFixed(2)}×</td><td class="${row.isWin?'kab-col-win':'kab-col-loss'}">+${row.reward.toLocaleString()}</td><td style="font-family:monospace;font-size:12px;color:#555">${row.bal.toLocaleString()}</td></tr>`
+        ).join('');
+        await new Promise(r => setTimeout(r, 600));
+        document.getElementById('kabKillBtn').disabled = false;
+        kabAnimating = false;
+        document.getElementById('kabArenaKill').classList.add('hidden');
+        document.getElementById('kabArenaLive').classList.remove('hidden');
+    }</script>
     <div id="tc-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; justify-content:center; align-items:center;">
         <div style="background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; width:90vw; max-width:860px; height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,0.8);">
             <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-bottom:1px solid #2a2a2a;">
