@@ -790,7 +790,8 @@
                             <style>
                                 .rj-wrap { display:flex; gap:20px; flex-wrap:wrap; padding:10px; justify-content:center; }
                                 .rj-card { background:#111; border:2px solid #333; border-radius:16px; padding:20px; text-align:center; min-width:180px; flex:1; max-width:220px; position:relative; }
-                                .rj-bee-icon { font-size:48px; margin-bottom:8px; }
+                                .rj-bee-icon { font-size:48px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; min-height:56px; }
+                                .rj-bee-icon img { width:56px; height:56px; object-fit:contain; image-rendering:pixelated; }
                                 .rj-bee-name { font-size:16px; font-weight:900; color:#f1c40f; }
                                 .rj-bee-rarity { font-size:11px; text-transform:uppercase; letter-spacing:1px; margin:4px 0; }
                                 .rj-bee-coins { font-size:20px; font-weight:bold; }
@@ -824,7 +825,7 @@
                             <div class="rj-wrap">
                                 <div class="rj-card rj-bee-card-anim" id="rj-player-card">
                                     <div style="font-size:11px; color:#888; margin-bottom:8px;">YOUR BEE</div>
-                                    <div class="rj-bee-icon" id="rj-p-icon">🐝</div>
+                                    <div class="rj-bee-icon" id="rj-p-icon"><img src="https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/30/Bumble_Bee.png/revision/latest" style="opacity:0.3;filter:grayscale(1)" alt="?"></div>
                                     <div class="rj-bee-name" id="rj-p-name">???</div>
                                     <div class="rj-bee-rarity" id="rj-p-rarity">—</div>
                                     <div class="rj-bee-coins" id="rj-p-coins">— coins</div>
@@ -832,7 +833,7 @@
                                 <div class="rj-vs">VS</div>
                                 <div class="rj-card rj-bee-card-anim" id="rj-bot-card">
                                     <div style="font-size:11px; color:#888; margin-bottom:8px;">BOT BEE</div>
-                                    <div class="rj-bee-icon" id="rj-b-icon">🤖</div>
+                                    <div class="rj-bee-icon" id="rj-b-icon"><img src="https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/30/Bumble_Bee.png/revision/latest" style="opacity:0.3;filter:grayscale(1)" alt="?"></div>
                                     <div class="rj-bee-name" id="rj-b-name">???</div>
                                     <div class="rj-bee-rarity" id="rj-b-rarity">—</div>
                                     <div class="rj-bee-coins" id="rj-b-coins">— coins</div>
@@ -1979,46 +1980,46 @@
     // ROYAL JELLY
     const RJ_BEES = {
         rare: [
-            { name:'Bomber Bee', coins:80, icon:'💣' },
-            { name:'Brave Bee', coins:85, icon:'🦁' },
-            { name:'Bumble Bee', coins:85, icon:'🐝' },
-            { name:'Cool Bee', coins:90, icon:'😎' },
-            { name:'Hasty Bee', coins:75, icon:'⚡' },
-            { name:'Looker Bee', coins:80, icon:'👁' },
-            { name:'Rad Bee', coins:85, icon:'🎸' },
-            { name:'Rascal Bee', coins:80, icon:'😏' },
-            { name:'Stubborn Bee', coins:85, icon:'💪' }
+            { name:'Bomber Bee', coins:80, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/7/7a/Bomber_Bee.png/revision/latest' },
+            { name:'Brave Bee', coins:85, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/1/10/Brave_Bee.png/revision/latest' },
+            { name:'Bumble Bee', coins:85, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/30/Bumble_Bee.png/revision/latest' },
+            { name:'Cool Bee', coins:90, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/8/8b/Cool_Bee.png/revision/latest' },
+            { name:'Hasty Bee', coins:75, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/b/be/Hasty_Bee.png/revision/latest' },
+            { name:'Looker Bee', coins:80, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/5/5d/Looker_Bee.png/revision/latest' },
+            { name:'Rad Bee', coins:85, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/8/8d/Rad_Bee.png/revision/latest' },
+            { name:'Rascal Bee', coins:80, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/4/44/Rascal_Bee.png/revision/latest' },
+            { name:'Stubborn Bee', coins:85, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/3f/Stubborn_Bee.png/revision/latest' }
         ],
         epic: [
-            { name:'Bubble Bee', coins:120, icon:'🫧' },
-            { name:'Bucko Bee', coins:130, icon:'🤠' },
-            { name:'Commander Bee', coins:140, icon:'🎖' },
-            { name:'Demo Bee', coins:125, icon:'🧨' },
-            { name:'Exhausted Bee', coins:115, icon:'😴' },
-            { name:'Fire Bee', coins:135, icon:'🔥' },
-            { name:'Frosty Bee', coins:130, icon:'❄️' },
-            { name:'Honey Bee', coins:140, icon:'🍯' },
-            { name:'Rage Bee', coins:125, icon:'😡' },
-            { name:'Riley Bee', coins:125, icon:'🎀' },
-            { name:'Shocked Bee', coins:120, icon:'⚡' }
+            { name:'Bubble Bee', coins:120, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/f/fa/Bubble_Bee.png/revision/latest' },
+            { name:'Bucko Bee', coins:130, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/30/Bucko_Bee.png/revision/latest' },
+            { name:'Commander Bee', coins:140, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/0/0e/Commander_Bee.png/revision/latest' },
+            { name:'Demo Bee', coins:125, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/3a/Demo_Bee.png/revision/latest' },
+            { name:'Exhausted Bee', coins:115, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/d/d2/Exhausted_Bee.png/revision/latest' },
+            { name:'Fire Bee', coins:135, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/a/a4/Fire_Bee.png/revision/latest' },
+            { name:'Frosty Bee', coins:130, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/f/fb/Frosty_Bee.png/revision/latest' },
+            { name:'Honey Bee', coins:140, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/c/c3/Honey_Bee.png/revision/latest' },
+            { name:'Rage Bee', coins:125, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/7/7b/Rage_Bee.png/revision/latest' },
+            { name:'Riley Bee', coins:125, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/6/64/Riley_Bee.png/revision/latest' },
+            { name:'Shocked Bee', coins:120, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/c/c0/Shocked_Bee.png/revision/latest' }
         ],
         legendary: [
-            { name:'Baby Bee', coins:200, icon:'🍼' },
-            { name:'Carpenter Bee', coins:220, icon:'🔨' },
-            { name:'Demon Bee', coins:210, icon:'😈' },
-            { name:'Diamond Bee', coins:240, icon:'💎' },
-            { name:'Lion Bee', coins:230, icon:'🦁' },
-            { name:'Music Bee', coins:220, icon:'🎵' },
-            { name:'Ninja Bee', coins:210, icon:'🥷' },
-            { name:'Shy Bee', coins:200, icon:'🫣' }
+            { name:'Baby Bee', coins:200, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/1/1f/Baby_Bee.png/revision/latest' },
+            { name:'Carpenter Bee', coins:220, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/7/75/Carpenter_Bee.png/revision/latest' },
+            { name:'Demon Bee', coins:210, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/8/84/Demon_Bee.png/revision/latest' },
+            { name:'Diamond Bee', coins:240, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/0/0a/Diamond_Bee.png/revision/latest' },
+            { name:'Lion Bee', coins:230, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/b/b3/Lion_Bee.png/revision/latest' },
+            { name:'Music Bee', coins:220, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/38/Music_Bee.png/revision/latest' },
+            { name:'Ninja Bee', coins:210, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/9/97/Ninja_Bee.png/revision/latest' },
+            { name:'Shy Bee', coins:200, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/e/e8/Shy_Bee.png/revision/latest' }
         ],
         mythic: [
-            { name:'Buoyant Bee', coins:400, icon:'🎈' },
-            { name:'Fuzzy Bee', coins:450, icon:'🧸' },
-            { name:'Precise Bee', coins:420, icon:'🎯' },
-            { name:'Spicy Bee', coins:430, icon:'🌶' },
-            { name:'Tadpole Bee', coins:400, icon:'🐸' },
-            { name:'Vector Bee', coins:460, icon:'🔮' }
+            { name:'Buoyant Bee', coins:400, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/d/d7/Buoyant_Bee.png/revision/latest' },
+            { name:'Fuzzy Bee', coins:450, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/f/f6/Fuzzy_Bee-0.png/revision/latest' },
+            { name:'Precise Bee', coins:420, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/2/29/Precise_Bee.png/revision/latest' },
+            { name:'Spicy Bee', coins:430, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/4/43/Spicy_Bee.png/revision/latest' },
+            { name:'Tadpole Bee', coins:400, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/5/54/Tadpole_Bee.png/revision/latest' },
+            { name:'Vector Bee', coins:460, icon:'https://static.wikia.nocookie.net/bee-swarm-simulator/images/a/a6/Vector_Bee.png/revision/latest' }
         ]
     };
     const RJ_RARITY_COLORS = { rare:'#3498db', epic:'#9b59b6', legendary:'#f1c40f', mythic:'#e91e8c' };
@@ -2046,11 +2047,11 @@
     }
 
     function rjInit() { /* reset display */
-        document.getElementById('rj-p-icon').textContent = '🐝';
+        document.getElementById('rj-p-icon').innerHTML = '<img src="https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/30/Bumble_Bee.png/revision/latest" style="opacity:0.3;filter:grayscale(1)" alt="?">';
         document.getElementById('rj-p-name').textContent = '???';
         document.getElementById('rj-p-rarity').textContent = '—';
         document.getElementById('rj-p-coins').textContent = '— coins';
-        document.getElementById('rj-b-icon').textContent = '🤖';
+        document.getElementById('rj-b-icon').innerHTML = '<img src="https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/30/Bumble_Bee.png/revision/latest" style="opacity:0.3;filter:grayscale(1)" alt="?">';
         document.getElementById('rj-b-name').textContent = '???';
         document.getElementById('rj-b-rarity').textContent = '—';
         document.getElementById('rj-b-coins').textContent = '— coins';
@@ -2071,8 +2072,8 @@
         const pCard = document.getElementById('rj-player-card');
         const bCard = document.getElementById('rj-bot-card');
         pCard.classList.add('spinning'); bCard.classList.add('spinning');
-        document.getElementById('rj-p-icon').textContent = '🐝';
-        document.getElementById('rj-b-icon').textContent = '🤖';
+        document.getElementById('rj-p-icon').innerHTML = '<img src="https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/30/Bumble_Bee.png/revision/latest" style="opacity:0.4;filter:grayscale(1)" alt="...">';
+        document.getElementById('rj-b-icon').innerHTML = '<img src="https://static.wikia.nocookie.net/bee-swarm-simulator/images/3/30/Bumble_Bee.png/revision/latest" style="opacity:0.4;filter:grayscale(1)" alt="...">';
         document.getElementById('rj-p-name').textContent = '...';
         document.getElementById('rj-b-name').textContent = '...';
 
@@ -2082,14 +2083,14 @@
             const botBee = rjRollBee(false);
 
             // Show player bee
-            document.getElementById('rj-p-icon').textContent = playerBee.icon;
+            document.getElementById('rj-p-icon').innerHTML = `<img src="${playerBee.icon}" alt="${playerBee.name}">`;
             document.getElementById('rj-p-name').textContent = playerBee.name;
             document.getElementById('rj-p-rarity').innerHTML = `<span style="color:${RJ_RARITY_COLORS[playerBee.rarity]}">${playerBee.rarity.toUpperCase()}</span>`;
             document.getElementById('rj-p-coins').textContent = playerBee.coins + ' coins';
             document.getElementById('rj-player-card').style.borderColor = RJ_RARITY_COLORS[playerBee.rarity];
 
             // Show bot bee
-            document.getElementById('rj-b-icon').textContent = botBee.icon;
+            document.getElementById('rj-b-icon').innerHTML = `<img src="${botBee.icon}" alt="${botBee.name}">`;
             document.getElementById('rj-b-name').textContent = botBee.name;
             document.getElementById('rj-b-rarity').innerHTML = `<span style="color:${RJ_RARITY_COLORS[botBee.rarity]}">${botBee.rarity.toUpperCase()}</span>`;
             document.getElementById('rj-b-coins').textContent = botBee.coins + ' coins';
