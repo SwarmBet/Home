@@ -1796,13 +1796,7 @@
                 // mults[i] where i=0 is floor 1 (bottom, lowest mult), i=8 is top (highest mult)
                 // Visual order: i=8 renders first (top of board), i=0 renders last (bottom)
                 // So badge should show mults[i] — floor i reached = mult mults[i]
-                if(j === 0) {
-                    const badge = document.createElement('span');
-                    badge.className = 'tw-tile-badge';
-                    badge.id = `t-badge-${i}`;
-                    badge.textContent = 'x' + mults[i].toFixed(2);
-                    tile.appendChild(badge);
-                }
+                // multiplier badges hidden
                 row.appendChild(tile);
             }
             board.appendChild(row);
@@ -2322,10 +2316,11 @@
                 resultEl.className = 'rj-result win';
                 resultEl.innerHTML = `🌹 YOUR BEE WINS! +${win} ⭐ <span style="color:#aaa;font-size:13px;">(bet × ${playerBee.coins} coins × 0.02 = ${mult.toFixed(2)}×)</span><br><small>${playerBee.name} (${playerBee.coins}) beats ${botBee.name} (${botBee.coins})</small>`;
             } else if(playerBee.coins === botBee.coins) {
-                userData.chips += bet; addProfit('royaljelly', bet);
+                const halfBet = Math.floor(bet / 2);
+                userData.chips += halfBet; addProfit('royaljelly', halfBet);
                 resultEl.className = 'rj-result';
                 resultEl.style.background = '#1a1a00'; resultEl.style.border = '2px solid #f1c40f';
-                resultEl.innerHTML = `🤝 TIE! Bet returned.<br><small>${playerBee.name} = ${botBee.name} (${playerBee.coins} coins each)</small>`;
+                resultEl.innerHTML = `🤝 TIE! Half bet returned: +${halfBet} ⭐<br><small>${playerBee.name} = ${botBee.name} (${playerBee.coins} coins each)</small>`;
             } else {
                 play('boom');
                 addHistory("Royal Jelly", bet, 0, -bet);
