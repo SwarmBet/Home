@@ -1894,7 +1894,7 @@
         // Update name and balance
         const nameEl = document.getElementById('home-display-name');
         const chipsEl = document.getElementById('home-display-chips');
-        if(nameEl) nameEl.innerText = currentUser || '---';
+        if(nameEl) nameEl.innerText = (userData && userData.displayName) ? userData.displayName : currentUser || '---';
         if(chipsEl) chipsEl.innerText = userData ? Math.floor(userData.chips) : 0;
 
         // Stats from bet history (win > 0 means won, negative = lost)
@@ -2077,6 +2077,8 @@
             label.innerText = 'Free Play';
             balBox.style.borderColor = '';
             balBox.title = 'How to get coins?';
+            // Resync anticheat with real chips so it doesn't false-trigger after FP
+            if(_acEnabled && userData) acLegitChange(userData.chips);
         }
         updateUI();
     }
@@ -3598,6 +3600,7 @@
 
     function acCheck() {
         if(!_acEnabled || !userData) return;
+        if(fpEnabled) return; // Free Play uses fake chips — skip anticheat
         const actual = Math.floor(userData.chips);
         const snap = Math.floor(_acChipsSnapshot);
         // Allow small floating point differences
