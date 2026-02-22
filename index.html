@@ -1750,6 +1750,7 @@
                 } else {
                     // House edge: 25% chance to secretly trigger a bomb on a "safe" tile
                     if(Math.random() < 0.25) {
+                        mBombs.push(i); // register as bomb so reveal count stays consistent
                         t.innerHTML='💣'; t.classList.add('bomb'); play('boom'); mActive=false;
                         document.querySelectorAll('#m-board .tile').forEach((tile,idx) => { if(mBombs.includes(idx) && !tile.dataset.revealed) { tile.innerHTML='💣'; tile.classList.add('bomb'); tile.dataset.revealed='1'; }});
                         document.getElementById('m-cash').classList.add('hidden');
