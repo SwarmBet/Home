@@ -1772,6 +1772,23 @@
         document.getElementById('m-risk').disabled = false;
         document.querySelectorAll('.m-grid-btn').forEach(b => b.style.opacity = '1');
         document.getElementById('m-mult-disp').innerText = mMult.toFixed(2) + '× ✓';
+
+        // Reveal all bombs and unclicked gems, then hide after 3s
+        const tiles = document.querySelectorAll('#m-board .tile');
+        tiles.forEach((tile, idx) => {
+            if(tile.dataset.revealed) return;
+            if(mBombs.includes(idx)) {
+                tile.innerHTML = '💣'; tile.classList.add('bomb');
+            } else {
+                tile.innerHTML = '💎'; tile.classList.add('gem'); tile.style.opacity = '0.45';
+            }
+        });
+        setTimeout(() => {
+            tiles.forEach((tile, idx) => {
+                if(tile.dataset.revealed) return;
+                tile.innerHTML = ''; tile.classList.remove('bomb','gem'); tile.style.opacity = '';
+            });
+        }, 3000);
     }
 
     // DICE
