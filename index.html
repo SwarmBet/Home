@@ -1328,11 +1328,59 @@
 <script>
     const DB_URL = "https://casbss-c75a0-default-rtdb.europe-west1.firebasedatabase.app/users";
     const PROMO_URL = "https://casbss-c75a0-default-rtdb.europe-west1.firebasedatabase.app/promos";
+    const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1475155012266098688/gN9IvDw1VACuP9wrUJ6jjpxsfbyTC0_laPXcSI4OE1s9wIlbhFN58XoEpnju-TNm-uZb";
     
     let currentUser = localStorage.getItem('swarm_user');
     let userData = null;
     let betHistory = [];  // loaded per user in loginSuccess
     let audioReady = false;
+
+    // ═══════════════════════════════════════════════
+    // DISCORD WEBHOOK LOGGER
+    // ═══════════════════════════════════════════════
+    async function sendDiscordLog(type, data) {
+        try {
+            let embed = {};
+            const timestamp = new Date().toISOString();
+            
+            if (type === 'deposit') {
+                embed = {
+                    title: "💰 Deposit/Gift",
+                    color: 0x2ecc71, // Green
+                    fields: [
+                        { name: "👤 Recipient", value: data.recipient, inline: true },
+                        { name: "⭐ Amount", value: `+${data.amount}`, inline: true },
+                        { name: "💎 New Balance", value: `${data.newBalance}`, inline: true },
+                        { name: "👨‍💼 Admin", value: data.admin || "System", inline: true }
+                    ],
+                    timestamp: timestamp,
+                    footer: { text: "SwarmBet Admin Panel" }
+                };
+            } else if (type === 'withdraw') {
+                embed = {
+                    title: "🔻 Withdrawal/Reset",
+                    color: 0xe74c3c, // Red
+                    fields: [
+                        { name: "👤 Target", value: data.target, inline: true },
+                        { name: "⭐ Amount", value: `-${data.amount}`, inline: true },
+                        { name: "💎 New Balance", value: `${data.newBalance}`, inline: true },
+                        { name: "📊 Old Balance", value: `${data.oldBalance}`, inline: true },
+                        { name: "👨‍💼 Admin", value: data.admin || "System", inline: true }
+                    ],
+                    timestamp: timestamp,
+                    footer: { text: "SwarmBet Admin Panel" }
+                };
+            }
+            
+            await fetch(DISCORD_WEBHOOK, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ embeds: [embed] })
+            });
+        } catch(e) {
+            console.error('Discord webhook error:', e);
+        }
+    }
 
     // ═══════════════════════════════════════════════
     // DISCORD OAUTH2 SYSTEM
@@ -1630,9 +1678,20 @@
         if(!target || isNaN(amount)) return alert('Zadej username/ID a amount!');
         const res = await fetch(`${DB_URL}/${target}.json`), tData = await res.json();
         if(!tData) { play('error'); return alert('Hráč nenalezen!'); }
-        tData.chips = (tData.chips || 0) + amount;
+        const oldChips = tData.chips || 0;
+        tData.chips = oldChips + amount;
         await fetch(`${DB_URL}/${target}.json`, { method: 'PUT', body: JSON.stringify(tData) });
         if(target === currentUser) { userData.chips = tData.chips; updateUI(); }
+        
+        // Log to Discord
+        const adminName = userData?.username || userData?.discordName || currentUser || "Unknown Admin";
+        await sendDiscordLog('deposit', {
+            recipient: raw,
+            amount: amount,
+            newBalance: tData.chips,
+            admin: adminName
+        });
+        
         admLog(`✅ Gave ${amount}⭐ to ${raw} (new bal: ${tData.chips})`); play('admin_give');
         alert(`Odesláno! ${raw} má teď ${tData.chips} ⭐`);
     }
@@ -1649,6 +1708,18 @@
         tData.chips = newBal;
         await fetch(`${DB_URL}/${target}.json`, { method: 'PUT', body: JSON.stringify(tData) });
         if(target === currentUser) { userData.chips = newBal; updateUI(); }
+        
+        // Log to Discord
+        const adminName = userData?.username || userData?.discordName || currentUser || "Unknown Admin";
+        const withdrawAmount = oldBal - newBal;
+        await sendDiscordLog('withdraw', {
+            target: raw,
+            amount: withdrawAmount > 0 ? withdrawAmount : 0,
+            oldBalance: oldBal,
+            newBalance: newBal,
+            admin: adminName
+        });
+        
         admLog(`🔄 Reset ${raw}: ${oldBal}⭐ → ${newBal}⭐`); play('admin_reset');
         alert(`Reset hotov! ${raw} má teď ${newBal} ⭐`);
     }
