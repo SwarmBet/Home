@@ -1889,6 +1889,8 @@
         document.getElementById('pf-float-btn').classList.remove('hidden');
         // Show home page on login
         showPage('home');
+        // Restore any active game session that was interrupted
+        restoreGameState();
         // Start anticheat after a brief delay (let updateUI settle)
         setTimeout(() => acInit(userData.chips), 1500);
         // Tower risk change → rebuild board preview
@@ -1897,7 +1899,232 @@
         });
     }
 
-    function logout() { localStorage.removeItem('swarm_user'); betHistory = []; location.reload(); }
+    function logout() { localStorage.removeItem('swarm_user'); clearGameState(null); betHistory = []; location.reload(); }
+
+    // ══════════════════════════════════════════════════════════════════
+    // GAME STATE PERSISTENCE  (survive page refresh)
+    // ══════════════════════════════════════════════════════════════════
+    function saveGameState() {
+        if(!currentUser) return;
+        const state = {};
+
+        // Free Play
+        state.fp = { enabled: fpEnabled, chips: fpChips };
+
+        // House edge counter
+        state.gameCount    = _gameCount;
+        state.thisGameEdge = _thisGameEdge;
+
+        // ── Mines ──
+        if(mActive) {
+            const revealedIdx = [];
+            document.querySelectorAll('#m-board .tile').forEach((t, i) => {
+                if(t.dataset.revealed === '1') revealedIdx.push(i);
+            });
+            state.mines = {
+                active: true,
+                bet: mBet, mult: mMult, bombs: mBombs,
+                gridSize: mGridSize, gemsFound: mGemsFound,
+                revealed: revealedIdx,
+                risk: document.getElementById('m-risk')?.value || 'medium'
+            };
+        }
+
+        // ── Tower ──
+        if(tActive) {
+            state.tower = {
+                active: true,
+                bet: tBet, level: tLevel, risk: tCurrentRisk,
+                bombs: tBombs.map(s => [...s])   // Set → Array
+            };
+        }
+
+        // ── Blackjack ──
+        if(bjActive) {
+            state.blackjack = {
+                active: true,
+                hand: bjHand, dealer: bjDealer,
+                bet: bjBet, winAmount: bjWinAmount,
+                deck: deck
+            };
+        }
+
+        // ── Roulette (placed but not spun) ──
+        if(!isRSpinning && Object.keys(currentBets).length > 0) {
+            state.roulette = { bets: currentBets };
+        }
+
+        try { localStorage.setItem('swarm_gs_' + currentUser, JSON.stringify(state)); } catch(e) {}
+    }
+
+    function clearGameState(game) {
+        // game = 'mines'|'tower'|'blackjack'|'roulette'|null (null = clear all)
+        if(!currentUser) return;
+        try {
+            if(!game) { localStorage.removeItem('swarm_gs_' + currentUser); return; }
+            const raw = localStorage.getItem('swarm_gs_' + currentUser);
+            if(!raw) return;
+            const state = JSON.parse(raw);
+            delete state[game];
+            localStorage.setItem('swarm_gs_' + currentUser, JSON.stringify(state));
+        } catch(e) {}
+    }
+
+    function restoreGameState() {
+        if(!currentUser) return;
+        try {
+            const raw = localStorage.getItem('swarm_gs_' + currentUser);
+            if(!raw) return;
+            const state = JSON.parse(raw);
+
+            // ── Free Play ──
+            if(state.fp) {
+                fpEnabled = !!state.fp.enabled;
+                fpChips   = typeof state.fp.chips === 'number' ? state.fp.chips : FP_DEFAULT_BAL;
+                if(fpEnabled) applyFPMode();
+            }
+
+            // ── Game counter ──
+            if(typeof state.gameCount === 'number') _gameCount = state.gameCount;
+            if(typeof state.thisGameEdge === 'boolean') _thisGameEdge = state.thisGameEdge;
+
+            // ── Mines ──
+            if(state.mines?.active) {
+                const m = state.mines;
+                mBet = m.bet; mMult = m.mult; mBombs = m.bombs;
+                mGridSize = m.gridSize; mGemsFound = m.gemsFound;
+                mActive = true;
+                setTimeout(() => {
+                    showPage('games');
+                    selectGame('mines');
+                    const riskEl = document.getElementById('m-risk');
+                    if(riskEl) riskEl.value = m.risk;
+                    // Rebuild grid with saved state
+                    const board = document.getElementById('m-board');
+                    board.innerHTML = '';
+                    board.className = 'm-grid g' + mGridSize;
+                    const risk = m.risk;
+                    for(let i = 0; i < mGridSize; i++) {
+                        const t = document.createElement('div');
+                        t.className = 'tile';
+                        if(m.revealed.includes(i)) {
+                            t.dataset.revealed = '1';
+                            t.innerHTML = mBombs.includes(i) ? '💣' : '💎';
+                            t.classList.add(mBombs.includes(i) ? 'bomb' : 'gem');
+                        } else {
+                            t.onclick = () => {
+                                if(!mActive || t.dataset.revealed) return;
+                                t.dataset.revealed = '1';
+                                if(mBombs.includes(i)) {
+                                    t.innerHTML='💣'; t.classList.add('bomb'); play('boom'); mActive=false;
+                                    document.querySelectorAll('#m-board .tile').forEach((tile,idx) => { if(mBombs.includes(idx) && !tile.dataset.revealed) { tile.innerHTML='💣'; tile.classList.add('bomb'); tile.dataset.revealed='1'; }});
+                                    document.getElementById('m-cash').classList.add('hidden');
+                                    document.getElementById('m-start').disabled=false;
+                                    document.getElementById('m-bet').disabled=false;
+                                    document.getElementById('m-risk').disabled=false;
+                                    document.querySelectorAll('.m-grid-btn').forEach(b=>b.style.opacity='1');
+                                    addHistory("Mines", mBet, 0, -mBet);
+                                    clearGameState('mines');
+                                } else {
+                                    t.innerHTML='💎'; t.classList.add('gem');
+                                    play('star'); mGemsFound++;
+                                    mMult *= mMultStep[risk];
+                                    document.getElementById('m-mult-disp').innerText = mMult.toFixed(2) + '×';
+                                    document.getElementById('m-cash').classList.remove('hidden');
+                                    saveGameState();
+                                }
+                            };
+                        }
+                        board.appendChild(t);
+                    }
+                    document.getElementById('m-mult-disp').innerText = mMult.toFixed(2) + '×';
+                    document.getElementById('m-cash').classList.remove('hidden');
+                    document.getElementById('m-start').disabled = true;
+                    document.getElementById('m-bet').disabled = true;
+                    document.getElementById('m-risk').disabled = true;
+                    document.querySelectorAll('.m-grid-btn').forEach(b => b.style.opacity = '0.5');
+                    toast('🎮 Mines restored! ' + m.gemsFound + ' gems found at ' + mMult.toFixed(2) + '×', 'success');
+                }, 600);
+            }
+
+            // ── Tower ──
+            if(state.tower?.active) {
+                const tw = state.tower;
+                tBet = tw.bet; tLevel = tw.level; tCurrentRisk = tw.risk;
+                tBombs = tw.bombs.map(arr => new Set(arr));  // Array → Set
+                tActive = true;
+                setTimeout(() => {
+                    showPage('games');
+                    selectGame('tower');
+                    document.getElementById('t-risk').value = tw.risk;
+                    document.getElementById('t-risk').disabled = true;
+                    document.getElementById('t-bet').disabled = true;
+                    document.getElementById('t-start').disabled = true;
+                    buildTowerBoard();
+                    // Mark already-cleared rows as gems/safe
+                    for(let row = 0; row < tw.level; row++) {
+                        for(let j = 0; j < tGetCols(); j++) {
+                            const tile = document.getElementById(`t-tile-${row}-${j}`);
+                            if(tile) { tile.className = tBombs[row]?.has(j) ? 'tw-tile tw-bomb' : 'tw-tile tw-safe'; tile.onclick = null; }
+                        }
+                    }
+                    const mults = tGetMults();
+                    const m = tw.level > 0 ? mults[tw.level - 1] : 1;
+                    document.getElementById('t-mult-disp').textContent = m.toFixed(2) + '×';
+                    document.getElementById('t-profit-disp').value = '+' + Math.floor(tBet * m) + ' ⭐';
+                    document.getElementById('tower-status').textContent = `Floor ${tw.level}/${TOWER_ROWS} — keep climbing!`;
+                    document.getElementById('t-cash').classList.remove('hidden');
+                    tActivateRow(tw.level);
+                    toast('🗼 Tower restored! Floor ' + tw.level + '/' + TOWER_ROWS + ' at ' + m.toFixed(2) + '×', 'success');
+                }, 600);
+            }
+
+            // ── Blackjack ──
+            if(state.blackjack?.active) {
+                const bj = state.blackjack;
+                bjHand = bj.hand; bjDealer = bj.dealer;
+                bjBet = bj.bet; bjWinAmount = bj.winAmount;
+                deck = bj.deck; bjActive = true;
+                setTimeout(() => {
+                    showPage('games');
+                    selectGame('blackjack');
+                    document.getElementById('bj-player-hand').innerHTML = '';
+                    document.getElementById('bj-dealer-hand').innerHTML = '';
+                    bjHand.forEach(c => renderCard(c, 'bj-player-hand'));
+                    renderCard(bjDealer[0], 'bj-dealer-hand');
+                    document.getElementById('bj-player-score').textContent = 'Score: ' + getBJScore(bjHand);
+                    document.getElementById('bj-dealer-score').textContent = 'Shows: ' + bjDealer[0].v;
+                    document.getElementById('bj-deal-btn').classList.add('hidden');
+                    document.getElementById('bj-hit-btn').classList.remove('hidden');
+                    document.getElementById('bj-stand-btn').classList.remove('hidden');
+                    document.getElementById('bj-status').textContent = 'VS — Hand restored';
+                    bjUpdateCounters();
+                    toast('🃏 Blackjack restored! Your hand: ' + getBJScore(bjHand), 'success');
+                }, 600);
+            }
+
+            // ── Roulette bets ──
+            if(state.roulette?.bets) {
+                currentBets = state.roulette.bets;
+                setTimeout(() => {
+                    // Re-render chip overlays on the table
+                    for(const [key, amt] of Object.entries(currentBets)) {
+                        const selector = key.startsWith('n') ? `[data-num="${key.slice(1)}"]` : `[data-bet="${key}"]`;
+                        const el = document.querySelector(`.cell${selector}, .btn-extra${selector}`);
+                        if(el) {
+                            el.classList.add('active');
+                            let chip = el.querySelector('.chip-overlay');
+                            if(!chip) { chip = document.createElement('div'); chip.className='chip-overlay'; el.appendChild(chip); }
+                            chip.innerText = amt;
+                        }
+                    }
+                    toast('🎰 Roulette bets restored!', 'success');
+                }, 600);
+            }
+
+        } catch(e) { console.warn('Restore failed:', e); }
+    }
+    // ══════════════════════════════════════════════════════════════════
 
     function renderHomePage() {
         // Update name and balance
@@ -1963,6 +2190,22 @@
     const MIN_BET = 50;
     const MAX_BET = 1000;
     function clampBet(v) { return Math.max(MIN_BET, Math.min(MAX_BET, parseInt(v) || MIN_BET)); }
+
+    // ── House Edge Counter ──────────────────────────────────────────────────
+    // House edge only activates on every 10th game. All other 9 are fair.
+    let _gameCount = 0;
+    let _thisGameEdge = false; // captured at bet-time for multi-step games
+
+    function countGame() {
+        if(fpEnabled) return; // Free Play never counts
+        _gameCount++;
+        _thisGameEdge = (_gameCount % 10 === 0);
+    }
+    function houseEdge() {
+        if(fpEnabled) return false;
+        return _thisGameEdge;
+    }
+    // ───────────────────────────────────────────────────────────────────────
 
     function updateUI() {
         if(!userData) return;
@@ -2106,7 +2349,7 @@
             if(fpEnabled) {
                 document.getElementById('fp-nonce').value = Math.floor(Math.random()*9000)+1000;
             }
-            applyFPMode();
+            applyFPMode(); saveGameState();
         }
         document.getElementById('fp-nonce').value = parseInt(document.getElementById('fp-nonce').value) || 0;
         closeFPModal();
@@ -2447,7 +2690,7 @@
         if(mBet > userData.chips || mBet < MIN_BET) { toast('Not enough ⭐! Min bet: ' + MIN_BET, 'error'); releaseBetLock(); return; }
         const risk = document.getElementById('m-risk').value;
         const bombCount = mRiskMines[risk][mGridSize];
-        userData.chips -= mBet; mActive = true; mMult = 1; mBombs = []; mGemsFound = 0; updateUI();
+        countGame(); userData.chips -= mBet; mActive = true; mMult = 1; mBombs = []; mGemsFound = 0; updateUI();
         if(mRevealTimeout) { clearTimeout(mRevealTimeout); mRevealTimeout = null; }
         addProfit('mines', -mBet);
         releaseBetLock();
@@ -2481,6 +2724,7 @@
                     mMult *= mMultStep[risk];
                     document.getElementById('m-mult-disp').innerText = mMult.toFixed(2) + '×';
                     document.getElementById('m-cash').classList.remove('hidden');
+                                saveGameState();
                 }
             };
             board.appendChild(t);
@@ -2491,7 +2735,7 @@
         let win = Math.floor(mBet * mMult);
         userData.chips += win; play('win');
         showWinOverlay(mMult, win);
-        addHistory("Mines", mBet, mMult, win);
+        addHistory("Mines", mBet, mMult, win); clearGameState('mines');
         addProfit('mines', win);
         mActive = false; updateUI();
         document.getElementById('m-cash').classList.add('hidden');
@@ -2528,13 +2772,13 @@
         document.getElementById('d-bet').value = b;
         let n = parseInt(document.getElementById('d-num').value);
         if(b > userData.chips) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
-        userData.chips -= b; addProfit('dice', -b); updateUI();
+        countGame(); userData.chips -= b; addProfit('dice', -b); updateUI();
         const btn = document.querySelector('#game-dice .btn-play');
         if(btn) btn.disabled = true;
         setTimeout(() => {
             let r = Math.floor(Math.random()*6)+1;
             // House edge: if roll matches player's pick, 33% chance to nudge it off
-            if(r === n && Math.random() < 0.33) { r = r === 6 ? 1 : r + 1; }
+            if(r === n && houseEdge()) { r = r === 6 ? 1 : r + 1; }
             document.getElementById('d-res').innerText = r;
             if(r === n) {
                 let win = b*6; userData.chips += win; play('win');
@@ -2556,10 +2800,10 @@
         document.getElementById('cf-bet').value = b;
         let btn = document.getElementById('cf-btn'), coin = document.getElementById('coin-obj');
         if(b > userData.chips || b < MIN_BET) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
-        userData.chips -= b; addProfit('coinflip', -b); updateUI(); btn.disabled = true; coin.classList.add('flipping');
+        countGame(); userData.chips -= b; addProfit('coinflip', -b); updateUI(); btn.disabled = true; coin.classList.add('flipping');
         setTimeout(() => {
             coin.classList.remove('flipping');
-            let res = Math.random() < 0.4 ? choice : (choice === 'H' ? 'T' : 'H'); coin.innerText = (res === 'H') ? '⭐' : '💎';
+            let res = houseEdge() ? (choice === 'H' ? 'T' : 'H') : (Math.random() < 0.5 ? choice : (choice === 'H' ? 'T' : 'H')); coin.innerText = (res === 'H') ? '⭐' : '💎';
             if(res === choice) {
                 let win = b*2; userData.chips += win; play('win');
                 showWinOverlay(2.0, win); addHistory("CoinFlip", b, 2, win); addProfit('coinflip', win);
@@ -2579,10 +2823,10 @@
         crashBet = clampBet(document.getElementById('c-bet').value);
         document.getElementById('c-bet').value = crashBet;
         if (crashBet > userData.chips || crashBet < MIN_BET || crashActive) { releaseBetLock(); return; }
-        userData.chips -= crashBet; addProfit('crash', -crashBet); updateUI(); crashActive = true; crashMult = 1.00;
+        countGame(); userData.chips -= crashBet; addProfit('crash', -crashBet); updateUI(); crashActive = true; crashMult = 1.00;
         const display = document.getElementById('crash-display'); display.style.color = "white";
         document.getElementById('c-start').disabled = true; document.getElementById('c-cash').classList.remove('hidden');
-        let crashPoint = (Math.random() < 0.05) ? 1.00 : (0.99 / (1 - Math.random()));
+        let crashPoint = houseEdge() ? 1.00 : (0.99 / (1 - Math.random()));
         releaseBetLock();
         crashInterval = setInterval(() => {
             crashMult += 0.01 + (crashMult * 0.005);
@@ -2625,12 +2869,12 @@
         if(isRSpinning) return; const amt = clampBet(document.getElementById('r-bet').value);
         document.getElementById('r-bet').value = amt;
         if(amt > userData.chips) return; if(!currentBets[type]) currentBets[type] = 0;
-        currentBets[type] += amt; userData.chips -= amt; updateUI();
+        currentBets[type] += amt; userData.chips -= amt; updateUI(); saveGameState();
         let chip = el.querySelector('.chip-overlay'); if(!chip) { chip = document.createElement('div'); chip.className = 'chip-overlay'; el.appendChild(chip); }
         chip.innerText = currentBets[type]; el.classList.add('active');
     }
     function clearRouletteBets() {
-        if(isRSpinning) return; let refund = 0; for(let key in currentBets) { refund += currentBets[key]; userData.chips += currentBets[key]; }
+        if(isRSpinning) return; let refund = 0; for(let key in currentBets) { refund += currentBets[key]; userData.chips += currentBets[key]; } clearGameState('roulette');
         // Don't call addProfit here — we're just refunding chips, not a game outcome
         currentBets = {}; document.querySelectorAll('.cell, .btn-extra').forEach(el => { el.classList.remove('active'); const c = el.querySelector('.chip-overlay'); if(c) c.remove(); }); updateUI();
     }
@@ -2644,8 +2888,11 @@
         slider.style.transform = 'translateX(0px)';
         slider.getBoundingClientRect(); // force reflow
 
-        // Pick random target
-        const winIndex = Math.floor(Math.random() * rOrder.length);
+        // Pick random target — on every 10th game, force 0 (green, house wins all)
+        countGame();
+        const winIndex = houseEdge()
+            ? rOrder.indexOf(0)
+            : Math.floor(Math.random() * rOrder.length);
         const winNum = rOrder[winIndex];
 
         // Spin many loops + land on correct tile center under pointer
@@ -2688,7 +2935,7 @@
             document.getElementById('r-status').innerText = `Landed: ${actualNum} ${redNums.includes(actualNum) ? '🔴' : actualNum === 0 ? '🟢' : '⚫'}`;
             if(totalWin > 0) { userData.chips += totalWin; play('win'); showWinOverlay(totalWin/totalBet, totalWin); addHistory("Roulette", totalBet, totalWin/totalBet, totalWin); addProfit('roulette', totalWin - totalBet); }
             else { play('boom'); addHistory("Roulette", totalBet, 0, -totalBet); addProfit('roulette', -totalBet); }
-            currentBets = {}; document.querySelectorAll('.cell, .btn-extra').forEach(el => { el.classList.remove('active'); const c = el.querySelector('.chip-overlay'); if(c) c.remove(); });
+            currentBets = {}; clearGameState('roulette'); document.querySelectorAll('.cell, .btn-extra').forEach(el => { el.classList.remove('active'); const c = el.querySelector('.chip-overlay'); if(c) c.remove(); });
             isRSpinning = false; document.getElementById('r-spin').disabled = false; updateUI();
         }, 5200);
     }
@@ -2765,7 +3012,7 @@
         document.getElementById('t-bet').value = tBet;
         if(tBet > userData.chips || tBet < MIN_BET) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
         tCurrentRisk = document.getElementById('t-risk').value;
-        userData.chips -= tBet; addProfit('tower', -tBet); updateUI();
+        countGame(); userData.chips -= tBet; addProfit('tower', -tBet); updateUI();
         releaseBetLock();
         tActive = true; tLevel = 0;
         document.getElementById('t-start').disabled = true;
@@ -2822,10 +3069,10 @@
             document.getElementById('t-risk').disabled = false;
             document.getElementById('t-bet').disabled = false;
             document.getElementById('t-cash').classList.add('hidden');
-            addHistory("Tower", tBet, 0, -tBet);
+            addHistory("Tower", tBet, 0, -tBet); clearGameState('tower');
         } else {
-            // House edge: 25% chance to secretly trigger a bomb on a "safe" tile
-            if(Math.random() < 0.25) {
+            // House edge: on every 10th game, secretly trigger a bomb on a "safe" tile
+            if(houseEdge()) {
                 tile.innerHTML = '💥';
                 tile.className = 'tw-tile tw-bomb';
                 tile.onclick = null;
@@ -2844,7 +3091,7 @@
                 document.getElementById('t-risk').disabled = false;
                 document.getElementById('t-bet').disabled = false;
                 document.getElementById('t-cash').classList.add('hidden');
-                addHistory("Tower", tBet, 0, -tBet);
+                addHistory("Tower", tBet, 0, -tBet); clearGameState('tower');
                 return;
             }
             tile.innerHTML = '💎';
@@ -2878,7 +3125,7 @@
         const win = Math.floor(tBet * m);
         userData.chips += win; play('win');
         showWinOverlay(m, win);
-        addHistory("Tower", tBet, m, win);
+        addHistory("Tower", tBet, m, win); clearGameState('tower');
         addProfit('tower', win);
         tActive = false; updateUI();
         document.getElementById('t-start').disabled = false;
@@ -2928,7 +3175,7 @@
         bjBet = clampBet(document.getElementById('bj-bet').value);
         document.getElementById('bj-bet').value = bjBet;
         if(bjBet > userData.chips) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
-        userData.chips -= bjBet; addProfit('blackjack', -bjBet); updateUI(); bjActive=true; createDeck(); bjWinAmount=0;
+        countGame(); userData.chips -= bjBet; addProfit('blackjack', -bjBet); updateUI(); bjActive=true; createDeck(); bjWinAmount=0;
         releaseBetLock();
         bjHand = [deck.pop(), deck.pop()]; bjDealer = [deck.pop(), deck.pop()];
         document.getElementById('bj-player-hand').innerHTML = ''; document.getElementById('bj-dealer-hand').innerHTML = '';
@@ -2945,7 +3192,7 @@
         if(!bjActive) return;
         let c = deck.pop(); bjHand.push(c); renderCard(c, 'bj-player-hand');
         document.getElementById('bj-player-score').textContent = 'Score: ' + getBJScore(bjHand);
-        bjUpdateCounters();
+        bjUpdateCounters(); saveGameState();
         let score = getBJScore(bjHand);
         // Check for 5-card 21 (automatic win)
         if(score === 21 && bjHand.length >= 5) {
@@ -2955,7 +3202,7 @@
         }
     }
     function bjStand() {
-        bjActive=false;
+        bjActive=false; clearGameState('blackjack');
         renderCard(bjDealer[1], 'bj-dealer-hand');
         let ds = getBJScore(bjDealer), ps = getBJScore(bjHand);
         while(ds < 17) { let c = deck.pop(); bjDealer.push(c); renderCard(c, 'bj-dealer-hand', false); ds = getBJScore(bjDealer); }
@@ -3011,7 +3258,7 @@
         const bet = clampBet(document.getElementById('bac-bet').value);
         document.getElementById('bac-bet').value = bet;
         if(bet > userData.chips || bet < MIN_BET) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
-        userData.chips -= bet; addProfit('baccarat', -bet); updateUI();
+        countGame(); userData.chips -= bet; addProfit('baccarat', -bet); updateUI();
         releaseBetLock();
         createDeck();
         document.getElementById('bac-player-hand').innerHTML = '';
@@ -3058,8 +3305,8 @@
                 document.getElementById('bac-pval').textContent = ps;
                 document.getElementById('bac-bval').textContent = bs;
                 let result = ps > bs ? 'P' : bs > ps ? 'B' : 'T';
-                // House edge: 33% chance to override result against player's bet
-                if(result !== 'T' && Math.random() < 0.33) {
+                // House edge: on every 10th game, override result against player's bet
+                if(result !== 'T' && houseEdge()) {
                     result = (result === 'P') ? 'B' : 'P';
                 }
                 let win = 0;
@@ -3205,7 +3452,7 @@
         const bet = clampBet(document.getElementById('rj-bet').value);
         document.getElementById('rj-bet').value = bet;
         if(bet > userData.chips || bet < MIN_BET) { alert('Not enough ⭐!'); return; }
-        userData.chips -= bet; addProfit('royaljelly', -bet); updateUI();
+        countGame(); userData.chips -= bet; addProfit('royaljelly', -bet); updateUI();
 
         const btn = document.getElementById('rj-spin-btn');
         btn.disabled = true;
@@ -3987,6 +4234,7 @@
         document.getElementById('kabTokensArea').classList.add('hidden');
 
         // Deduct bet immediately
+        countGame();
         userData.chips -= bet;
         addProfit('killabug', -bet);
         updateUI();
@@ -3996,8 +4244,8 @@
         document.getElementById('kabArenaIdle').classList.add('hidden');
         document.getElementById('kabArenaElim').classList.add('hidden');
 
-        // ── ELIMINATION CHECK ──
-        const gotEliminated = Math.random() < bug.elimChance;
+        // ── ELIMINATION CHECK ── (house edge on every 10th game)
+        const gotEliminated = houseEdge() ? true : (Math.random() < bug.elimChance);
 
         if (gotEliminated) {
             // Show the bug striking back
