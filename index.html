@@ -1289,17 +1289,19 @@
                 <div class="card">
                     <h2 style="color:var(--orange); margin-bottom:20px;">⚙️ Admin Dashboard</h2>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                        <div style="background:#111; padding:20px; border-radius:10px; border:1px solid #222;">
-                            <h3 style="color:var(--orange); margin-top:0;">⭐ Give Stars</h3>
-                            <input type="text" id="adm-target" placeholder="Discord ID or username" style="width:100%; box-sizing:border-box;"><br><br>
-                            <input type="number" id="adm-amount" placeholder="Amount" style="width:100%; box-sizing:border-box;"><br><br>
-                            <button class="btn-play" onclick="adminGiveChips()" style="width:100%;">SEND ⭐</button>
+                        <div style="background:#111; padding:20px; border-radius:10px; border:1px solid #2ecc7144;">
+                            <h3 style="color:#2ecc71; margin-top:0;">💰 DEPOSIT (Add Coins)</h3>
+                            <input type="text" id="adm-deposit-target" placeholder="Player Discord ID or username" style="width:100%; box-sizing:border-box; margin-bottom:10px;"><br>
+                            <input type="number" id="adm-deposit-amount" placeholder="Amount to deposit" style="width:100%; box-sizing:border-box; margin-bottom:15px;"><br>
+                            <button onclick="adminDeposit()" style="width:100%; background:#2ecc71; color:white; border:none; padding:12px 20px; border-radius:8px; font-weight:900; cursor:pointer;">💸 DEPOSIT COINS</button>
+                            <p style="color:#888; font-size:12px; margin-top:10px;">Adds coins to player's account</p>
                         </div>
                         <div style="background:#111; padding:20px; border-radius:10px; border:1px solid #e74c3c44;">
-                            <h3 style="color:#e74c3c; margin-top:0;">🔄 Reset Currency</h3>
-                            <input type="text" id="adm-reset-target" placeholder="Discord ID or username" style="width:100%; box-sizing:border-box;"><br><br>
-                            <input type="number" id="adm-reset-amount" placeholder="Set balance to (default: 0)" style="width:100%; box-sizing:border-box;"><br><br>
-                            <button onclick="adminResetChips()" style="width:100%; background:#e74c3c; color:white; border:none; padding:12px 20px; border-radius:8px; font-weight:900; cursor:pointer;">RESET 💀</button>
+                            <h3 style="color:#e74c3c; margin-top:0;">🔻 WITHDRAW (Remove Coins)</h3>
+                            <input type="text" id="adm-withdraw-target" placeholder="Player Discord ID or username" style="width:100%; box-sizing:border-box; margin-bottom:10px;"><br>
+                            <input type="number" id="adm-withdraw-amount" placeholder="Amount to withdraw" style="width:100%; box-sizing:border-box; margin-bottom:15px;"><br>
+                            <button onclick="adminWithdraw()" style="width:100%; background:#e74c3c; color:white; border:none; padding:12px 20px; border-radius:8px; font-weight:900; cursor:pointer;">💸 WITHDRAW COINS</button>
+                            <p style="color:#888; font-size:12px; margin-top:10px;">Removes coins from player's account</p>
                         </div>
                         <div style="background:#111; padding:20px; border-radius:10px; border:1px solid #222;">
                             <h3 style="color:var(--green); margin-top:0;">🎁 Create Promo Code</h3>
@@ -1345,30 +1347,33 @@
             
             if (type === 'deposit') {
                 embed = {
-                    title: "💰 Deposit/Gift",
+                    title: "💰 DEPOSIT - Coins Added",
                     color: 0x2ecc71, // Green
+                    description: `**${data.recipientName}** received coins from **${data.adminName}**`,
                     fields: [
-                        { name: "👤 Recipient", value: data.recipient, inline: true },
-                        { name: "⭐ Amount", value: `+${data.amount}`, inline: true },
-                        { name: "💎 New Balance", value: `${data.newBalance}`, inline: true },
-                        { name: "👨‍💼 Admin", value: data.admin || "System", inline: true }
+                        { name: "📥 Recipient Account", value: data.recipientName, inline: true },
+                        { name: "👨‍💼 Admin Account", value: data.adminName, inline: true },
+                        { name: "⭐ Amount Deposited", value: `+${data.amount} coins`, inline: false },
+                        { name: "💰 Previous Balance", value: `${data.oldBalance} coins`, inline: true },
+                        { name: "💎 New Balance", value: `${data.newBalance} coins`, inline: true }
                     ],
                     timestamp: timestamp,
-                    footer: { text: "SwarmBet Admin Panel" }
+                    footer: { text: "SwarmBet Admin Panel - Deposit" }
                 };
             } else if (type === 'withdraw') {
                 embed = {
-                    title: "🔻 Withdrawal/Reset",
+                    title: "🔻 WITHDRAWAL - Coins Removed",
                     color: 0xe74c3c, // Red
+                    description: `**${data.targetName}** had coins withdrawn by **${data.adminName}**`,
                     fields: [
-                        { name: "👤 Target", value: data.target, inline: true },
-                        { name: "⭐ Amount", value: `-${data.amount}`, inline: true },
-                        { name: "💎 New Balance", value: `${data.newBalance}`, inline: true },
-                        { name: "📊 Old Balance", value: `${data.oldBalance}`, inline: true },
-                        { name: "👨‍💼 Admin", value: data.admin || "System", inline: true }
+                        { name: "📤 Withdrawn From", value: data.targetName, inline: true },
+                        { name: "👨‍💼 Admin Account", value: data.adminName, inline: true },
+                        { name: "⭐ Amount Withdrawn", value: `-${data.amount} coins`, inline: false },
+                        { name: "💰 Previous Balance", value: `${data.oldBalance} coins`, inline: true },
+                        { name: "💎 New Balance", value: `${data.newBalance} coins`, inline: true }
                     ],
                     timestamp: timestamp,
-                    footer: { text: "SwarmBet Admin Panel" }
+                    footer: { text: "SwarmBet Admin Panel - Withdrawal" }
                 };
             }
             
@@ -1713,15 +1718,142 @@
         const adminName = userData?.username || userData?.discordName || currentUser || "Unknown Admin";
         const withdrawAmount = oldBal - newBal;
         await sendDiscordLog('withdraw', {
-            target: raw,
+            targetName: tData.username || tData.discordName || raw,
             amount: withdrawAmount > 0 ? withdrawAmount : 0,
             oldBalance: oldBal,
             newBalance: newBal,
-            admin: adminName
+            adminName: adminName
         });
         
         admLog(`🔄 Reset ${raw}: ${oldBal}⭐ → ${newBal}⭐`); play('admin_reset');
         alert(`Reset hotov! ${raw} má teď ${newBal} ⭐`);
+    }
+
+    // ═══════════════════════════════════════════════
+    // NEW ADMIN DEPOSIT & WITHDRAW FUNCTIONS
+    // ═══════════════════════════════════════════════
+    async function adminDeposit() {
+        const raw = document.getElementById('adm-deposit-target').value.trim();
+        const target = /^\d{17,20}$/.test(raw) ? 'discord_' + raw : raw;
+        const amount = parseInt(document.getElementById('adm-deposit-amount').value);
+        
+        if(!target || isNaN(amount) || amount <= 0) {
+            play('error');
+            return alert('Please enter a valid username/ID and positive amount!');
+        }
+        
+        // Fetch target player data
+        const res = await fetch(`${DB_URL}/${target}.json`);
+        const tData = await res.json();
+        
+        if(!tData) {
+            play('error');
+            return alert('Player not found!');
+        }
+        
+        // Get player display name
+        const playerName = tData.username || tData.discordName || raw;
+        const oldBalance = tData.chips || 0;
+        const newBalance = oldBalance + amount;
+        
+        // Update player balance
+        tData.chips = newBalance;
+        await fetch(`${DB_URL}/${target}.json`, { method: 'PUT', body: JSON.stringify(tData) });
+        
+        // Update UI if it's current user
+        if(target === currentUser) {
+            userData.chips = newBalance;
+            updateUI();
+        }
+        
+        // Get admin name
+        const adminName = userData?.username || userData?.discordName || currentUser || "Unknown Admin";
+        
+        // Log to Discord
+        await sendDiscordLog('deposit', {
+            recipientName: playerName,
+            adminName: adminName,
+            amount: amount,
+            oldBalance: oldBalance,
+            newBalance: newBalance
+        });
+        
+        // Local log and notification
+        admLog(`💰 Deposited ${amount}⭐ to ${playerName} (${oldBalance} → ${newBalance})`);
+        play('admin_give');
+        alert(`✅ Successfully deposited ${amount}⭐ to ${playerName}!\n\nOld Balance: ${oldBalance}⭐\nNew Balance: ${newBalance}⭐`);
+        
+        // Clear inputs
+        document.getElementById('adm-deposit-target').value = '';
+        document.getElementById('adm-deposit-amount').value = '';
+    }
+
+    async function adminWithdraw() {
+        const raw = document.getElementById('adm-withdraw-target').value.trim();
+        const target = /^\d{17,20}$/.test(raw) ? 'discord_' + raw : raw;
+        const amount = parseInt(document.getElementById('adm-withdraw-amount').value);
+        
+        if(!target || isNaN(amount) || amount <= 0) {
+            play('error');
+            return alert('Please enter a valid username/ID and positive amount!');
+        }
+        
+        // Fetch target player data
+        const res = await fetch(`${DB_URL}/${target}.json`);
+        const tData = await res.json();
+        
+        if(!tData) {
+            play('error');
+            return alert('Player not found!');
+        }
+        
+        // Get player display name
+        const playerName = tData.username || tData.discordName || raw;
+        const oldBalance = tData.chips || 0;
+        
+        // Check if player has enough balance
+        if(oldBalance < amount) {
+            play('error');
+            return alert(`Cannot withdraw ${amount}⭐!\n\n${playerName} only has ${oldBalance}⭐`);
+        }
+        
+        const newBalance = oldBalance - amount;
+        
+        // Confirm withdrawal
+        if(!confirm(`Withdraw ${amount}⭐ from ${playerName}?\n\nCurrent: ${oldBalance}⭐\nAfter: ${newBalance}⭐`)) {
+            return;
+        }
+        
+        // Update player balance
+        tData.chips = newBalance;
+        await fetch(`${DB_URL}/${target}.json`, { method: 'PUT', body: JSON.stringify(tData) });
+        
+        // Update UI if it's current user
+        if(target === currentUser) {
+            userData.chips = newBalance;
+            updateUI();
+        }
+        
+        // Get admin name
+        const adminName = userData?.username || userData?.discordName || currentUser || "Unknown Admin";
+        
+        // Log to Discord
+        await sendDiscordLog('withdraw', {
+            targetName: playerName,
+            adminName: adminName,
+            amount: amount,
+            oldBalance: oldBalance,
+            newBalance: newBalance
+        });
+        
+        // Local log and notification
+        admLog(`🔻 Withdrew ${amount}⭐ from ${playerName} (${oldBalance} → ${newBalance})`);
+        play('admin_reset');
+        alert(`✅ Successfully withdrew ${amount}⭐ from ${playerName}!\n\nOld Balance: ${oldBalance}⭐\nNew Balance: ${newBalance}⭐`);
+        
+        // Clear inputs
+        document.getElementById('adm-withdraw-target').value = '';
+        document.getElementById('adm-withdraw-amount').value = '';
     }
 
     // --- GAMES LOGIC (COPY FROM SOURCE) ---
