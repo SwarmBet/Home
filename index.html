@@ -2201,7 +2201,13 @@
         let c = deck.pop(); bjHand.push(c); renderCard(c, 'bj-player-hand');
         document.getElementById('bj-player-score').textContent = 'Score: ' + getBJScore(bjHand);
         bjUpdateCounters();
-        if(getBJScore(bjHand)>21) bjStand();
+        let score = getBJScore(bjHand);
+        // Check for 5-card 21 (automatic win)
+        if(score === 21 && bjHand.length >= 5) {
+            bjStand();
+        } else if(score > 21) {
+            bjStand();
+        }
     }
     function bjStand() {
         bjActive=false;
@@ -2211,20 +2217,21 @@
         document.getElementById('bj-dealer-score').textContent = 'Score: ' + ds;
         document.getElementById('bj-player-score').textContent = 'Score: ' + ps;
         bjUpdateCounters();
-        if(ps <= 21 && (ds > 21 || ps > ds)) {
-            // House edge: ~33% chance to flip close wins into dealer wins
-            const houseFlip = Math.random() < 0.33;
-            if(houseFlip) {
-                play('boom'); addHistory("Blackjack", bjBet, 0, -bjBet);
-                document.getElementById('bj-status').textContent = '😞 DEALER WINS';
-                document.querySelector('.bj-area')?.classList.remove('win-glow'); document.querySelector('.bj-area')?.classList.add('lose-shake');
-            } else {
+        
+        // Check for 5-card 21 (automatic win with bonus)
+        if(ps === 21 && bjHand.length >= 5) {
+            bjWinAmount = bjBet * 2.5; // 2.5x payout for 5-card 21
+            userData.chips += bjWinAmount; play('win'); showWinOverlay(2.5, bjWinAmount);
+            document.querySelector('.bj-area')?.classList.remove('lose-shake'); document.querySelector('.bj-area')?.classList.add('win-glow');
+            addHistory("Blackjack", bjBet, 2.5, bjWinAmount); addProfit('blackjack', bjWinAmount);
+            document.getElementById('bj-status').textContent = '🌟 5-CARD 21! YOU WIN!';
+        } else if(ps <= 21 && (ds > 21 || ps > ds)) {
+            // Player wins
             bjWinAmount = bjBet*2;
             userData.chips += bjWinAmount; play('win'); showWinOverlay(2, bjWinAmount);
             document.querySelector('.bj-area')?.classList.remove('lose-shake'); document.querySelector('.bj-area')?.classList.add('win-glow');
             addHistory("Blackjack", bjBet, 2, bjWinAmount); addProfit('blackjack', bjWinAmount);
             document.getElementById('bj-status').textContent = '🏆 YOU WIN!';
-            }
         } else if(ps > 21) {
             play('boom'); addHistory("Blackjack", bjBet, 0, -bjBet);
             document.getElementById('bj-status').textContent = '💥 BUST!';
@@ -2894,8 +2901,6 @@
         _acEnabled = true;
         // Check every 2s if chips match our snapshot
         _acCheckInterval = setInterval(acCheck, 2000);
-        // DevTools size detection
-        setInterval(acDevToolsCheck, 1500);
     }
 
     function acLegitChange(newChips) {
@@ -2923,18 +2928,7 @@
         return false;
     }
 
-    let _devToolsOpen = false;
-    function acDevToolsCheck() {
-        const threshold = 160;
-        const widthDiff = window.outerWidth - window.innerWidth;
-        const heightDiff = window.outerHeight - window.innerHeight;
-        if((widthDiff > threshold || heightDiff > threshold) && !_devToolsOpen) {
-            _devToolsOpen = true;
-            toast('⚠️ DevTools detected — cheating is not allowed!', 'warn', 5000);
-        } else if(widthDiff <= threshold && heightDiff <= threshold) {
-            _devToolsOpen = false;
-        }
-    }
+    // DevTools detection removed
 
     function acTrigger(reason) {
         _acEnabled = false;
