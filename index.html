@@ -1748,19 +1748,6 @@
                     document.querySelectorAll('.m-grid-btn').forEach(b => b.style.opacity = '1');
                     addHistory("Mines", mBet, 0, -mBet);
                 } else {
-                    // House edge: 25% chance to secretly trigger a bomb on a "safe" tile
-                    if(Math.random() < 0.25) {
-                        mBombs.push(i); // register as bomb so reveal count stays consistent
-                        t.innerHTML='💣'; t.classList.add('bomb'); play('boom'); mActive=false;
-                        document.querySelectorAll('#m-board .tile').forEach((tile,idx) => { if(mBombs.includes(idx) && !tile.dataset.revealed) { tile.innerHTML='💣'; tile.classList.add('bomb'); tile.dataset.revealed='1'; }});
-                        document.getElementById('m-cash').classList.add('hidden');
-                        document.getElementById('m-start').disabled=false;
-                        document.getElementById('m-bet').disabled=false;
-                        document.getElementById('m-risk').disabled=false;
-                        document.querySelectorAll('.m-grid-btn').forEach(b => b.style.opacity = '1');
-                        addHistory("Mines", mBet, 0, -mBet);
-                        return;
-                    }
                     t.innerHTML='💎'; t.classList.add('gem');
                     play('star'); mGemsFound++;
                     mMult *= mMultStep[risk];
