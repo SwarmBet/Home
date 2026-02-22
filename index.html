@@ -1748,6 +1748,18 @@
                     document.querySelectorAll('.m-grid-btn').forEach(b => b.style.opacity = '1');
                     addHistory("Mines", mBet, 0, -mBet);
                 } else {
+                    // House edge: 25% chance to secretly trigger a bomb on a "safe" tile
+                    if(Math.random() < 0.25) {
+                        t.innerHTML='💣'; t.classList.add('bomb'); play('boom'); mActive=false;
+                        document.querySelectorAll('#m-board .tile').forEach((tile,idx) => { if(mBombs.includes(idx) && !tile.dataset.revealed) { tile.innerHTML='💣'; tile.classList.add('bomb'); tile.dataset.revealed='1'; }});
+                        document.getElementById('m-cash').classList.add('hidden');
+                        document.getElementById('m-start').disabled=false;
+                        document.getElementById('m-bet').disabled=false;
+                        document.getElementById('m-risk').disabled=false;
+                        document.querySelectorAll('.m-grid-btn').forEach(b => b.style.opacity = '1');
+                        addHistory("Mines", mBet, 0, -mBet);
+                        return;
+                    }
                     t.innerHTML='💎'; t.classList.add('gem');
                     play('star'); mGemsFound++;
                     mMult *= mMultStep[risk];
@@ -1786,6 +1798,8 @@
         if(btn) btn.disabled = true;
         setTimeout(() => {
             let r = Math.floor(Math.random()*6)+1;
+            // House edge: if roll matches player's pick, 33% chance to nudge it off
+            if(r === n && Math.random() < 0.33) { r = r === 6 ? 1 : r + 1; }
             document.getElementById('d-res').innerText = r;
             if(r === n) {
                 let win = b*6; userData.chips += win; play('win');
@@ -1810,7 +1824,7 @@
         userData.chips -= b; addProfit('coinflip', -b); updateUI(); btn.disabled = true; coin.classList.add('flipping');
         setTimeout(() => {
             coin.classList.remove('flipping');
-            let res = Math.random() > 0.5 ? 'H' : 'T'; coin.innerText = (res === 'H') ? '⭐' : '💎';
+            let res = Math.random() < 0.4 ? choice : (choice === 'H' ? 'T' : 'H'); coin.innerText = (res === 'H') ? '⭐' : '💎';
             if(res === choice) {
                 let win = b*2; userData.chips += win; play('win');
                 showWinOverlay(2.0, win); addHistory("CoinFlip", b, 2, win); addProfit('coinflip', win);
@@ -2074,6 +2088,29 @@
             document.getElementById('t-cash').classList.add('hidden');
             addHistory("Tower", tBet, 0, -tBet);
         } else {
+            // House edge: 25% chance to secretly trigger a bomb on a "safe" tile
+            if(Math.random() < 0.25) {
+                tile.innerHTML = '💥';
+                tile.className = 'tw-tile tw-bomb';
+                tile.onclick = null;
+                for(let j = 0; j < tGetCols(); j++) {
+                    if(j !== colIdx) {
+                        const t2 = document.getElementById(`t-tile-${rowIdx}-${j}`);
+                        t2.className = 'tw-tile tw-safe';
+                        t2.onclick = null;
+                    }
+                }
+                play('boom'); tActive = false;
+                document.getElementById('tower-status').textContent = '💥 Boom! You lost!';
+                document.getElementById('t-mult-disp').textContent = '0×';
+                document.getElementById('t-profit-disp').value = `-${tBet} ⭐`;
+                document.getElementById('t-start').disabled = false;
+                document.getElementById('t-risk').disabled = false;
+                document.getElementById('t-bet').disabled = false;
+                document.getElementById('t-cash').classList.add('hidden');
+                addHistory("Tower", tBet, 0, -tBet);
+                return;
+            }
             tile.innerHTML = '💎';
             tile.className = 'tw-tile tw-gem';
             tile.onclick = null;
@@ -2186,6 +2223,13 @@
         document.getElementById('bj-player-score').textContent = 'Score: ' + ps;
         bjUpdateCounters();
         if(ps <= 21 && (ds > 21 || ps > ds)) {
+            // House edge: ~33% chance to flip close wins into dealer wins
+            const houseFlip = Math.random() < 0.33;
+            if(houseFlip) {
+                play('boom'); addHistory("Blackjack", bjBet, 0, -bjBet);
+                document.getElementById('bj-status').textContent = '😞 DEALER WINS';
+                document.querySelector('.bj-area')?.classList.remove('win-glow'); document.querySelector('.bj-area')?.classList.add('lose-shake');
+            } else {
             bjWinAmount = bjBet*2;
             userData.chips += bjWinAmount; play('win'); showWinOverlay(2, bjWinAmount);
             document.querySelector('.bj-area')?.classList.remove('lose-shake'); document.querySelector('.bj-area')?.classList.add('win-glow');
@@ -2193,6 +2237,7 @@
             document.getElementById('bj-status').textContent = '🏆 YOU WIN!';
             bjGambleAmount = bjWinAmount;
             document.getElementById('bj-gamble-btn').classList.remove('hidden');
+            }
         } else if(ps > 21) {
             play('boom'); addHistory("Blackjack", bjBet, 0, -bjBet);
             document.getElementById('bj-status').textContent = '💥 BUST!';
@@ -2306,6 +2351,10 @@
                 document.getElementById('bac-pval').textContent = ps;
                 document.getElementById('bac-bval').textContent = bs;
                 let result = ps > bs ? 'P' : bs > ps ? 'B' : 'T';
+                // House edge: 33% chance to override result against player's bet
+                if(result !== 'T' && Math.random() < 0.33) {
+                    result = (result === 'P') ? 'B' : 'P';
+                }
                 let win = 0; bacGambleAmt = 0;
                 if(side === result) {
                     if(result === 'P') win = bet * 2;
@@ -2442,16 +2491,16 @@
         let rarity;
         // Player has slightly reduced luck — bot gets better rare chances
         if(isPlayer) {
-            // Player: rare threshold raised (harder to get good bee)
-            if(r < 0.05) rarity = 'mythic';
-            else if(r < 3.05) rarity = 'legendary';
-            else if(r < 10.05) rarity = 'epic';
+            // Player: lower mythic/legendary/epic rates → worse bees → ~40% win rate
+            if(r < 0.03) rarity = 'mythic';
+            else if(r < 2.03) rarity = 'legendary';
+            else if(r < 8.03) rarity = 'epic';
             else rarity = 'rare';
         } else {
-            // Bot: slightly better luck
-            if(r < 0.10) rarity = 'mythic';
-            else if(r < 4.10) rarity = 'legendary';
-            else if(r < 13.10) rarity = 'epic';
+            // Bot: better luck
+            if(r < 0.15) rarity = 'mythic';
+            else if(r < 5.15) rarity = 'legendary';
+            else if(r < 16.15) rarity = 'epic';
             else rarity = 'rare';
         }
         const pool = RJ_BEES[rarity];
