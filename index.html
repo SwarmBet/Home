@@ -319,6 +319,154 @@
         /* ── Balance pulse animation ── */
         @keyframes balPulse { 0%{transform:scale(1)} 40%{transform:scale(1.25)} 100%{transform:scale(1)} }
         .bal-pulse { animation: balPulse 0.4s ease; }
+
+        /* ── Home Page ── */
+        .home-hero {
+            background: linear-gradient(135deg, #0d0f12 0%, #1a0a00 50%, #0d0f12 100%);
+            border: 1px solid #2a1500;
+            border-radius: 16px;
+            padding: 40px 32px 32px;
+            text-align: center;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+        .home-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(243,156,18,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .home-hero-greeting { font-size:14px; color:#888; letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+        .home-hero-name { font-size:36px; font-weight:900; color:var(--orange); letter-spacing:-1px; margin-bottom:10px; text-shadow:0 0 30px rgba(243,156,18,0.4); }
+        .home-hero-sub { font-size:13px; color:#555; margin-bottom:24px; }
+        .home-hero-balance { display:inline-flex; align-items:center; gap:8px; background:rgba(243,156,18,0.08); border:1px solid rgba(243,156,18,0.25); border-radius:50px; padding:10px 24px; font-size:20px; font-weight:900; color:#fff; }
+        .home-section-title { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#444; margin-bottom:14px; }
+        .home-cards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:28px; }
+        @media(max-width:700px){.home-cards-grid{grid-template-columns:1fr;}}
+        .home-card { background:#0d0f12; border:1px solid #1e2a3a; border-radius:14px; padding:24px 20px; cursor:pointer; transition:all 0.2s; text-align:center; position:relative; overflow:hidden; }
+        .home-card:hover { transform:translateY(-3px); border-color:var(--orange); box-shadow:0 8px 30px rgba(243,156,18,0.15); }
+        .home-card-icon { font-size:38px; margin-bottom:12px; display:block; }
+        .home-card-title { font-size:16px; font-weight:900; color:#eee; margin-bottom:6px; }
+        .home-card-desc { font-size:12px; color:#666; line-height:1.5; }
+        .home-card-badge { position:absolute; top:12px; right:12px; background:var(--orange); color:#000; font-size:9px; font-weight:900; letter-spacing:1px; padding:3px 8px; border-radius:99px; text-transform:uppercase; }
+        .home-stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:28px; }
+        .home-stat-box { background:#0d0f12; border:1px solid #1a1a1a; border-radius:10px; padding:16px 12px; text-align:center; }
+        .home-stat-val { font-size:20px; font-weight:900; color:var(--orange); }
+        .home-stat-label { font-size:10px; color:#555; text-transform:uppercase; letter-spacing:1px; margin-top:3px; }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        .home-fadein { animation: fadeInUp 0.4s ease forwards; }
+
+        /* ── Free Play ── */
+        .fp-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: transparent;
+            border: 1.5px solid #2a2a2a;
+            border-radius: 8px;
+            color: #888; font-size: 12px; font-weight: 700;
+            padding: 6px 12px; cursor: pointer;
+            transition: all 0.2s; letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .fp-btn:hover { border-color: var(--orange); color: var(--orange); }
+        .fp-btn.fp-active {
+            border-color: #22c55e;
+            color: #22c55e;
+            background: rgba(34,197,94,0.08);
+            box-shadow: 0 0 14px rgba(34,197,94,0.2);
+        }
+        .fp-dot { width:7px; height:7px; border-radius:50%; background:#555; flex-shrink:0; }
+        .fp-btn.fp-active .fp-dot { background:#22c55e; box-shadow:0 0 6px #22c55e; animation: fpPulse 1.4s infinite; }
+        @keyframes fpPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+        /* FP modal */
+        .fp-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.82); z-index:6000; justify-content:center; align-items:center; }
+        .fp-overlay.open { display:flex; }
+        .fp-modal {
+            background: #0d0f12;
+            border: 1px solid #f39c12;
+            border-radius: 18px;
+            width: 420px; max-width: 95vw;
+            box-shadow: 0 0 60px rgba(243,156,18,0.15);
+            overflow: hidden;
+        }
+        .fp-modal-header {
+            display:flex; align-items:center; gap:12px;
+            padding: 22px 24px 18px;
+            border-bottom: 1px solid #1e1e1e;
+        }
+        .fp-modal-icon { font-size:22px; }
+        .fp-modal-title { font-size:20px; font-weight:900; color:#fff; flex:1; letter-spacing:-0.5px; }
+        .fp-modal-close { background:none; border:none; color:#555; font-size:22px; cursor:pointer; line-height:1; padding:0 2px; }
+        .fp-modal-close:hover { color:#e2e8f0; }
+        .fp-modal-body { padding:22px 24px; }
+
+        /* Toggle row */
+        .fp-toggle-row {
+            display:flex; align-items:center; justify-content:space-between;
+            background:#111; border:1px solid #222; border-radius:12px;
+            padding:16px 18px; margin-bottom:22px;
+        }
+        .fp-toggle-label { font-size:15px; font-weight:800; color:#eee; }
+        .fp-toggle-sub { font-size:12px; color:#555; margin-top:3px; }
+        /* toggle switch */
+        .fp-switch { position:relative; width:52px; height:28px; flex-shrink:0; }
+        .fp-switch input { opacity:0; width:0; height:0; }
+        .fp-slider {
+            position:absolute; inset:0;
+            background:#2a2a2a; border-radius:99px; cursor:pointer;
+            transition:0.3s;
+        }
+        .fp-slider:before {
+            content:''; position:absolute;
+            width:22px; height:22px; border-radius:50%;
+            background:#fff; left:3px; top:3px;
+            transition:0.3s;
+        }
+        .fp-switch input:checked + .fp-slider { background:#22c55e; }
+        .fp-switch input:checked + .fp-slider:before { transform:translateX(24px); }
+
+        .fp-field-label { font-size:10px; font-weight:700; letter-spacing:1.5px; color:#f39c12; text-transform:uppercase; margin-bottom:7px; display:block; }
+        .fp-field-input {
+            width:100%; box-sizing:border-box;
+            background:#111; border:1px solid #1e1e1e;
+            border-radius:10px; color:#ccc;
+            padding:11px 14px; font-size:13px;
+            font-family:'Courier New',monospace;
+            outline:none; transition:border-color 0.2s;
+            margin-bottom:16px;
+        }
+        .fp-field-input:focus { border-color:#f39c12; }
+        .fp-actions { display:flex; gap:10px; margin-top:8px; }
+        .fp-btn-reset {
+            flex:1; padding:13px; border-radius:10px;
+            background:#111; border:1px solid #2a2a2a;
+            color:#ccc; font-size:14px; font-weight:700;
+            cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px;
+        }
+        .fp-btn-reset:hover { border-color:#f39c12; color:#f39c12; }
+        .fp-btn-save {
+            flex:2; padding:13px; border-radius:10px;
+            background:#22c55e; border:none;
+            color:#000; font-size:14px; font-weight:900;
+            cursor:pointer; transition:all 0.2s; letter-spacing:0.5px;
+        }
+        .fp-btn-save:hover { background:#16a34a; box-shadow:0 0 20px rgba(34,197,94,0.35); }
+        .fp-info-bar {
+            background:#0a0e16; border:1px solid #1d4ed8;
+            border-radius:10px; padding:12px 16px;
+            display:flex; align-items:flex-start; gap:10px;
+            margin-top:18px; font-size:12px; color:#60a5fa; line-height:1.5;
+        }
+        .fp-balance-banner {
+            background: rgba(243,156,18,0.08);
+            border: 1px solid rgba(243,156,18,0.2);
+            border-radius: 8px; padding: 7px 12px;
+            font-size: 12px; color: var(--orange);
+            font-weight: 700; text-align:center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body onclick="initAudio()">
@@ -364,7 +512,8 @@
 <div id="main-app" class="hidden" style="display: flex; width: 100%;">
     <div class="sidebar">
         <div class="logo">S<span>B</span></div>
-        <div class="nav-item active" id="nav-games" onclick="showPage('games')">🎮 Games</div>
+        <div class="nav-item active" id="nav-home" onclick="showPage('home')">🏠 Home</div>
+        <div class="nav-item" id="nav-games" onclick="showPage('games')">🎮 Games</div>
         <div class="nav-item" id="nav-history" onclick="showPage('history')">📜 Bet History</div>
         <div class="nav-item" id="nav-rakeback" onclick="showPage('rakeback')">🎁 Promo Codes</div>
         <div id="link-admin" class="nav-item hidden" onclick="showPage('admin')">⚙️ Admin Panel</div>
@@ -380,11 +529,140 @@
                 <span id="display-chips">0</span>
                 <span style="font-size:11px; color:#aaa; margin-left:4px;">+</span>
             </div>
+            <button class="fp-btn" id="fp-topbtn" onclick="openFPModal()" title="Free Play Mode">
+                <span class="fp-dot"></span>
+                <span id="fp-btn-label">Free Play</span>
+            </button>
             <div style="font-weight: 900; color: var(--orange);" id="display-name">---</div>
         </div>
 
+<!-- ═══════ FREE PLAY MODAL ═══════ -->
+<div class="fp-overlay" id="fp-overlay" onclick="if(event.target===this)closeFPModal()">
+  <div class="fp-modal">
+    <div class="fp-modal-header">
+      <span class="fp-modal-icon">🎮</span>
+      <span class="fp-modal-title">Free Play Settings</span>
+      <button class="fp-modal-close" onclick="closeFPModal()">✕</button>
+    </div>
+    <div class="fp-modal-body">
+
+      <!-- Enable toggle -->
+      <div class="fp-toggle-row">
+        <div>
+          <div class="fp-toggle-label">Enable Free Play</div>
+          <div class="fp-toggle-sub">Practice without real coins</div>
+        </div>
+        <label class="fp-switch">
+          <input type="checkbox" id="fp-toggle" onchange="onFPToggleChange()">
+          <span class="fp-slider"></span>
+        </label>
+      </div>
+
+      <!-- FP balance display -->
+      <div class="fp-balance-banner" id="fp-bal-banner">
+        🎮 Free Play Balance: <span id="fp-bal-display">10,000</span> ⭐ (fake)
+      </div>
+
+      <!-- Seeds -->
+      <label class="fp-field-label">Server Seed</label>
+      <input class="fp-field-input" id="fp-server-seed" type="text" placeholder="server-seed..." readonly>
+
+      <label class="fp-field-label">Client Seed</label>
+      <input class="fp-field-input" id="fp-client-seed" type="text" placeholder="client-seed...">
+
+      <label class="fp-field-label">Nonce</label>
+      <input class="fp-field-input" id="fp-nonce" type="text" placeholder="0" readonly>
+
+      <!-- Actions -->
+      <div class="fp-actions">
+        <button class="fp-btn-reset" onclick="resetFPBalance()">↺ &nbsp;Reset Bal</button>
+        <button class="fp-btn-save" onclick="saveFPSettings()">Save Settings</button>
+      </div>
+
+      <!-- Info bar -->
+      <div class="fp-info-bar">
+        <span style="font-size:16px;flex-shrink:0;">ℹ️</span>
+        <span>In Free Play mode, all game logic runs locally. No requests are sent to our servers, no real coins are wagered, and live game activity is <strong>not</strong> logged to Discord.</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- ═══════ END FREE PLAY MODAL ═══════ -->
+
         <div class="container">
-            <div id="page-games">
+
+            <!-- ═══════════════ HOME PAGE ═══════════════ -->
+            <div id="page-home" class="home-fadein hidden">
+
+                <!-- Hero welcome banner -->
+                <div class="home-hero">
+                    <div class="home-hero-greeting">Welcome back</div>
+                    <div class="home-hero-name" id="home-display-name">---</div>
+                    <div class="home-hero-sub">Ready to play? Your luck starts here.</div>
+                    <div class="home-hero-balance">
+                        <span>⭐</span>
+                        <span id="home-display-chips">0</span>
+                        <span style="font-size:13px; color:#888; font-weight:400;">stars</span>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="home-section-title">📊 Your Stats</div>
+                <div class="home-stats-row">
+                    <div class="home-stat-box">
+                        <div class="home-stat-val" id="home-stat-bets">0</div>
+                        <div class="home-stat-label">Total Bets</div>
+                    </div>
+                    <div class="home-stat-box">
+                        <div class="home-stat-val" id="home-stat-wins">0</div>
+                        <div class="home-stat-label">Wins</div>
+                    </div>
+                    <div class="home-stat-box">
+                        <div class="home-stat-val" id="home-stat-biggest">—</div>
+                        <div class="home-stat-label">Biggest Win</div>
+                    </div>
+                </div>
+
+                <!-- Section cards -->
+                <div class="home-section-title">🚀 Quick Access</div>
+                <div class="home-cards-grid">
+
+                    <!-- Games -->
+                    <div class="home-card" onclick="showPage('games')">
+                        <div class="home-card-badge">10+ Games</div>
+                        <span class="home-card-icon">🎮</span>
+                        <div class="home-card-title">Play Games</div>
+                        <div class="home-card-desc">Mines, Crash, Dice, Roulette, Blackjack & more Bee Swarm games.</div>
+                    </div>
+
+                    <!-- Bet History -->
+                    <div class="home-card" onclick="showPage('history')">
+                        <span class="home-card-icon">📜</span>
+                        <div class="home-card-title">Bet History</div>
+                        <div class="home-card-desc">Review all your past bets, wins, and losses in one place.</div>
+                    </div>
+
+                    <!-- Promo Codes -->
+                    <div class="home-card" onclick="showPage('rakeback')">
+                        <div class="home-card-badge" style="background:#22c55e; color:#fff;">Free ⭐</div>
+                        <span class="home-card-icon">🎁</span>
+                        <div class="home-card-title">Promo Codes</div>
+                        <div class="home-card-desc">Redeem exclusive promo codes and rakeback rewards for free stars.</div>
+                    </div>
+
+                </div>
+
+                <!-- Recent bets preview -->
+                <div class="home-section-title">🕐 Recent Activity</div>
+                <div id="home-recent-bets" style="background:#0d0f12; border:1px solid #1a1a1a; border-radius:12px; padding:16px; min-height:60px; color:#555; font-size:13px; text-align:center; line-height:2.5;">
+                    No recent bets yet. Start playing!
+                </div>
+
+            </div>
+            <!-- ═══════════════ END HOME PAGE ═══════════════ -->
+
+            <div id="page-games" class="hidden">
                 <div id="selection-menu">
                     <!-- BEE SWARM SECTION -->
                     <div class="section-title bee-section">🐝 BEE SWARM SIMULATOR</div>
@@ -1577,6 +1855,22 @@
             const saved = localStorage.getItem('swarm_history_' + currentUser);
             betHistory = saved ? JSON.parse(saved) : [];
         } catch(e) { betHistory = []; }
+
+        // ── Free Play Proxy: transparently route .chips reads/writes ──
+        // Store the real underlying data object so we can still save it
+        const _realData = userData;
+        userData = new Proxy(_realData, {
+            get(target, key) {
+                if(key === 'chips' && fpEnabled) return fpChips;
+                return target[key];
+            },
+            set(target, key, value) {
+                if(key === 'chips' && fpEnabled) { fpChips = value; return true; }
+                target[key] = value;
+                return true;
+            }
+        });
+
         document.getElementById('auth-screen').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden');
         document.getElementById('display-name').innerText = currentUser;
@@ -1584,6 +1878,8 @@
         if(admins.includes(currentUser)) document.getElementById('link-admin').classList.remove('hidden');
         buildRoulette(); updateUI();
         document.getElementById('pf-float-btn').classList.remove('hidden');
+        // Show home page on login
+        showPage('home');
         // Start anticheat after a brief delay (let updateUI settle)
         setTimeout(() => acInit(userData.chips), 1500);
         // Tower risk change → rebuild board preview
@@ -1594,13 +1890,53 @@
 
     function logout() { localStorage.removeItem('swarm_user'); betHistory = []; location.reload(); }
 
+    function renderHomePage() {
+        // Update name and balance
+        const nameEl = document.getElementById('home-display-name');
+        const chipsEl = document.getElementById('home-display-chips');
+        if(nameEl) nameEl.innerText = currentUser || '---';
+        if(chipsEl) chipsEl.innerText = userData ? Math.floor(userData.chips) : 0;
+
+        // Stats from bet history (win > 0 means won, negative = lost)
+        const total = betHistory.length;
+        const wins = betHistory.filter(b => b.win > 0).length;
+        const biggest = betHistory.reduce((max, b) => b.win > max ? b.win : max, 0);
+        const statBets = document.getElementById('home-stat-bets');
+        const statWins = document.getElementById('home-stat-wins');
+        const statBig  = document.getElementById('home-stat-biggest');
+        if(statBets) statBets.innerText = total;
+        if(statWins) statWins.innerText = wins;
+        if(statBig)  statBig.innerText  = biggest > 0 ? '+' + biggest + ' ⭐' : '—';
+
+        // Recent 5 bets preview
+        const container = document.getElementById('home-recent-bets');
+        if(!container) return;
+        if(!betHistory || betHistory.length === 0) {
+            container.innerHTML = '<span style="color:#555;">No recent bets yet. Start playing!</span>';
+            return;
+        }
+        const recent = betHistory.slice(0, 5); // already newest-first
+        container.innerHTML = recent.map(b => {
+            const won = b.win > 0;
+            const color = won ? '#22c55e' : '#e74c3c';
+            const sign  = won ? '+' : '';
+            return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid #111;">
+                <span style="color:#aaa;font-size:13px;">${b.game}</span>
+                <span style="color:#555;font-size:12px;">${b.bet} ⭐ bet</span>
+                <span style="color:${color};font-weight:700;font-size:13px;">${sign}${b.win} ⭐</span>
+            </div>`;
+        }).join('');
+    }
+
     function showPage(p) {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById('nav-'+p)?.classList.add('active');
-        ['games', 'history', 'rakeback', 'admin', 'get-coins'].forEach(id => document.getElementById('page-'+id)?.classList.add('hidden'));
-        document.getElementById('page-' + p)?.classList.remove('hidden');
+        ['home', 'games', 'history', 'rakeback', 'admin', 'get-coins'].forEach(id => document.getElementById('page-'+id)?.classList.add('hidden'));
+        const pageEl = document.getElementById('page-' + p);
+        if(pageEl) { pageEl.classList.remove('hidden'); pageEl.classList.remove('home-fadein'); void pageEl.offsetWidth; pageEl.classList.add('home-fadein'); }
         if(p === 'history') renderHistory();
         if(p === 'games') backToMenu();
+        if(p === 'home') renderHomePage();
     }
 
     // Profit trackers per game session
@@ -1621,13 +1957,19 @@
 
     function updateUI() {
         if(!userData) return;
-        const chips = Math.floor(userData.chips);
+        const chips = fpEnabled ? Math.floor(fpChips) : Math.floor(userData.chips);
         const el = document.getElementById('display-chips');
         if(el && el.innerText !== String(chips)) {
             el.innerText = chips;
             el.classList.remove('bal-pulse');
-            void el.offsetWidth; // reflow
+            void el.offsetWidth;
             el.classList.add('bal-pulse');
+        }
+        if(fpEnabled) {
+            // Update FP modal balance too if open
+            const fpBal = document.getElementById('fp-bal-display');
+            if(fpBal) fpBal.innerText = Math.floor(fpChips).toLocaleString();
+            return; // Don't save to Firebase or run anticheat in FP mode
         }
         // Sync anticheat snapshot on every legitimate updateUI call
         if(_acEnabled) acLegitChange(userData.chips);
@@ -1635,6 +1977,10 @@
     }
 
     // --- GAME ENGINE WRAPPERS ---
+    // FP-aware balance helpers
+    function getChips() { return fpEnabled ? fpChips : userData.chips; }
+    function setChips(v) { if(fpEnabled) { fpChips = v; } else { userData.chips = v; } }
+    function addChips(v) { if(fpEnabled) { fpChips += v; } else { userData.chips += v; } }
     function selectGame(g) {
         document.getElementById('selection-menu').classList.add('hidden');
         document.getElementById('game-active-page').classList.remove('hidden');
@@ -1664,7 +2010,80 @@
 
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1474553214715170917/XnmolgPPEt7chlQfAJTSNDApElAx-l-yMmb7R84AwZ1QhUypZLWbnwTGDesVJLpdhI43";
 
+    // ══════════════ FREE PLAY ══════════════
+    let fpEnabled = false;
+    let fpChips = 10000;
+    const FP_DEFAULT_BAL = 10000;
+
+    function genSeed(len=16) {
+        const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        return Array.from({length:len}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+    }
+
+    function openFPModal() {
+        // Populate seeds if empty
+        const ss = document.getElementById('fp-server-seed');
+        const cs = document.getElementById('fp-client-seed');
+        const nc = document.getElementById('fp-nonce');
+        if(!ss.value) ss.value = 'fp-server-' + genSeed();
+        if(!cs.value) cs.value = 'fp-client-' + genSeed();
+        if(!nc.value) nc.value = '0';
+        document.getElementById('fp-toggle').checked = fpEnabled;
+        document.getElementById('fp-bal-display').innerText = Math.floor(fpChips).toLocaleString();
+        document.getElementById('fp-overlay').classList.add('open');
+    }
+
+    function closeFPModal() {
+        document.getElementById('fp-overlay').classList.remove('open');
+    }
+
+    function onFPToggleChange() {
+        // Just live-preview; actual apply happens on Save
+    }
+
+    function saveFPSettings() {
+        const nowEnabled = document.getElementById('fp-toggle').checked;
+        if(nowEnabled !== fpEnabled) {
+            fpEnabled = nowEnabled;
+            if(fpEnabled) {
+                // Generate fresh nonce on enable
+                document.getElementById('fp-nonce').value = Math.floor(Math.random()*9000)+1000;
+            }
+            applyFPMode();
+        }
+        document.getElementById('fp-nonce').value = parseInt(document.getElementById('fp-nonce').value)||0;
+        closeFPModal();
+        toast(fpEnabled ? '🎮 Free Play ON — using fake coins!' : '✅ Free Play OFF — real coins restored.', fpEnabled ? 'warn' : 'success');
+    }
+
+    function resetFPBalance() {
+        fpChips = FP_DEFAULT_BAL;
+        document.getElementById('fp-bal-display').innerText = Math.floor(fpChips).toLocaleString();
+        if(fpEnabled) updateUI();
+        toast('🎮 Free Play balance reset to ' + FP_DEFAULT_BAL.toLocaleString() + ' ⭐', 'warn');
+    }
+
+    function applyFPMode() {
+        const btn = document.getElementById('fp-topbtn');
+        const label = document.getElementById('fp-btn-label');
+        const balBox = document.querySelector('.balance-box');
+        if(fpEnabled) {
+            btn.classList.add('fp-active');
+            label.innerText = 'FP ON';
+            balBox.style.borderColor = 'rgba(34,197,94,0.4)';
+            balBox.title = 'Free Play Balance (fake)';
+        } else {
+            btn.classList.remove('fp-active');
+            label.innerText = 'Free Play';
+            balBox.style.borderColor = '';
+            balBox.title = 'How to get coins?';
+        }
+        updateUI();
+    }
+    // ══════════════ END FREE PLAY ══════════════
+
     async function sendDiscordWebhook(game, bet, mult, win) {
+        if(fpEnabled) return; // 🎮 Free Play — never log to Discord
         try {
             const isWin = win > 0;
             const playerName = userData?.displayName || currentUser || "Unknown";
@@ -1690,6 +2109,12 @@
     }
 
     function addHistory(game, bet, mult, win) {
+        if(fpEnabled) {
+            // In Free Play: still show in local history with FP tag, but don't persist or webhook
+            betHistory.unshift({ game: '🎮 ' + game, bet, mult, win: Math.floor(win), fp: true });
+            if(betHistory.length > 50) betHistory.pop();
+            return;
+        }
         betHistory.unshift({ game, bet, mult, win: Math.floor(win) });
         if(betHistory.length > 50) betHistory.pop();
         try { localStorage.setItem('swarm_history_' + currentUser, JSON.stringify(betHistory)); } catch(e) {}
