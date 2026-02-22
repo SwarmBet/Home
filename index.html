@@ -576,7 +576,7 @@
       <!-- Actions -->
       <div class="fp-actions">
         <button class="fp-btn-reset" onclick="resetFPBalance()">↺ &nbsp;Reset Bal</button>
-        <button class="fp-btn-save" onclick="saveFPSettings()">Save Settings</button>
+        <button class="fp-btn-save" id="fp-btn-save" onclick="saveFPSettings()">Save Settings</button>
       </div>
 
       <!-- Info bar -->
@@ -584,7 +584,7 @@
         <span style="font-size:16px;flex-shrink:0;">ℹ️</span>
         <span>In Free Play mode, all game logic runs locally. No requests are sent to our servers, no real coins are wagered, and live game activity is <strong>not</strong> logged to Discord.</span>
       </div>
-      <div id="fp-lock-warning" style="display:none;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.35);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:12px;color:#e74c3c;display:flex;align-items:center;gap:8px;">
+      <div id="fp-lock-warning" style="display:none; background:rgba(231,76,60,0.1); border:1px solid rgba(231,76,60,0.35); border-radius:10px; padding:10px 14px; margin-top:10px; font-size:12px; color:#e74c3c; align-items:center; gap:8px;">
         <span>🔒</span><span id="fp-lock-msg">Finish the active game before switching modes.</span>
       </div>
 
@@ -2047,8 +2047,7 @@
         const lockMsg  = document.getElementById('fp-lock-msg');
         const activeGame = fpEnabled ? isFPGameActive() : null;
         if(activeGame && lockWarn && lockMsg) {
-            lockWarn.style.display = 'flex';
-            lockMsg.innerText = '🔒 You must cashout first: ' + activeGame + '.';
+            lockWarn.style.display = 'flex';            lockMsg.innerText = '🔒 You must cashout first: ' + activeGame + '.';
             document.getElementById('fp-btn-save').disabled = true;
             document.getElementById('fp-btn-save').style.opacity = '0.4';
         } else if(lockWarn) {
