@@ -4271,6 +4271,9 @@
             document.getElementById('kabResultMult').innerHTML = `<span>${bug.label}</span> eliminated you — full bet lost`;
             document.getElementById('kabNewBalance').textContent = userData.chips.toLocaleString();
 
+            // Log to Discord live-games channel (same as all other games)
+            addHistory("Kill a Bug", bet, 0, -bet);
+
             // History row
             kabHistoryRows.unshift({bug, bet, totalMult: 0, reward: 0, bal: userData.chips, isWin: false, eliminated: true});
             if (kabHistoryRows.length > 20) kabHistoryRows.pop();
@@ -4321,6 +4324,8 @@
         document.getElementById('kabResultMult').innerHTML = `<span>${totalMult.toFixed(2)}×</span> on <span>${bet.toLocaleString()}</span> bet`;
         userData.chips += reward;
         addProfit('killabug', reward);
+        // Log to Discord live-games channel (same as all other games)
+        addHistory("Kill a Bug", bet, totalMult, isWin ? reward : -(bet - reward));
         updateUI();
         document.getElementById('kabNewBalance').textContent = userData.chips.toLocaleString();
 
