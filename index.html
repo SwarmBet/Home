@@ -988,11 +988,18 @@
                             <div id="coin-obj" class="coin"><svg viewBox="0 0 80 80" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
   <circle cx="40" cy="40" r="36" fill="#c9a800" stroke="#f1c40f" stroke-width="3"/>
   <circle cx="40" cy="40" r="28" fill="none" stroke="#f1c40f" stroke-width="1.5" opacity="0.5"/>
-  <polygon points="40,18 44.9,31.2 59,31.2 47.6,39.3 52.4,52.5 40,44.4 27.6,52.5 32.4,39.3 21,31.2 35.1,31.2" fill="#f1c40f"/>
+  <!-- Crown -->
+  <polygon points="22,52 22,38 31,46 40,28 49,46 58,38 58,52" fill="#f1c40f" stroke="#c9a800" stroke-width="1"/>
+  <!-- Crown base -->
+  <rect x="22" y="50" width="36" height="6" rx="2" fill="#f1c40f"/>
+  <!-- Crown gems -->
+  <circle cx="40" cy="30" r="3" fill="#fff" opacity="0.9"/>
+  <circle cx="26" cy="42" r="2.5" fill="#fff" opacity="0.9"/>
+  <circle cx="54" cy="42" r="2.5" fill="#fff" opacity="0.9"/>
 </svg></div>
                             Side: <select id="cf-choice">
-                                <option value="H">HEADS (★)</option>
-                                <option value="T">TAILS (◆)</option>
+                                <option value="H">HEADS (👑)</option>
+                                <option value="T">TAILS (★)</option>
                             </select>
                             Bet: <input type="number" id="cf-bet" value="50" min="50" max="1000" style="width:80px;">
                             <button class="m-bet-btn" style="background:#1e2a3a;border:none;color:#aaa;padding:8px 12px;cursor:pointer;font-size:12px;font-weight:700;border-radius:4px;" onclick="document.getElementById('cf-bet').value=Math.max(50,Math.floor(parseInt(document.getElementById('cf-bet').value||50)/2))">½</button>
@@ -3009,7 +3016,14 @@
             let res = houseEdge() ? (choice === 'H' ? 'T' : 'H') : (Math.random() < 0.5 ? choice : (choice === 'H' ? 'T' : 'H')); coin.innerHTML = (res === 'H') ? `<svg viewBox="0 0 80 80" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
   <circle cx="40" cy="40" r="36" fill="#c9a800" stroke="#f1c40f" stroke-width="3"/>
   <circle cx="40" cy="40" r="28" fill="none" stroke="#f1c40f" stroke-width="1.5" opacity="0.5"/>
-  <polygon points="40,18 44.9,31.2 59,31.2 47.6,39.3 52.4,52.5 40,44.4 27.6,52.5 32.4,39.3 21,31.2 35.1,31.2" fill="#f1c40f"/>
+  <!-- Crown -->
+  <polygon points="22,52 22,38 31,46 40,28 49,46 58,38 58,52" fill="#f1c40f" stroke="#c9a800" stroke-width="1"/>
+  <!-- Crown base -->
+  <rect x="22" y="50" width="36" height="6" rx="2" fill="#f1c40f"/>
+  <!-- Crown gems -->
+  <circle cx="40" cy="30" r="3" fill="#fff" opacity="0.9"/>
+  <circle cx="26" cy="42" r="2.5" fill="#fff" opacity="0.9"/>
+  <circle cx="54" cy="42" r="2.5" fill="#fff" opacity="0.9"/>
 </svg>` : `<svg viewBox="0 0 80 80" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
   <circle cx="40" cy="40" r="36" fill="#155c50" stroke="#1abc9c" stroke-width="3"/>
   <circle cx="40" cy="40" r="28" fill="none" stroke="#1abc9c" stroke-width="1.5" opacity="0.5"/>
@@ -3018,10 +3032,10 @@
             if(res === choice) {
                 let win = b*2; userData.chips += win; play('win');
                 showWinOverlay(2.0, win); addHistory("CoinFlip", b, 2, win); addProfit('coinflip', win);
-                toast((res==='H'?'★ Heads':'◆ Tails') + '! You win +' + win + ' ★', 'success');
+                toast((res==='H'?'👑 Heads':'★ Tails') + '! You win +' + win + ' ★', 'success');
             } else {
                 play('boom'); addHistory("CoinFlip", b, 0, -b);
-                toast((res==='H'?'★ Heads':'◆ Tails') + ' — you lose!', 'error');
+                toast((res==='H'?'👑 Heads':'★ Tails') + ' — you lose!', 'error');
             }
             btn.disabled = false; releaseBetLock(); updateUI();
         }, 1200);
