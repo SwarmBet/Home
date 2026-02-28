@@ -966,6 +966,7 @@
                                     <button class="btn-play" id="bj-deal-btn" onclick="startBlackjack()">DEAL</button>
                                     <button class="btn-play hidden" id="bj-hit-btn" onclick="bjHit()" style="background:#3498db; color:white;">HIT</button>
                                     <button class="btn-play hidden" id="bj-stand-btn" onclick="bjStand()" style="background:#9b59b6; color:white;">STAND</button>
+                                    <button class="btn-play hidden" id="bj-double-btn" onclick="bjDouble()" style="background:#e67e22; color:white;">DOUBLE ↕</button>
                                 </div>
                             </div>
                         </div>
@@ -3185,11 +3186,16 @@
         document.getElementById('bj-deal-btn').classList.add('hidden');
         document.getElementById('bj-hit-btn').classList.remove('hidden');
         document.getElementById('bj-stand-btn').classList.remove('hidden');
+        // Show double only if player has enough chips and has exactly 2 cards
+        if(userData.chips >= bjBet) {
+            document.getElementById('bj-double-btn').classList.remove('hidden');
+        }
         document.getElementById('bj-status').textContent = 'VS';
         bjUpdateCounters();
     }
     function bjHit() {
         if(!bjActive) return;
+        document.getElementById('bj-double-btn').classList.add('hidden'); // Can't double after hitting
         let c = deck.pop(); bjHand.push(c); renderCard(c, 'bj-player-hand');
         document.getElementById('bj-player-score').textContent = 'Score: ' + getBJScore(bjHand);
         bjUpdateCounters(); saveGameState();
@@ -3241,7 +3247,26 @@
         document.getElementById('bj-deal-btn').classList.remove('hidden');
         document.getElementById('bj-hit-btn').classList.add('hidden');
         document.getElementById('bj-stand-btn').classList.add('hidden');
+        document.getElementById('bj-double-btn').classList.add('hidden');
         updateUI();
+    }
+    function bjDouble() {
+        if(!bjActive || bjHand.length !== 2) return;
+        if(userData.chips < bjBet) { toast('Not enough ⭐ to double!', 'error'); return; }
+        // Deduct the extra bet
+        userData.chips -= bjBet;
+        addProfit('blackjack', -bjBet);
+        bjBet *= 2;
+        updateUI();
+        toast(`Bet doubled to ${bjBet} ⭐!`, 'success');
+        // Hide double button
+        document.getElementById('bj-double-btn').classList.add('hidden');
+        // Deal exactly one card then stand
+        let c = deck.pop(); bjHand.push(c); renderCard(c, 'bj-player-hand');
+        document.getElementById('bj-player-score').textContent = 'Score: ' + getBJScore(bjHand);
+        bjUpdateCounters();
+        // Auto-stand after the one card
+        setTimeout(() => bjStand(), 600);
     }
     // BACCARAT
     function getBacScore(hand) {
