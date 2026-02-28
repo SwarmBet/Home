@@ -948,6 +948,13 @@
                                     <div id="bj-dealer-score" class="bj-score" style="text-align:center;"></div>
                                 </div>
                                 <div id="bj-status" style="font-size:24px; font-weight:900; color:var(--orange);">VS</div>
+                                <!-- Insurance prompt -->
+                                <div id="bj-insurance-prompt" class="hidden" style="background:#1a1a0a; border:2px solid #f1c40f; border-radius:10px; padding:12px 20px; text-align:center; margin:6px 0;">
+                                    <div style="color:#f1c40f; font-weight:800; font-size:15px; margin-bottom:6px;">🛡️ DEALER SHOWS ACE — INSURANCE?</div>
+                                    <div id="bj-insurance-info" style="color:#aaa; font-size:12px; margin-bottom:10px;"></div>
+                                    <button class="btn-play" id="bj-ins-yes" onclick="bjTakeInsurance()" style="background:#f1c40f; color:#000; font-weight:900; margin-right:8px;">INSURE</button>
+                                    <button class="btn-play" id="bj-ins-no" onclick="bjDeclineInsurance()" style="background:#555; color:#fff;">NO THANKS</button>
+                                </div>
                                 <div class="bj-hand-wrap">
                                     <div id="bj-player-hand" class="bj-hand"></div>
                                     <div id="bj-player-score" class="bj-score" style="text-align:center;"></div>
@@ -3161,7 +3168,7 @@
         for(let i=0; i<a; i++) s += (s+11<=21)?11:1; return s;
     }
 
-    let bjActive=false, bjHand=[], bjDealer=[], bjBet=0, bjWinAmount=0;
+    let bjActive=false, bjHand=[], bjDealer=[], bjBet=0, bjWinAmount=0, bjInsurance=0;
     function bjUpdateCounters() {
         const pScore = getBJScore(bjHand);
         const dScore = bjDealer.length > 0 ? getBJScore([bjDealer[0]]) : 0;
@@ -3176,7 +3183,7 @@
         bjBet = clampBet(document.getElementById('bj-bet').value);
         document.getElementById('bj-bet').value = bjBet;
         if(bjBet > userData.chips) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
-        countGame(); userData.chips -= bjBet; addProfit('blackjack', -bjBet); updateUI(); bjActive=true; createDeck(); bjWinAmount=0;
+        countGame(); userData.chips -= bjBet; addProfit('blackjack', -bjBet); updateUI(); bjActive=true; createDeck(); bjWinAmount=0; bjInsurance=0;
         releaseBetLock();
         bjHand = [deck.pop(), deck.pop()]; bjDealer = [deck.pop(), deck.pop()];
         document.getElementById('bj-player-hand').innerHTML = ''; document.getElementById('bj-dealer-hand').innerHTML = '';
@@ -3184,14 +3191,114 @@
         document.getElementById('bj-player-score').textContent = 'Score: ' + getBJScore(bjHand);
         document.getElementById('bj-dealer-score').textContent = 'Shows: ' + bjDealer[0].v;
         document.getElementById('bj-deal-btn').classList.add('hidden');
-        document.getElementById('bj-hit-btn').classList.remove('hidden');
-        document.getElementById('bj-stand-btn').classList.remove('hidden');
-        // Show double only if player has enough chips and has exactly 2 cards
-        if(userData.chips >= bjBet) {
-            document.getElementById('bj-double-btn').classList.remove('hidden');
-        }
         document.getElementById('bj-status').textContent = 'VS';
         bjUpdateCounters();
+        // If dealer shows Ace, offer insurance before anything else
+        if(bjDealer[0].v === 'A') {
+            const insAmt = Math.floor(bjBet / 2);
+            document.getElementById('bj-insurance-info').textContent = `Side bet: ${insAmt} ⭐ — pays 2:1 if dealer has Blackjack`;
+            document.getElementById('bj-ins-yes').textContent = `INSURE (${insAmt} ⭐)`;
+            document.getElementById('bj-insurance-prompt').classList.remove('hidden');
+            // Hide action buttons until insurance decision made
+            document.getElementById('bj-hit-btn').classList.add('hidden');
+            document.getElementById('bj-stand-btn').classList.add('hidden');
+            document.getElementById('bj-double-btn').classList.add('hidden');
+        } else {
+            bjShowActionButtons();
+            bjCheckNaturalBlackjack();
+        }
+    }
+    function bjShowActionButtons() {
+        document.getElementById('bj-hit-btn').classList.remove('hidden');
+        document.getElementById('bj-stand-btn').classList.remove('hidden');
+        if(userData.chips >= bjBet && bjHand.length === 2) {
+            document.getElementById('bj-double-btn').classList.remove('hidden');
+        }
+    }
+    function bjCheckNaturalBlackjack() {
+        // Natural blackjack: 21 on first two cards → pays 1.5x (2.5x total)
+        if(getBJScore(bjHand) === 21 && bjHand.length === 2) {
+            setTimeout(() => {
+                // Reveal dealer hole card first
+                renderCard(bjDealer[1], 'bj-dealer-hand');
+                const ds = getBJScore(bjDealer);
+                document.getElementById('bj-dealer-score').textContent = 'Score: ' + ds;
+                bjUpdateCounters();
+                bjActive = false; clearGameState('blackjack');
+                document.getElementById('bj-hit-btn').classList.add('hidden');
+                document.getElementById('bj-stand-btn').classList.add('hidden');
+                document.getElementById('bj-double-btn').classList.add('hidden');
+                if(ds === 21 && bjDealer.length === 2) {
+                    // Both have blackjack — push
+                    userData.chips += bjBet; addProfit('blackjack', bjBet);
+                    addHistory("Blackjack", bjBet, 1, bjBet);
+                    document.getElementById('bj-status').textContent = '🤝 BOTH BLACKJACK — TIE';
+                } else {
+                    // Player natural blackjack wins 1.5x
+                    bjWinAmount = Math.floor(bjBet * 2.5);
+                    userData.chips += bjWinAmount; play('win'); showWinOverlay(2.5, bjWinAmount);
+                    document.querySelector('.bj-area')?.classList.remove('lose-shake');
+                    document.querySelector('.bj-area')?.classList.add('win-glow');
+                    addHistory("Blackjack", bjBet, 2.5, bjWinAmount); addProfit('blackjack', bjWinAmount);
+                    document.getElementById('bj-status').textContent = '🃏 BLACKJACK! +150%!';
+                }
+                document.getElementById('bj-deal-btn').classList.remove('hidden');
+                updateUI();
+            }, 500);
+        }
+    }
+    function bjTakeInsurance() {
+        const insAmt = Math.floor(bjBet / 2);
+        if(userData.chips < insAmt) { toast('Not enough ⭐ for insurance!', 'error'); return; }
+        bjInsurance = insAmt;
+        userData.chips -= bjInsurance; addProfit('blackjack', -bjInsurance); updateUI();
+        toast(`Insured for ${insAmt} ⭐!`, 'success');
+        document.getElementById('bj-insurance-prompt').classList.add('hidden');
+        bjAfterInsuranceDecision();
+    }
+    function bjDeclineInsurance() {
+        bjInsurance = 0;
+        document.getElementById('bj-insurance-prompt').classList.add('hidden');
+        bjAfterInsuranceDecision();
+    }
+    function bjAfterInsuranceDecision() {
+        // Check if dealer has blackjack
+        const dealerBJ = getBJScore(bjDealer) === 21 && bjDealer.length === 2;
+        if(dealerBJ) {
+            // Reveal dealer hole card
+            renderCard(bjDealer[1], 'bj-dealer-hand');
+            document.getElementById('bj-dealer-score').textContent = 'Score: 21';
+            bjActive = false; clearGameState('blackjack');
+            let msg = '';
+            if(bjInsurance > 0) {
+                // Insurance pays 2:1
+                const insPayout = bjInsurance * 3; // get back stake + 2x
+                userData.chips += insPayout; addProfit('blackjack', insPayout);
+                toast(`Insurance pays ${insPayout} ⭐!`, 'success');
+            }
+            // Check if player also has blackjack
+            const playerBJ = getBJScore(bjHand) === 21 && bjHand.length === 2;
+            if(playerBJ) {
+                // Push on main bet
+                userData.chips += bjBet; addProfit('blackjack', bjBet);
+                addHistory("Blackjack", bjBet, 1, bjBet);
+                msg = bjInsurance > 0 ? '🛡️ INSURED + TIE!' : '🤝 BOTH BLACKJACK — TIE';
+            } else {
+                addHistory("Blackjack", bjBet, 0, -bjBet);
+                msg = bjInsurance > 0 ? '🛡️ INSURANCE SAVES YOU!' : '😞 DEALER BLACKJACK';
+                document.querySelector('.bj-area')?.classList.remove('win-glow');
+                document.querySelector('.bj-area')?.classList.add('lose-shake');
+                play('boom');
+            }
+            document.getElementById('bj-status').textContent = msg;
+            document.getElementById('bj-deal-btn').classList.remove('hidden');
+            bjUpdateCounters(); updateUI();
+        } else {
+            // No dealer blackjack — lose insurance (already deducted), continue play
+            if(bjInsurance > 0) toast(`No dealer Blackjack — insurance lost`, 'error');
+            bjShowActionButtons();
+            bjCheckNaturalBlackjack();
+        }
     }
     function bjHit() {
         if(!bjActive) return;
@@ -3209,6 +3316,7 @@
     }
     function bjStand() {
         bjActive=false; clearGameState('blackjack');
+        document.getElementById('bj-insurance-prompt').classList.add('hidden');
         renderCard(bjDealer[1], 'bj-dealer-hand');
         let ds = getBJScore(bjDealer), ps = getBJScore(bjHand);
         while(ds < 17) { let c = deck.pop(); bjDealer.push(c); renderCard(c, 'bj-dealer-hand', false); ds = getBJScore(bjDealer); }
