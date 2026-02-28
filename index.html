@@ -198,6 +198,13 @@
             transform-style: preserve-3d;
         }
         .bj-score { font-size: 14px; color: var(--orange); font-weight: bold; margin-top: 5px; }
+        /* Custom icon system */
+        .ic { display:inline-block; vertical-align:middle; margin:0 1px; flex-shrink:0; }
+        .kab-bug-svg { display:block; margin:0 auto; }
+        .ic-dice-display { display:block; margin:10px auto; }
+        .idle-icon-svg { display:block; margin:0 auto 10px; }
+        .coin-svg-wrap { display:flex; align-items:center; justify-content:center; width:80px; height:80px; margin:0 auto; }
+
         .site-footer {
             width: 100%;
             background: var(--dark);
@@ -519,7 +526,7 @@
     <div class="sidebar">
         <div class="logo">S<span>B</span></div>
         <div class="nav-item active" id="nav-home" onclick="showPage('home')">🏠 Home</div>
-        <div class="nav-item" id="nav-games" onclick="showPage('games')">🎮 Games</div>
+        <div class="nav-item" id="nav-games" onclick="showPage('games')"><svg class="ic ic-ctrl" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><rect x="1.5" y="5" width="13" height="7" rx="3.5" fill="#555" stroke="#888" stroke-width="0.4"/><rect x="3.5" y="7" width="1.2" height="3" rx="0.4" fill="#aaa"/><rect x="2.5" y="8" width="3.2" height="1.2" rx="0.4" fill="#aaa"/><circle cx="11" cy="7.8" r="1.1" fill="#e74c3c"/><circle cx="13" cy="9.2" r="1.1" fill="#3498db"/></svg> Games</div>
         <div class="nav-item" id="nav-history" onclick="showPage('history')">📜 Bet History</div>
         <div class="nav-item" id="nav-rakeback" onclick="showPage('rakeback')">🎁 Promo Codes</div>
         <div id="link-admin" class="nav-item hidden" onclick="showPage('admin')">⚙️ Admin Panel</div>
@@ -531,7 +538,7 @@
     <div class="main-wrapper">
         <div class="top-nav">
             <div class="balance-box" onclick="showPage('get-coins')" style="cursor:pointer; transition:0.2s;" title="How to get coins?">
-                <span style="color:var(--orange)">⭐</span>
+                <span style="color:var(--orange)"><svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                 <span id="display-chips">0</span>
                 <span style="font-size:11px; color:#aaa; margin-left:4px;">+</span>
             </div>
@@ -546,7 +553,7 @@
 <div class="fp-overlay" id="fp-overlay" onclick="if(event.target===this)closeFPModal()">
   <div class="fp-modal">
     <div class="fp-modal-header">
-      <span class="fp-modal-icon">🎮</span>
+      <span class="fp-modal-icon"><svg class="ic ic-ctrl" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><rect x="1.5" y="5" width="13" height="7" rx="3.5" fill="#555" stroke="#888" stroke-width="0.4"/><rect x="3.5" y="7" width="1.2" height="3" rx="0.4" fill="#aaa"/><rect x="2.5" y="8" width="3.2" height="1.2" rx="0.4" fill="#aaa"/><circle cx="11" cy="7.8" r="1.1" fill="#e74c3c"/><circle cx="13" cy="9.2" r="1.1" fill="#3498db"/></svg></span>
       <span class="fp-modal-title">Free Play Settings</span>
       <button class="fp-modal-close" onclick="closeFPModal()">✕</button>
     </div>
@@ -566,7 +573,7 @@
 
       <!-- FP balance display -->
       <div class="fp-balance-banner" id="fp-bal-banner">
-        🎮 Free Play Balance: <span id="fp-bal-display">10,000</span> ⭐ (fake)
+        <svg class="ic ic-ctrl" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><rect x="1.5" y="5" width="13" height="7" rx="3.5" fill="#555" stroke="#888" stroke-width="0.4"/><rect x="3.5" y="7" width="1.2" height="3" rx="0.4" fill="#aaa"/><rect x="2.5" y="8" width="3.2" height="1.2" rx="0.4" fill="#aaa"/><circle cx="11" cy="7.8" r="1.1" fill="#e74c3c"/><circle cx="13" cy="9.2" r="1.1" fill="#3498db"/></svg> Free Play Balance: <span id="fp-bal-display">10,000</span> <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg> (fake)
       </div>
 
       <!-- Seeds -->
@@ -610,7 +617,7 @@
                     <div class="home-hero-name" id="home-display-name">---</div>
                     <div class="home-hero-sub">Ready to play? Your luck starts here.</div>
                     <div class="home-hero-balance">
-                        <span>⭐</span>
+                        <span><svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                         <span id="home-display-chips">0</span>
                         <span style="font-size:13px; color:#888; font-weight:400;">stars</span>
                     </div>
@@ -640,7 +647,7 @@
                     <!-- Games -->
                     <div class="home-card" onclick="showPage('games')">
                         <div class="home-card-badge">10+ Games</div>
-                        <span class="home-card-icon">🎮</span>
+                        <span class="home-card-icon"><svg class="ic ic-ctrl" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><rect x="1.5" y="5" width="13" height="7" rx="3.5" fill="#555" stroke="#888" stroke-width="0.4"/><rect x="3.5" y="7" width="1.2" height="3" rx="0.4" fill="#aaa"/><rect x="2.5" y="8" width="3.2" height="1.2" rx="0.4" fill="#aaa"/><circle cx="11" cy="7.8" r="1.1" fill="#e74c3c"/><circle cx="13" cy="9.2" r="1.1" fill="#3498db"/></svg></span>
                         <div class="home-card-title">Play Games</div>
                         <div class="home-card-desc">Mines, Crash, Dice, Roulette, Blackjack & more Bee Swarm games.</div>
                     </div>
@@ -654,7 +661,7 @@
 
                     <!-- Promo Codes -->
                     <div class="home-card" onclick="showPage('rakeback')">
-                        <div class="home-card-badge" style="background:#22c55e; color:#fff;">Free ⭐</div>
+                        <div class="home-card-badge" style="background:#22c55e; color:#fff;">Free <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></div>
                         <span class="home-card-icon">🎁</span>
                         <div class="home-card-title">Promo Codes</div>
                         <div class="home-card-desc">Redeem exclusive promo codes and rakeback rewards for free stars.</div>
@@ -695,7 +702,7 @@
                     </div>
 
 
-                    <div class="section-title" style="margin-top:32px;">🎰 CLASSIC GAMES</div>
+                    <div class="section-title" style="margin-top:32px;"><svg class="ic ic-slot" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="2" width="14" height="12" rx="2" fill="#2c3e50" stroke="#444" stroke-width="0.4"/><rect x="2.5" y="4" width="3" height="7" rx="1" fill="#f1c40f"/><rect x="6.5" y="4" width="3" height="7" rx="1" fill="#e74c3c"/><rect x="10.5" y="4" width="3" height="7" rx="1" fill="#3498db"/><rect x="1" y="10" width="14" height="2" rx="0" fill="rgba(0,0,0,0.3)"/></svg> CLASSIC GAMES</div>
                     <div class="games-grid">
                         <div class="game-card" onclick="selectGame('mines')">
                             <div class="icon-box" style="background:linear-gradient(135deg,#1a0010,#3d0020);">
@@ -831,7 +838,7 @@
                                 <div class="m-controls">
                                     <div class="m-label">Bet Amount</div>
                                     <div class="m-bet-row">
-                                        <span style="color:#888;padding:0 8px;">⭐</span>
+                                        <span style="color:#888;padding:0 8px;"><svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                                         <input type="number" id="m-bet" value="50" min="50" max="1000">
                                         <button class="m-bet-btn" onclick="document.getElementById('m-bet').value=Math.max(50,Math.floor(parseInt(document.getElementById('m-bet').value)/2))">½</button>
                                         <button class="m-bet-btn" onclick="document.getElementById('m-bet').value=Math.min(1000,parseInt(document.getElementById('m-bet').value)*2)">2×</button>
@@ -854,14 +861,14 @@
                                         </select>
                                     </div>
                                     <div class="m-info" id="m-mine-info">
-                                        <span>💎 <span id="m-gem-count">22</span> Gems</span>
-                                        <span>💣 <span id="m-bomb-count">3</span> Mines</span>
+                                        <span><svg class="ic ic-gem" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 14.5,5.5 8,15 1.5,5.5" fill="#1abc9c" stroke="#16a085" stroke-width="0.4"/><polygon points="8,1 14.5,5.5 8,7.5 1.5,5.5" fill="#2ecc71" opacity="0.55"/><line x1="8" y1="1" x2="8" y2="15" stroke="#16a085" stroke-width="0.5" opacity="0.5"/></svg> <span id="m-gem-count">22</span> Gems</span>
+                                        <span><svg class="ic ic-bomb" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="9.5" r="5.5" fill="#cc1f4a" stroke="#ff4d7a" stroke-width="0.6"/><rect x="7" y="3" width="2" height="3.5" rx="1" fill="#ff4d7a"/><circle cx="8" cy="9.5" r="2" fill="#ff4d7a" opacity="0.35"/><circle cx="9.5" cy="3.2" r="1.2" fill="#f39c12"/></svg> <span id="m-bomb-count">3</span> Mines</span>
                                     </div>
                                     <button class="m-start-btn" id="m-start" onclick="startMines()">▶ START GAME</button>
-                                    <button id="m-cash" class="m-cash-btn hidden" onclick="cashoutMines()">💰 CASH OUT</button>
+                                    <button id="m-cash" class="m-cash-btn hidden" onclick="cashoutMines()"><svg class="ic ic-money" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><ellipse cx="8" cy="13" rx="5.5" ry="2.5" fill="#e67e22"/><rect x="2.5" y="7" width="11" height="6" rx="2" fill="#e67e22"/><ellipse cx="8" cy="7" rx="5.5" ry="2.5" fill="#f39c12"/><text x="8" y="9.5" text-anchor="middle" fill="#c9a800" font-size="4.5" font-weight="900" font-family="Arial">$</text></svg> CASH OUT</button>
                                     <div class="profit-bar" style="margin-top:12px;margin-bottom:0;">
                                         <span style="color:#888;">Session Profit</span>
-                                        <span class="profit-val zero" id="m-profit">+0 ⭐</span>
+                                        <span class="profit-val zero" id="m-profit">+0 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                                     </div>
                                 </div>
                                 <div class="m-board-wrap">
@@ -875,26 +882,37 @@
                             <h2 style="color:#3498db;">DICE ROLL</h2>
                             <div class="profit-bar" style="max-width:400px;margin:0 auto 16px;">
                                 <span style="color:#888;">Session Profit</span>
-                                <span class="profit-val zero" id="d-profit">+0 ⭐</span>
+                                <span class="profit-val zero" id="d-profit">+0 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                             </div>
                             Guess (1-6): <input type="number" id="d-num" value="1" min="1" max="6">
                             Bet: <input type="number" id="d-bet" value="50" style="width:80px;">
                             <button class="m-bet-btn" style="background:#1e2a3a;border:none;color:#aaa;padding:8px 12px;cursor:pointer;font-size:12px;font-weight:700;border-radius:4px;" onclick="document.getElementById('d-bet').value=Math.max(50,Math.floor(parseInt(document.getElementById('d-bet').value||50)/2))">½</button>
                             <button class="m-bet-btn" style="background:#1e2a3a;border:none;color:#aaa;padding:8px 12px;cursor:pointer;font-size:12px;font-weight:700;border-radius:4px;" onclick="document.getElementById('d-bet').value=Math.min(1000,parseInt(document.getElementById('d-bet').value||50)*2)">2×</button>
                             <button class="btn-play" onclick="playDice()">ROLL</button>
-                            <div id="d-res" style="font-size:100px; margin:20px;">🎲</div>
+                            <div id="d-res" style="margin:20px; text-align:center;"><svg class="ic-dice-display" viewBox="0 0 80 80" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+  <rect x="5" y="5" width="70" height="70" rx="14" fill="#1a4db5" stroke="#4d80ff" stroke-width="2.5"/>
+  <circle cx="24" cy="24" r="6" fill="#4d80ff"/>
+  <circle cx="56" cy="24" r="6" fill="#4d80ff"/>
+  <circle cx="24" cy="56" r="6" fill="#4d80ff"/>
+  <circle cx="56" cy="56" r="6" fill="#4d80ff"/>
+  <circle cx="40" cy="40" r="6" fill="#4d80ff"/>
+</svg></div>
                         </div>
 
                         <div id="game-coinflip" class="hidden" style="text-align:center;">
                             <h2 style="color:var(--gold);">COIN FLIP</h2>
                             <div class="profit-bar" style="max-width:360px;margin:0 auto 16px;">
                                 <span style="color:#888;">Session Profit</span>
-                                <span class="profit-val zero" id="cf-profit">+0 ⭐</span>
+                                <span class="profit-val zero" id="cf-profit">+0 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                             </div>
-                            <div id="coin-obj" class="coin">⭐</div>
+                            <div id="coin-obj" class="coin"><svg viewBox="0 0 80 80" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="40" cy="40" r="36" fill="#c9a800" stroke="#f1c40f" stroke-width="3"/>
+  <circle cx="40" cy="40" r="28" fill="none" stroke="#f1c40f" stroke-width="1.5" opacity="0.5"/>
+  <polygon points="40,18 44.9,31.2 59,31.2 47.6,39.3 52.4,52.5 40,44.4 27.6,52.5 32.4,39.3 21,31.2 35.1,31.2" fill="#f1c40f"/>
+</svg></div>
                             Side: <select id="cf-choice">
-                                <option value="H">HEADS (⭐)</option>
-                                <option value="T">TAILS (💎)</option>
+                                <option value="H">HEADS (★)</option>
+                                <option value="T">TAILS (◆)</option>
                             </select>
                             Bet: <input type="number" id="cf-bet" value="50" min="50" max="1000" style="width:80px;">
                             <button class="m-bet-btn" style="background:#1e2a3a;border:none;color:#aaa;padding:8px 12px;cursor:pointer;font-size:12px;font-weight:700;border-radius:4px;" onclick="document.getElementById('cf-bet').value=Math.max(50,Math.floor(parseInt(document.getElementById('cf-bet').value||50)/2))">½</button>
@@ -906,7 +924,7 @@
                             <h2 style="color:#1abc9c; text-align:center;">ROULETTE</h2>
                             <div class="profit-bar" style="max-width:600px;margin:0 auto 10px;">
                                 <span style="color:#888;">Session Profit</span>
-                                <span class="profit-val zero" id="r-profit">+0 ⭐</span>
+                                <span class="profit-val zero" id="r-profit">+0 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                             </div>
                             <div id="r-status" style="text-align:center; color:var(--orange); font-weight:bold; margin-bottom:10px; height:20px;">PLACE YOUR BETS</div>
                             <div class="r-slider-wrap" id="r-wrap">
@@ -940,7 +958,7 @@
                             <div class="bj-area">
                                 <div class="profit-bar" style="margin-bottom:12px;">
                                     <span style="color:#888;">Session Profit</span>
-                                    <span class="profit-val zero" id="bj-profit">+0 ⭐</span>
+                                    <span class="profit-val zero" id="bj-profit">+0 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                                 </div>
                                 <div class="bj-hand-wrap">
                                     <div style="text-align:center; font-size:12px; color:#666;">DEALER <span id="bj-dealer-count" style="color:#888; font-size:11px;"></span></div>
@@ -950,7 +968,7 @@
                                 <div id="bj-status" style="font-size:24px; font-weight:900; color:var(--orange);">VS</div>
                                 <!-- Insurance prompt -->
                                 <div id="bj-insurance-prompt" class="hidden" style="background:#1a1a0a; border:2px solid #f1c40f; border-radius:10px; padding:12px 20px; text-align:center; margin:6px 0;">
-                                    <div style="color:#f1c40f; font-weight:800; font-size:15px; margin-bottom:6px;">🛡️ DEALER SHOWS ACE — INSURANCE?</div>
+                                    <div style="color:#f1c40f; font-weight:800; font-size:15px; margin-bottom:6px;"><svg class="ic ic-shield" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M8 1.2L2 3.8V8.5c0 3.8 3.3 5.8 6 6.5 2.7-0.7 6-2.7 6-6.5V3.8L8 1.2z" fill="#f1c40f" stroke="#c9a800" stroke-width="0.5"/><text x="8" y="11" text-anchor="middle" fill="#1a0000" font-size="7" font-weight="900" font-family="Arial">!</text></svg> DEALER SHOWS ACE — INSURANCE?</div>
                                     <div id="bj-insurance-info" style="color:#aaa; font-size:12px; margin-bottom:10px;"></div>
                                     <button class="btn-play" id="bj-ins-yes" onclick="bjTakeInsurance()" style="background:#f1c40f; color:#000; font-weight:900; margin-right:8px;">INSURE</button>
                                     <button class="btn-play" id="bj-ins-no" onclick="bjDeclineInsurance()" style="background:#555; color:#fff;">NO THANKS</button>
@@ -962,7 +980,7 @@
                                 </div>
                                 <!-- Deck counter -->
                                 <div style="background:#111; border:1px solid #333; border-radius:8px; padding:8px 16px; display:flex; gap:20px; font-size:12px; margin:4px 0;">
-                                    <span>🃏 Deck: <strong id="bj-deck-remaining" style="color:var(--orange);">52</strong> cards</span>
+                                    <span><svg class="ic ic-card" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="1" width="12" height="14" rx="2" fill="#f0f0f0" stroke="#bbb" stroke-width="0.5"/><text x="8" y="11" text-anchor="middle" fill="#e74c3c" font-size="9" font-weight="900" font-family="serif">J</text></svg> Deck: <strong id="bj-deck-remaining" style="color:var(--orange);">52</strong> cards</span>
                                     <span>Your value: <strong id="bj-player-value" style="color:#2ecc71;">—</strong></span>
                                     <span>Dealer shows: <strong id="bj-dealer-value" style="color:#e74c3c;">—</strong></span>
                                 </div>
@@ -984,7 +1002,7 @@
                                 <div id="bac-status" style="font-size:18px; color:var(--orange); font-weight:bold;">CHOOSE A SIDE</div>
                                 <!-- Deck + value counter -->
                                 <div style="background:#111; border:1px solid #333; border-radius:8px; padding:8px 16px; display:flex; gap:20px; font-size:12px;">
-                                    <span>🃏 Deck: <strong id="bac-deck-remaining" style="color:var(--orange);">52</strong> cards</span>
+                                    <span><svg class="ic ic-card" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="1" width="12" height="14" rx="2" fill="#f0f0f0" stroke="#bbb" stroke-width="0.5"/><text x="8" y="11" text-anchor="middle" fill="#e74c3c" font-size="9" font-weight="900" font-family="serif">J</text></svg> Deck: <strong id="bac-deck-remaining" style="color:var(--orange);">52</strong> cards</span>
                                     <span>Player value: <strong id="bac-pval" style="color:#3498db;">—</strong></span>
                                     <span>Banker value: <strong id="bac-bval" style="color:#e74c3c;">—</strong></span>
                                 </div>
@@ -1003,7 +1021,7 @@
                                 <div id="bac-controls" style="text-align:center;">
                                     <div class="profit-bar" style="max-width:400px;margin:0 auto 12px;">
                                         <span style="color:#888;">Session Profit</span>
-                                        <span class="profit-val zero" id="bac-profit">+0 ⭐</span>
+                                        <span class="profit-val zero" id="bac-profit">+0 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                                     </div>
                                     Bet: <input type="number" id="bac-bet" value="100" min="50" max="1000" style="width:80px;">
                                     <button class="m-bet-btn" style="background:#1e2a3a;border:none;color:#aaa;padding:8px 12px;cursor:pointer;font-size:12px;font-weight:700;border-radius:4px;" onclick="document.getElementById('bac-bet').value=Math.max(50,Math.floor(parseInt(document.getElementById('bac-bet').value||100)/2))">½</button>
@@ -1020,7 +1038,7 @@
                             <h2 style="color:#2ecc71;">CRASH</h2>
                             <div class="profit-bar" style="max-width:400px;margin:0 auto 16px;">
                                 <span style="color:#888;">Session Profit</span>
-                                <span class="profit-val zero" id="c-profit">+0 ⭐</span>
+                                <span class="profit-val zero" id="c-profit">+0 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                             </div>
                             <div id="crash-display" style="font-size: 80px; font-weight: 900; margin: 30px 0;">1.00x</div>
                             Bet: <input type="number" id="c-bet" value="50" min="50" max="1000" style="width:80px;">
@@ -1107,7 +1125,7 @@
 
                                     <div class="tw-profit-box">
                                         <span style="color:#888; font-size:12px;">Session Profit</span>
-                                        <span class="profit-val zero" id="t-profit" style="font-weight:700;">+0 ⭐</span>
+                                        <span class="profit-val zero" id="t-profit" style="font-weight:700;">+0 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                                     </div>
 
                                     <div>
@@ -1162,12 +1180,12 @@
                                     </div>
 
                                     <button class="tw-start-btn" id="t-start" onclick="startTower()">▶ Bet</button>
-                                    <button id="t-cash" class="tw-cash-btn hidden" onclick="cashoutTower()">💰 Cash Out</button>
+                                    <button id="t-cash" class="tw-cash-btn hidden" onclick="cashoutTower()"><svg class="ic ic-money" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><ellipse cx="8" cy="13" rx="5.5" ry="2.5" fill="#e67e22"/><rect x="2.5" y="7" width="11" height="6" rx="2" fill="#e67e22"/><ellipse cx="8" cy="7" rx="5.5" ry="2.5" fill="#f39c12"/><text x="8" y="9.5" text-anchor="middle" fill="#c9a800" font-size="4.5" font-weight="900" font-family="Arial">$</text></svg> Cash Out</button>
 
                                     <div>
                                         <div class="tw-label">Total Profit (<span id="t-mult-disp">1.00×</span>)</div>
                                         <div class="tw-bet-row" style="pointer-events:none;">
-                                            <input type="text" id="t-profit-disp" value="0.00 ⭐" style="color:var(--orange);" readonly>
+                                            <input type="text" id="t-profit-disp" value="0.00 ★" style="color:var(--orange);" readonly>
                                         </div>
                                     </div>
 
@@ -1209,7 +1227,7 @@
                                 <p style="color:#888; font-size:13px; margin:4px 0;">Your bee vs Bot bee — highest coins wins! 1 coin = 0.01× multiplier</p>
                                 <div class="profit-bar" style="max-width:400px;margin:8px auto;">
                                     <span style="color:#888;">Session Profit</span>
-                                    <span class="profit-val zero" id="rj-profit">+0 ⭐</span>
+                                    <span class="profit-val zero" id="rj-profit">+0 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                                 </div>
                             </div>
                             <div style="text-align:center; margin-bottom:12px;">
@@ -1241,7 +1259,7 @@
                             <div style="text-align:center; margin-top:20px;">
                                 <div style="font-size:11px; color:#555; max-width:500px; margin:0 auto; line-height:1.6;">
                                     Rarity chances: Rare 20% · Epic 7% · Legendary 3% · Mythic 0.05%<br>
-                                    Win = bet × (yourBee.coins × 0.01) ⭐ · Lose = nothing back 💔
+                                    Win = bet × (yourBee.coins × 0.01) <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg> · Lose = nothing back 💔
                                 </div>
                             </div>
                         </div>
@@ -1348,23 +1366,70 @@
                                     <div class="kab-bug-card" data-bug="ladybug" onclick="kabSelectBug('ladybug')">
                                         <div class="kab-sel-check">✓</div>
                                         <span class="kab-bug-badge">EASY</span>
-                                        <span class="kab-bug-emoji">🐞</span>
+                                        <svg class="kab-bug-svg" viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="24" cy="32" rx="14" ry="12" fill="#e74c3c"/>
+  <line x1="24" y1="20" x2="24" y2="44" stroke="#1a0000" stroke-width="1.8"/>
+  <circle cx="19" cy="27" r="2.8" fill="#1a0000"/>
+  <circle cx="29" cy="27" r="2.8" fill="#1a0000"/>
+  <circle cx="18" cy="36" r="2.8" fill="#1a0000"/>
+  <circle cx="30" cy="36" r="2.8" fill="#1a0000"/>
+  <ellipse cx="24" cy="20" rx="9" ry="5.5" fill="#1a0000"/>
+  <circle cx="19.5" cy="18.5" r="1.8" fill="#555"/>
+  <circle cx="28.5" cy="18.5" r="1.8" fill="#555"/>
+  <line x1="20" y1="14" x2="16" y2="7" stroke="#1a0000" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="28" y1="14" x2="32" y2="7" stroke="#1a0000" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="15.5" cy="6.5" r="1.5" fill="#1a0000"/>
+  <circle cx="32.5" cy="6.5" r="1.5" fill="#1a0000"/>
+</svg>
                                         <div class="kab-bug-name">Ladybug</div>
-                                        <div class="kab-bug-meta"><span>5</span> tokens/kill<br>Min bet: <span>50</span> ⭐<br><span style="color:#e74c3c">20%</span> elim risk</div>
+                                        <div class="kab-bug-meta"><span>5</span> tokens/kill<br>Min bet: <span>50</span> <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg><br><span style="color:#e74c3c">20%</span> elim risk</div>
                                     </div>
                                     <div class="kab-bug-card" data-bug="spider" onclick="kabSelectBug('spider')">
                                         <div class="kab-sel-check">✓</div>
                                         <span class="kab-bug-badge">MEDIUM</span>
-                                        <span class="kab-bug-emoji">🕷️</span>
+                                        <svg class="kab-bug-svg" viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="24" cy="32" rx="9" ry="8" fill="#1a0030"/>
+  <ellipse cx="24" cy="20" rx="6" ry="5.5" fill="#2c0050"/>
+  <circle cx="21.5" cy="18.5" r="2" fill="#e74c3c"/>
+  <circle cx="26.5" cy="18.5" r="2" fill="#e74c3c"/>
+  <line x1="15" y1="28" x2="3" y2="21" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="15" y1="31" x2="2" y2="31" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="15" y1="34" x2="4" y2="41" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="33" y1="28" x2="45" y2="21" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="33" y1="31" x2="46" y2="31" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="33" y1="34" x2="44" y2="41" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="21" y1="14" x2="18" y2="7" stroke="#2c0050" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="27" y1="14" x2="30" y2="7" stroke="#2c0050" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="17.5" cy="6.5" r="1.5" fill="#9b59b6"/>
+  <circle cx="30.5" cy="6.5" r="1.5" fill="#9b59b6"/>
+</svg>
                                         <div class="kab-bug-name">Spider</div>
-                                        <div class="kab-bug-meta"><span>7</span> tokens/kill<br>Min bet: <span>100</span> ⭐<br><span style="color:#e74c3c">40%</span> elim risk</div>
+                                        <div class="kab-bug-meta"><span>7</span> tokens/kill<br>Min bet: <span>100</span> <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg><br><span style="color:#e74c3c">40%</span> elim risk</div>
                                     </div>
                                     <div class="kab-bug-card" data-bug="beetle" onclick="kabSelectBug('beetle')">
                                         <div class="kab-sel-check">✓</div>
                                         <span class="kab-bug-badge">HARD</span>
-                                        <span class="kab-bug-emoji">🪲</span>
+                                        <svg class="kab-bug-svg" viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="24" cy="31" rx="13" ry="11" fill="#27ae60"/>
+  <line x1="24" y1="20" x2="24" y2="42" stroke="#1a5c30" stroke-width="1.8"/>
+  <ellipse cx="15" cy="31" rx="5.5" ry="7.5" fill="#1a5c30" opacity="0.6"/>
+  <ellipse cx="33" cy="31" rx="5.5" ry="7.5" fill="#1a5c30" opacity="0.6"/>
+  <ellipse cx="24" cy="19" rx="8" ry="5" fill="#145a32"/>
+  <line x1="16" y1="23" x2="7" y2="16" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="32" y1="23" x2="41" y2="16" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="14" y1="29" x2="4" y2="27" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="34" y1="29" x2="44" y2="27" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="14" y1="36" x2="5" y2="39" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="34" y1="36" x2="43" y2="39" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="19.5" cy="17" r="2" fill="#f39c12"/>
+  <circle cx="28.5" cy="17" r="2" fill="#f39c12"/>
+  <line x1="20" y1="14" x2="17" y2="7" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="28" y1="14" x2="31" y2="7" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="16.5" cy="6.5" r="1.5" fill="#f39c12"/>
+  <circle cx="31.5" cy="6.5" r="1.5" fill="#f39c12"/>
+</svg>
                                         <div class="kab-bug-name">King Beetle</div>
-                                        <div class="kab-bug-meta"><span>10</span> tokens/kill<br>Min bet: <span>300</span> ⭐<br><span style="color:#e74c3c">60%</span> elim risk</div>
+                                        <div class="kab-bug-meta"><span>10</span> tokens/kill<br>Min bet: <span>300</span> <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg><br><span style="color:#e74c3c">60%</span> elim risk</div>
                                     </div>
                                 </div>
 
@@ -1373,10 +1438,10 @@
                                     <div>
                                         <div class="kab-bet-label-row">
                                             <span class="kab-bet-label">Bet Amount</span>
-                                            <span class="kab-min-badge" id="kabMinBet">Min: <span>50</span> ⭐</span>
+                                            <span class="kab-min-badge" id="kabMinBet">Min: <span>50</span> <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                                         </div>
                                         <div class="kab-input-wrap" id="kabInputWrap">
-                                            <span class="kab-currency">⭐</span>
+                                            <span class="kab-currency"><svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                                             <input class="kab-input" id="kabBetInput" type="number" value="50" min="1">
                                             <div class="kab-quickbtns">
                                                 <button class="kab-qbtn" onclick="kabMultBet(2)">×2</button>
@@ -1386,28 +1451,71 @@
                                         </div>
                                         <div class="kab-error" id="kabError"></div>
                                     </div>
-                                    <button class="kab-kill-btn" id="kabKillBtn" onclick="kabKill()" disabled>☠️ KILL IT</button>
+                                    <button class="kab-kill-btn" id="kabKillBtn" onclick="kabKill()" disabled><svg class="ic ic-skel" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><ellipse cx="8" cy="5.5" rx="4.5" ry="4.5" fill="#ecf0f1"/><rect x="4" y="8.5" width="8" height="3" rx="1" fill="#ecf0f1"/><rect x="5.2" y="9.5" width="1.5" height="2" rx="0.4" fill="#2c3e50"/><rect x="9.3" y="9.5" width="1.5" height="2" rx="0.4" fill="#2c3e50"/><ellipse cx="6" cy="5.5" rx="1.5" ry="1.7" fill="#2c3e50"/><ellipse cx="10" cy="5.5" rx="1.5" ry="1.7" fill="#2c3e50"/><line x1="5" y1="12" x2="3" y2="15" stroke="#ecf0f1" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="12" x2="13" y2="15" stroke="#ecf0f1" stroke-width="1.2" stroke-linecap="round"/><line x1="8" y1="12" x2="6.5" y2="15" stroke="#ecf0f1" stroke-width="1" stroke-linecap="round"/><line x1="8" y1="12" x2="9.5" y2="15" stroke="#ecf0f1" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="9" x2="1.5" y2="11" stroke="#ecf0f1" stroke-width="1.2" stroke-linecap="round"/><line x1="12" y1="9" x2="14.5" y2="11" stroke="#ecf0f1" stroke-width="1.2" stroke-linecap="round"/></svg> KILL IT</button>
                                 </div>
 
                                 <p class="kab-section-label">Arena</p>
                                 <div class="kab-arena" id="kabArena">
                                     <div class="kab-arena-idle" id="kabArenaIdle">
-                                        <span class="idle-icon">🎯</span>
+                                        <svg class="idle-icon-svg" viewBox="0 0 80 80" width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="40" cy="40" r="36" fill="none" stroke="#e74c3c" stroke-width="3.5"/>
+  <circle cx="40" cy="40" r="24" fill="none" stroke="#e74c3c" stroke-width="3"/>
+  <circle cx="40" cy="40" r="12" fill="#e74c3c"/>
+  <line x1="40" y1="4" x2="40" y2="76" stroke="#666" stroke-width="1.2" opacity="0.4"/>
+  <line x1="4" y1="40" x2="76" y2="40" stroke="#666" stroke-width="1.2" opacity="0.4"/>
+</svg>
                                         <p>Select a bug target above to begin</p>
                                     </div>
                                     <div class="kab-arena-live hidden" id="kabArenaLive">
-                                        <div class="kab-arena-bug" id="kabArenaBug">🐞</div>
+                                        <div class="kab-arena-bug" id="kabArenaBug"><svg class="kab-bug-svg" viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="24" cy="32" rx="14" ry="12" fill="#e74c3c"/>
+  <line x1="24" y1="20" x2="24" y2="44" stroke="#1a0000" stroke-width="1.8"/>
+  <circle cx="19" cy="27" r="2.8" fill="#1a0000"/>
+  <circle cx="29" cy="27" r="2.8" fill="#1a0000"/>
+  <circle cx="18" cy="36" r="2.8" fill="#1a0000"/>
+  <circle cx="30" cy="36" r="2.8" fill="#1a0000"/>
+  <ellipse cx="24" cy="20" rx="9" ry="5.5" fill="#1a0000"/>
+  <circle cx="19.5" cy="18.5" r="1.8" fill="#555"/>
+  <circle cx="28.5" cy="18.5" r="1.8" fill="#555"/>
+  <line x1="20" y1="14" x2="16" y2="7" stroke="#1a0000" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="28" y1="14" x2="32" y2="7" stroke="#1a0000" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="15.5" cy="6.5" r="1.5" fill="#1a0000"/>
+  <circle cx="32.5" cy="6.5" r="1.5" fill="#1a0000"/>
+</svg></div>
                                         <div>
                                             <div class="kab-arena-bug-name" id="kabArenaBugName">LADYBUG</div>
                                             <div class="kab-arena-bug-desc">Ready to be eliminated</div>
                                         </div>
                                     </div>
                                     <div class="kab-arena-kill hidden" id="kabArenaKill">
-                                        <div class="kab-splat">💀</div>
+                                        <div class="kab-splat"><svg viewBox="0 0 80 80" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="40" cy="34" rx="26" ry="26" fill="#ecf0f1" stroke="#bbb" stroke-width="1"/>
+  <rect x="18" y="52" width="44" height="16" rx="4" fill="#ecf0f1" stroke="#bbb" stroke-width="1"/>
+  <rect x="25" y="56" width="8" height="10" rx="2" fill="#2c3e50"/>
+  <rect x="36" y="56" width="8" height="10" rx="2" fill="#2c3e50"/>
+  <rect x="47" y="56" width="8" height="10" rx="2" fill="#2c3e50"/>
+  <ellipse cx="28" cy="34" rx="8.5" ry="9.5" fill="#2c3e50"/>
+  <ellipse cx="52" cy="34" rx="8.5" ry="9.5" fill="#2c3e50"/>
+  <ellipse cx="40" cy="46" rx="5" ry="3" fill="#2c3e50"/>
+</svg></div>
                                         <div class="kab-kill-text">ELIMINATED!</div>
                                     </div>
                                     <div class="kab-arena-elim hidden" id="kabArenaElim">
-                                        <span class="kab-elim-emoji" id="kabElimEmoji">🐞</span>
+                                        <span class="kab-elim-emoji" id="kabElimEmoji"><svg class="kab-bug-svg" viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="24" cy="32" rx="14" ry="12" fill="#e74c3c"/>
+  <line x1="24" y1="20" x2="24" y2="44" stroke="#1a0000" stroke-width="1.8"/>
+  <circle cx="19" cy="27" r="2.8" fill="#1a0000"/>
+  <circle cx="29" cy="27" r="2.8" fill="#1a0000"/>
+  <circle cx="18" cy="36" r="2.8" fill="#1a0000"/>
+  <circle cx="30" cy="36" r="2.8" fill="#1a0000"/>
+  <ellipse cx="24" cy="20" rx="9" ry="5.5" fill="#1a0000"/>
+  <circle cx="19.5" cy="18.5" r="1.8" fill="#555"/>
+  <circle cx="28.5" cy="18.5" r="1.8" fill="#555"/>
+  <line x1="20" y1="14" x2="16" y2="7" stroke="#1a0000" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="28" y1="14" x2="32" y2="7" stroke="#1a0000" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="15.5" cy="6.5" r="1.5" fill="#1a0000"/>
+  <circle cx="32.5" cy="6.5" r="1.5" fill="#1a0000"/>
+</svg></span>
                                         <div class="kab-elim-text">YOU GOT ELIMINATED!</div>
                                         <div class="kab-elim-sub" id="kabElimSub">The bug fought back — bet lost</div>
                                     </div>
@@ -1415,7 +1523,7 @@
 
                                 <div class="kab-tokens-area hidden" id="kabTokensArea">
                                     <div class="kab-tokens-header">
-                                        <span class="kab-tokens-title">⚡ Tokens Collected</span>
+                                        <span class="kab-tokens-title"><svg class="ic ic-light" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="10,1 4,9 8.5,9 6,15 12,7 7.5,7" fill="#f1c40f"/></svg> Tokens Collected</span>
                                         <span class="kab-tokens-total" id="kabTokensTotal">Total multiplier: <span>0×</span></span>
                                     </div>
                                     <div class="kab-tokens-grid" id="kabTokensGrid"></div>
@@ -1496,7 +1604,7 @@
                             <div class="bw-sub">Wax your beequip to boost its stats · Max 5 waxes per beequip</div>
 
                             <div id="bw-shop" class="">
-                                <div style="text-align:center; color:#888; font-size:13px; margin-bottom:12px;">Choose a Beequip to wax (Cost in ⭐ Stars)</div>
+                                <div style="text-align:center; color:#888; font-size:13px; margin-bottom:12px;">Choose a Beequip to wax (Cost in <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg> Stars)</div>
                                 <div class="bq-select-grid" id="bq-shop-grid"></div>
                             </div>
 
@@ -1516,7 +1624,7 @@
                                             <div class="bq-slots" id="bq-slots"></div>
                                             <div class="bq-stats" id="bq-stats-display"></div>
                                         </div>
-                                        <button class="btn-play" style="background:#444; color:white; width:100%; margin-bottom:10px;" onclick="bwSellBeequip()">💰 Sell Beequip</button>
+                                        <button class="btn-play" style="background:#444; color:white; width:100%; margin-bottom:10px;" onclick="bwSellBeequip()"><svg class="ic ic-money" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><ellipse cx="8" cy="13" rx="5.5" ry="2.5" fill="#e67e22"/><rect x="2.5" y="7" width="11" height="6" rx="2" fill="#e67e22"/><ellipse cx="8" cy="7" rx="5.5" ry="2.5" fill="#f39c12"/><text x="8" y="9.5" text-anchor="middle" fill="#c9a800" font-size="4.5" font-weight="900" font-family="Arial">$</text></svg> Sell Beequip</button>
                                         <button class="btn-play" style="background:#222; color:#888; width:100%; margin-bottom:10px;" onclick="bwBack()">← Back to Shop</button>
                                     </div>
                                     <div class="bw-right">
@@ -1532,19 +1640,19 @@
                                                 <img src="data:image/png;base64,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" style="width:48px;height:48px;object-fit:contain;" />
                                                 <div class="wax-name" style="color:#c0622a;">Hard Wax</div>
                                                 <div class="wax-desc">30% improve · +2 potential</div>
-                                                <div class="wax-cost">Cost: 2 ⭐</div>
+                                                <div class="wax-cost">Cost: 2 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></div>
                                             </div>
                                             <div class="wax-btn wax-caustic" onclick="applyWax('caustic')">
                                                 <img src="data:image/png;base64,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" style="width:48px;height:48px;object-fit:contain;" />
                                                 <div class="wax-name" style="color:#27ae60;">Caustic Wax</div>
                                                 <div class="wax-desc">20% GREAT · 80% DESTROY</div>
-                                                <div class="wax-cost" style="color:#e74c3c;">Cost: 20 ⭐</div>
+                                                <div class="wax-cost" style="color:#e74c3c;">Cost: 20 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></div>
                                             </div>
                                             <div class="wax-btn wax-swirled" onclick="applyWax('swirled')">
                                                 <img src="data:image/png;base64,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" style="width:48px;height:48px;object-fit:contain;" />
                                                 <div class="wax-name" style="color:#9b59b6;">Swirled Wax</div>
                                                 <div class="wax-desc">Reroll all stats</div>
-                                                <div class="wax-cost" style="color:#9b59b6;">Cost: 20 ⭐</div>
+                                                <div class="wax-cost" style="color:#9b59b6;">Cost: 20 <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></div>
                                             </div>
                                         </div>
                                         <div class="bw-log" id="bw-log"><span class="log-info">Select a wax to apply...</span></div>
@@ -1586,7 +1694,7 @@
                     <h2 style="color:var(--orange); margin-bottom:20px;">⚙️ Admin Dashboard</h2>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
                         <div style="background:#111; padding:20px; border-radius:10px; border:1px solid #2ecc7144;">
-                            <h3 style="color:#2ecc71; margin-top:0;">💰 DEPOSIT (Add Coins)</h3>
+                            <h3 style="color:#2ecc71; margin-top:0;"><svg class="ic ic-money" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><ellipse cx="8" cy="13" rx="5.5" ry="2.5" fill="#e67e22"/><rect x="2.5" y="7" width="11" height="6" rx="2" fill="#e67e22"/><ellipse cx="8" cy="7" rx="5.5" ry="2.5" fill="#f39c12"/><text x="8" y="9.5" text-anchor="middle" fill="#c9a800" font-size="4.5" font-weight="900" font-family="Arial">$</text></svg> DEPOSIT (Add Coins)</h3>
                             <input type="text" id="adm-deposit-target" placeholder="Player Discord ID or username" style="width:100%; box-sizing:border-box; margin-bottom:10px;"><br>
                             <input type="number" id="adm-deposit-amount" placeholder="Amount to deposit" style="width:100%; box-sizing:border-box; margin-bottom:15px;"><br>
                             <button onclick="adminDeposit()" style="width:100%; background:#2ecc71; color:white; border:none; padding:12px 20px; border-radius:8px; font-weight:900; cursor:pointer;">💸 DEPOSIT COINS</button>
@@ -1602,7 +1710,7 @@
                         <div style="background:#111; padding:20px; border-radius:10px; border:1px solid #222;">
                             <h3 style="color:var(--green); margin-top:0;">🎁 Create Promo Code</h3>
                             <input type="text" id="new-code" placeholder="CODE" style="width:100%; box-sizing:border-box;"><br><br>
-                            <input type="number" id="code-val" placeholder="Value (⭐)" style="width:100%; box-sizing:border-box;"><br><br>
+                            <input type="number" id="code-val" placeholder="Value (<svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg>)" style="width:100%; box-sizing:border-box;"><br><br>
                             <button class="btn-play" onclick="createPromo()" style="width:100%; background:var(--green);">CREATE 🎁</button>
                         </div>
                         <div style="background:#111; padding:20px; border-radius:10px; border:1px solid #222;">
@@ -1617,9 +1725,9 @@
             <div id="page-get-coins" class="hidden">
                 <div class="card" style="max-width:680px; margin:0 auto;">
                     <div style="text-align:center; margin-bottom:30px;">
-                        <div style="font-size:72px; margin-bottom:10px;">⭐</div>
+                        <div style="font-size:72px; margin-bottom:10px;"><svg class="ic ic-star" viewBox="0 0 16 16" width="72" height="72" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></div>
                         <h2 style="color:var(--orange); font-size:26px; margin:0 0 8px;">How to Get Coins</h2>
-                        <p style="color:#888; font-size:14px; margin:0;">Follow the steps below to deposit ⭐ Stars into your SwarmBet account</p>
+                        <p style="color:#888; font-size:14px; margin:0;">Follow the steps below to deposit <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg> Stars into your SwarmBet account</p>
                     </div>
 
                     <!-- Step 1 -->
@@ -1643,7 +1751,7 @@
                             <p style="color:#aaa; margin:0; font-size:14px; line-height:1.6;">Head to the <strong style="color:#fff;">#tickets</strong> channel on our Discord and create a new ticket. Select <strong style="color:#fff;">"Deposit"</strong> as the ticket type and provide the following info:</p>
                             <ul style="color:#aaa; font-size:14px; margin:10px 0 0 0; padding-left:18px; line-height:2;">
                                 <li>Your SwarmBet username</li>
-                                <li>Amount of ⭐ Stars you want to deposit</li>
+                                <li>Amount of <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg> Stars you want to deposit</li>
                                 <li>Proof of your in-game items / payment</li>
                             </ul>
                         </div>
@@ -1656,7 +1764,7 @@
                             <h3 style="color:#9b59b6; margin:0 0 8px; font-size:17px;">Minimum Deposit</h3>
                             <p style="color:#aaa; margin:0 0 10px; font-size:14px; line-height:1.6;">There is a <strong style="color:#fff;">minimum deposit requirement</strong> to keep transactions fair and manageable for our staff:</p>
                             <div style="display:flex; align-items:center; gap:12px; background:#0d0d0d; border:1px solid #9b59b644; border-radius:10px; padding:14px 18px; width:fit-content;">
-                                <span style="font-size:28px;">⭐⭐⭐</span>
+                                <span style="display:inline-flex;gap:4px;"><svg class="ic ic-star" viewBox="0 0 16 16" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg><svg class="ic ic-star" viewBox="0 0 16 16" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg><svg class="ic ic-star" viewBox="0 0 16 16" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg></span>
                                 <div>
                                     <div style="color:#9b59b6; font-weight:900; font-size:18px;">3 Star Signs</div>
                                     <div style="color:#666; font-size:12px;">Minimum per deposit transaction</div>
@@ -1702,15 +1810,15 @@
             
             if (type === 'deposit') {
                 embed = {
-                    title: "💰 DEPOSIT - Coins Added",
+                    title: "$ DEPOSIT - Coins Added",
                     color: 0x2ecc71, // Green
                     description: `**${data.recipientName}** received coins from **${data.adminName}**`,
                     fields: [
                         { name: "📥 Recipient Account", value: data.recipientName, inline: true },
                         { name: "👨‍💼 Admin Account", value: data.adminName, inline: true },
-                        { name: "⭐ Amount Deposited", value: `+${data.amount} coins`, inline: false },
-                        { name: "💰 Previous Balance", value: `${data.oldBalance} coins`, inline: true },
-                        { name: "💎 New Balance", value: `${data.newBalance} coins`, inline: true }
+                        { name: "★ Amount Deposited", value: `+${data.amount} coins`, inline: false },
+                        { name: "$ Previous Balance", value: `${data.oldBalance} coins`, inline: true },
+                        { name: "◆ New Balance", value: `${data.newBalance} coins`, inline: true }
                     ],
                     timestamp: timestamp,
                     footer: { text: "SwarmBet Admin Panel - Deposit" }
@@ -1723,9 +1831,9 @@
                     fields: [
                         { name: "📤 Withdrawn From", value: data.targetName, inline: true },
                         { name: "👨‍💼 Admin Account", value: data.adminName, inline: true },
-                        { name: "⭐ Amount Withdrawn", value: `-${data.amount} coins`, inline: false },
-                        { name: "💰 Previous Balance", value: `${data.oldBalance} coins`, inline: true },
-                        { name: "💎 New Balance", value: `${data.newBalance} coins`, inline: true }
+                        { name: "★ Amount Withdrawn", value: `-${data.amount} coins`, inline: false },
+                        { name: "$ Previous Balance", value: `${data.oldBalance} coins`, inline: true },
+                        { name: "◆ New Balance", value: `${data.newBalance} coins`, inline: true }
                     ],
                     timestamp: timestamp,
                     footer: { text: "SwarmBet Admin Panel - Withdrawal" }
@@ -2017,15 +2125,15 @@
                         t.className = 'tile';
                         if(m.revealed.includes(i)) {
                             t.dataset.revealed = '1';
-                            t.innerHTML = mBombs.includes(i) ? '💣' : '💎';
+                            t.innerHTML = mBombs.includes(i) ? '<svg class=\"ic ic-bomb\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"9.5\" r=\"5.5\" fill=\"#cc1f4a\" stroke=\"#ff4d7a\" stroke-width=\"0.6\"/><rect x=\"7\" y=\"3\" width=\"2\" height=\"3.5\" rx=\"1\" fill=\"#ff4d7a\"/><circle cx=\"8\" cy=\"9.5\" r=\"2\" fill=\"#ff4d7a\" opacity=\"0.35\"/><circle cx=\"9.5\" cy=\"3.2\" r=\"1.2\" fill=\"#f39c12\"/></svg>' : '<svg class=\"ic ic-gem\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 14.5,5.5 8,15 1.5,5.5\" fill=\"#1abc9c\" stroke=\"#16a085\" stroke-width=\"0.4\"/><polygon points=\"8,1 14.5,5.5 8,7.5 1.5,5.5\" fill=\"#2ecc71\" opacity=\"0.55\"/></svg>';
                             t.classList.add(mBombs.includes(i) ? 'bomb' : 'gem');
                         } else {
                             t.onclick = () => {
                                 if(!mActive || t.dataset.revealed) return;
                                 t.dataset.revealed = '1';
                                 if(mBombs.includes(i)) {
-                                    t.innerHTML='💣'; t.classList.add('bomb'); play('boom'); mActive=false;
-                                    document.querySelectorAll('#m-board .tile').forEach((tile,idx) => { if(mBombs.includes(idx) && !tile.dataset.revealed) { tile.innerHTML='💣'; tile.classList.add('bomb'); tile.dataset.revealed='1'; }});
+                                    t.innerHTML='<svg class=\"ic ic-bomb\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"9.5\" r=\"5.5\" fill=\"#cc1f4a\" stroke=\"#ff4d7a\" stroke-width=\"0.6\"/><rect x=\"7\" y=\"3\" width=\"2\" height=\"3.5\" rx=\"1\" fill=\"#ff4d7a\"/><circle cx=\"8\" cy=\"9.5\" r=\"2\" fill=\"#ff4d7a\" opacity=\"0.35\"/><circle cx=\"9.5\" cy=\"3.2\" r=\"1.2\" fill=\"#f39c12\"/></svg>'; t.classList.add('bomb'); play('boom'); mActive=false;
+                                    document.querySelectorAll('#m-board .tile').forEach((tile,idx) => { if(mBombs.includes(idx) && !tile.dataset.revealed) { tile.innerHTML='<svg class=\"ic ic-bomb\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"9.5\" r=\"5.5\" fill=\"#cc1f4a\" stroke=\"#ff4d7a\" stroke-width=\"0.6\"/><rect x=\"7\" y=\"3\" width=\"2\" height=\"3.5\" rx=\"1\" fill=\"#ff4d7a\"/><circle cx=\"8\" cy=\"9.5\" r=\"2\" fill=\"#ff4d7a\" opacity=\"0.35\"/><circle cx=\"9.5\" cy=\"3.2\" r=\"1.2\" fill=\"#f39c12\"/></svg>'; tile.classList.add('bomb'); tile.dataset.revealed='1'; }});
                                     document.getElementById('m-cash').classList.add('hidden');
                                     document.getElementById('m-start').disabled=false;
                                     document.getElementById('m-bet').disabled=false;
@@ -2034,7 +2142,7 @@
                                     addHistory("Mines", mBet, 0, -mBet);
                                     clearGameState('mines');
                                 } else {
-                                    t.innerHTML='💎'; t.classList.add('gem');
+                                    t.innerHTML='<svg class=\"ic ic-gem\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 14.5,5.5 8,15 1.5,5.5\" fill=\"#1abc9c\" stroke=\"#16a085\" stroke-width=\"0.4\"/><polygon points=\"8,1 14.5,5.5 8,7.5 1.5,5.5\" fill=\"#2ecc71\" opacity=\"0.55\"/></svg>'; t.classList.add('gem');
                                     play('star'); mGemsFound++;
                                     mMult *= mMultStep[risk];
                                     document.getElementById('m-mult-disp').innerText = mMult.toFixed(2) + '×';
@@ -2051,7 +2159,7 @@
                     document.getElementById('m-bet').disabled = true;
                     document.getElementById('m-risk').disabled = true;
                     document.querySelectorAll('.m-grid-btn').forEach(b => b.style.opacity = '0.5');
-                    toast('🎮 Mines restored! ' + m.gemsFound + ' gems found at ' + mMult.toFixed(2) + '×', 'success');
+                    toast('Mines restored! ' + m.gemsFound + ' gems found at ' + mMult.toFixed(2) + '×', 'success');
                 }, 600);
             }
 
@@ -2079,7 +2187,7 @@
                     const mults = tGetMults();
                     const m = tw.level > 0 ? mults[tw.level - 1] : 1;
                     document.getElementById('t-mult-disp').textContent = m.toFixed(2) + '×';
-                    document.getElementById('t-profit-disp').value = '+' + Math.floor(tBet * m) + ' ⭐';
+                    document.getElementById('t-profit-disp').value = '+' + Math.floor(tBet * m) + ' ★';
                     document.getElementById('tower-status').textContent = `Floor ${tw.level}/${TOWER_ROWS} — keep climbing!`;
                     document.getElementById('t-cash').classList.remove('hidden');
                     tActivateRow(tw.level);
@@ -2107,7 +2215,7 @@
                     document.getElementById('bj-stand-btn').classList.remove('hidden');
                     document.getElementById('bj-status').textContent = 'VS — Hand restored';
                     bjUpdateCounters();
-                    toast('🃏 Blackjack restored! Your hand: ' + getBJScore(bjHand), 'success');
+                    toast('♠ Blackjack restored! Your hand: ' + getBJScore(bjHand), 'success');
                 }, 600);
             }
 
@@ -2126,7 +2234,7 @@
                             chip.innerText = amt;
                         }
                     }
-                    toast('🎰 Roulette bets restored!', 'success');
+                    toast('Roulette bets restored!', 'success');
                 }, 600);
             }
 
@@ -2150,7 +2258,7 @@
         const statBig  = document.getElementById('home-stat-biggest');
         if(statBets) statBets.innerText = total;
         if(statWins) statWins.innerText = wins;
-        if(statBig)  statBig.innerText  = biggest > 0 ? '+' + biggest + ' ⭐' : '—';
+        if(statBig)  statBig.innerHTML = biggest > 0 ? '+' + biggest + ' <svg class=\"ic ic-star\" viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8\" fill=\"#f1c40f\" stroke=\"#c9a800\" stroke-width=\"0.4\"/></svg>' : '—';
 
         // Recent 5 bets preview
         const container = document.getElementById('home-recent-bets');
@@ -2166,8 +2274,8 @@
             const sign  = won ? '+' : '';
             return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid #111;">
                 <span style="color:#aaa;font-size:13px;">${b.game}</span>
-                <span style="color:#555;font-size:12px;">${b.bet} ⭐ bet</span>
-                <span style="color:${color};font-weight:700;font-size:13px;">${sign}${b.win} ⭐</span>
+                <span style="color:#555;font-size:12px;">${b.bet} <svg class=\"ic ic-star\" viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8\" fill=\"#f1c40f\" stroke=\"#c9a800\" stroke-width=\"0.4\"/></svg> bet</span>
+                <span style="color:${color};font-weight:700;font-size:13px;">${sign}${b.win} <svg class=\"ic ic-star\" viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8\" fill=\"#f1c40f\" stroke=\"#c9a800\" stroke-width=\"0.4\"/></svg></span>
             </div>`;
         }).join('');
     }
@@ -2192,7 +2300,7 @@
         const el = document.getElementById(map[game]);
         if(!el) return;
         const v = sessionProfit[game];
-        el.textContent = (v >= 0 ? '+' : '') + Math.floor(v) + ' ⭐';
+        el.innerHTML = (v >= 0 ? '+' : '') + Math.floor(v) + ' <svg class=\"ic ic-star\" viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8\" fill=\"#f1c40f\" stroke=\"#c9a800\" stroke-width=\"0.4\"/></svg>';
         el.className = 'profit-val ' + (v > 0 ? 'pos' : v < 0 ? 'neg' : 'zero');
     }
     const MIN_BET = 50;
@@ -2274,7 +2382,7 @@
     function showWinOverlay(mult, amount) {
         const div = document.createElement('div');
         div.className = 'win-announcement';
-        div.innerHTML = `<p class="win-mult">${mult.toFixed(2)}x</p><p class="win-amt">+${Math.floor(amount)} ⭐️</p>`;
+        div.innerHTML = `<p class="win-mult">${mult.toFixed(2)}x</p><p class="win-amt">+${Math.floor(amount)} ★️</p>`;
         document.getElementById('win-container').appendChild(div);
         setTimeout(() => div.remove(), 3000);
     }
@@ -2361,14 +2469,14 @@
         }
         document.getElementById('fp-nonce').value = parseInt(document.getElementById('fp-nonce').value) || 0;
         closeFPModal();
-        toast(fpEnabled ? '🎮 Free Play ON — fake coins only!' : '✅ Free Play OFF — real coins active.', fpEnabled ? 'warn' : 'success');
+        toast(fpEnabled ? 'Free Play ON — fake coins only!' : '✅ Free Play OFF — real coins active.', fpEnabled ? 'warn' : 'success');
     }
 
     function resetFPBalance() {
         fpChips = FP_DEFAULT_BAL;
         document.getElementById('fp-bal-display').innerText = Math.floor(fpChips).toLocaleString();
         if(fpEnabled) updateUI();
-        toast('🎮 Free Play balance reset to ' + FP_DEFAULT_BAL.toLocaleString() + ' ⭐', 'warn');
+        toast('Free Play balance reset to ' + FP_DEFAULT_BAL.toLocaleString() + ' ★', 'warn');
     }
 
     function applyFPMode() {
@@ -2391,7 +2499,7 @@
     // ══════════════ END FREE PLAY ══════════════
 
     async function sendDiscordWebhook(game, bet, mult, win) {
-        if(fpEnabled) return; // 🎮 Free Play — never log to Discord
+        if(fpEnabled) return; //  Free Play — never log to Discord
         try {
             const isWin = win > 0;
             const playerName = userData?.displayName || currentUser || "Unknown";
@@ -2419,7 +2527,7 @@
     function addHistory(game, bet, mult, win) {
         if(fpEnabled) {
             // In Free Play: still show in local history with FP tag, but don't persist or webhook
-            betHistory.unshift({ game: '🎮 ' + game, bet, mult, win: Math.floor(win), fp: true });
+            betHistory.unshift({ game: ' ' + game, bet, mult, win: Math.floor(win), fp: true });
             if(betHistory.length > 50) betHistory.pop();
             return;
         }
@@ -2431,7 +2539,7 @@
 
     function renderHistory() {
         document.getElementById('history-body').innerHTML = betHistory.map(h => `
-            <tr><td>${h.game}</td><td>${h.bet} ⭐️</td><td>${h.mult.toFixed(2)}x</td><td class="${h.win > 0 ? 'status-win' : 'status-loss'}">${h.win > 0 ? '+' + h.win : h.win}</td></tr>
+            <tr><td>${h.game}</td><td>${h.bet} ★️</td><td>${h.mult.toFixed(2)}x</td><td class="${h.win > 0 ? 'status-win' : 'status-loss'}">${h.win > 0 ? '+' + h.win : h.win}</td></tr>
         `).join('');
     }
 
@@ -2455,7 +2563,7 @@
             // Mark as used
             await fetch(usedKey, { method: 'PUT', body: JSON.stringify({ by: currentUser, at: Date.now() }) });
             userData.chips += data.val; updateUI();
-            toast('✅ Code redeemed! +' + data.val + ' ⭐', 'success');
+            toast('✅ Code redeemed! +' + data.val + ' ★', 'success');
         } else {
             toast('Invalid or expired code!', 'error');
         }
@@ -2490,8 +2598,8 @@
             admin: adminName
         });
         
-        admLog(`✅ Gave ${amount}⭐ to ${raw} (new bal: ${tData.chips})`); play('admin_give');
-        alert(`Sent! ${raw} now has ${tData.chips} ⭐`);
+        admLog(`✅ Gave ${amount}★ to ${raw} (new bal: ${tData.chips})`); play('admin_give');
+        alert(`Sent! ${raw} now has ${tData.chips} ★`);
     }
 
     async function adminResetChips() {
@@ -2499,7 +2607,7 @@
         const target = /^\d{17,20}$/.test(raw) ? 'discord_' + raw : raw;
         const newBal = parseInt(document.getElementById('adm-reset-amount').value) || 0;
         if(!target) return alert('Please enter a username or Discord ID!');
-        if(!confirm(`Really reset balance for player ${raw} to ${newBal} ⭐?`)) return;
+        if(!confirm(`Really reset balance for player ${raw} to ${newBal} ★?`)) return;
         const res = await fetch(`${DB_URL}/${target}.json`), tData = await res.json();
         if(!tData) { play('error'); return alert('Player not found!'); }
         const oldBal = tData.chips || 0;
@@ -2518,8 +2626,8 @@
             adminName: adminName
         });
         
-        admLog(`🔄 Reset ${raw}: ${oldBal}⭐ → ${newBal}⭐`); play('admin_reset');
-        alert(`Done! ${raw} now has ${newBal} ⭐`);
+        admLog(`🔄 Reset ${raw}: ${oldBal}★ → ${newBal}★`); play('admin_reset');
+        alert(`Done! ${raw} now has ${newBal} ★`);
     }
 
     // ═══════════════════════════════════════════════
@@ -2572,9 +2680,9 @@
         });
         
         // Local log and notification
-        admLog(`💰 Deposited ${amount}⭐ to ${playerName} (${oldBalance} → ${newBalance})`);
+        admLog(`$ Deposited ${amount}★ to ${playerName} (${oldBalance} → ${newBalance})`);
         play('admin_give');
-        alert(`✅ Successfully deposited ${amount}⭐ to ${playerName}!\n\nOld Balance: ${oldBalance}⭐\nNew Balance: ${newBalance}⭐`);
+        alert(`✅ Successfully deposited ${amount}★ to ${playerName}!\n\nOld Balance: ${oldBalance}★\nNew Balance: ${newBalance}★`);
         
         // Clear inputs
         document.getElementById('adm-deposit-target').value = '';
@@ -2607,13 +2715,13 @@
         // Check if player has enough balance
         if(oldBalance < amount) {
             play('error');
-            return alert(`Cannot withdraw ${amount}⭐!\n\n${playerName} only has ${oldBalance}⭐`);
+            return alert(`Cannot withdraw ${amount}★!\n\n${playerName} only has ${oldBalance}★`);
         }
         
         const newBalance = oldBalance - amount;
         
         // Confirm withdrawal
-        if(!confirm(`Withdraw ${amount}⭐ from ${playerName}?\n\nCurrent: ${oldBalance}⭐\nAfter: ${newBalance}⭐`)) {
+        if(!confirm(`Withdraw ${amount}★ from ${playerName}?\n\nCurrent: ${oldBalance}★\nAfter: ${newBalance}★`)) {
             return;
         }
         
@@ -2640,9 +2748,9 @@
         });
         
         // Local log and notification
-        admLog(`🔻 Withdrew ${amount}⭐ from ${playerName} (${oldBalance} → ${newBalance})`);
+        admLog(`🔻 Withdrew ${amount}★ from ${playerName} (${oldBalance} → ${newBalance})`);
         play('admin_reset');
-        alert(`✅ Successfully withdrew ${amount}⭐ from ${playerName}!\n\nOld Balance: ${oldBalance}⭐\nNew Balance: ${newBalance}⭐`);
+        alert(`✅ Successfully withdrew ${amount}★ from ${playerName}!\n\nOld Balance: ${oldBalance}★\nNew Balance: ${newBalance}★`);
         
         // Clear inputs
         document.getElementById('adm-withdraw-target').value = '';
@@ -2695,7 +2803,7 @@
         if(!acquireBetLock()) return;
         mBet = clampBet(document.getElementById('m-bet').value);
         document.getElementById('m-bet').value = mBet;
-        if(mBet > userData.chips || mBet < MIN_BET) { toast('Not enough ⭐! Min bet: ' + MIN_BET, 'error'); releaseBetLock(); return; }
+        if(mBet > userData.chips || mBet < MIN_BET) { toast('Not enough ★! Min bet: ' + MIN_BET, 'error'); releaseBetLock(); return; }
         const risk = document.getElementById('m-risk').value;
         const bombCount = mRiskMines[risk][mGridSize];
         countGame(); userData.chips -= mBet; mActive = true; mMult = 1; mBombs = []; mGemsFound = 0; updateUI();
@@ -2717,9 +2825,9 @@
                 if(!mActive || t.dataset.revealed) return;
                 t.dataset.revealed = '1';
                 if(mBombs.includes(i)) {
-                    t.innerHTML='💣'; t.classList.add('bomb'); play('boom'); mActive=false;
+                    t.innerHTML='<svg class=\"ic ic-bomb\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"9.5\" r=\"5.5\" fill=\"#cc1f4a\" stroke=\"#ff4d7a\" stroke-width=\"0.6\"/><rect x=\"7\" y=\"3\" width=\"2\" height=\"3.5\" rx=\"1\" fill=\"#ff4d7a\"/><circle cx=\"8\" cy=\"9.5\" r=\"2\" fill=\"#ff4d7a\" opacity=\"0.35\"/><circle cx=\"9.5\" cy=\"3.2\" r=\"1.2\" fill=\"#f39c12\"/></svg>'; t.classList.add('bomb'); play('boom'); mActive=false;
                     // Reveal all bombs
-                    document.querySelectorAll('#m-board .tile').forEach((tile,idx) => { if(mBombs.includes(idx) && !tile.dataset.revealed) { tile.innerHTML='💣'; tile.classList.add('bomb'); tile.dataset.revealed='1'; }});
+                    document.querySelectorAll('#m-board .tile').forEach((tile,idx) => { if(mBombs.includes(idx) && !tile.dataset.revealed) { tile.innerHTML='<svg class=\"ic ic-bomb\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"9.5\" r=\"5.5\" fill=\"#cc1f4a\" stroke=\"#ff4d7a\" stroke-width=\"0.6\"/><rect x=\"7\" y=\"3\" width=\"2\" height=\"3.5\" rx=\"1\" fill=\"#ff4d7a\"/><circle cx=\"8\" cy=\"9.5\" r=\"2\" fill=\"#ff4d7a\" opacity=\"0.35\"/><circle cx=\"9.5\" cy=\"3.2\" r=\"1.2\" fill=\"#f39c12\"/></svg>'; tile.classList.add('bomb'); tile.dataset.revealed='1'; }});
                     document.getElementById('m-cash').classList.add('hidden');
                     document.getElementById('m-start').disabled=false;
                     document.getElementById('m-bet').disabled=false;
@@ -2727,7 +2835,7 @@
                     document.querySelectorAll('.m-grid-btn').forEach(b => b.style.opacity = '1');
                     addHistory("Mines", mBet, 0, -mBet);
                 } else {
-                    t.innerHTML='💎'; t.classList.add('gem');
+                    t.innerHTML='<svg class=\"ic ic-gem\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 14.5,5.5 8,15 1.5,5.5\" fill=\"#1abc9c\" stroke=\"#16a085\" stroke-width=\"0.4\"/><polygon points=\"8,1 14.5,5.5 8,7.5 1.5,5.5\" fill=\"#2ecc71\" opacity=\"0.55\"/></svg>'; t.classList.add('gem');
                     play('star'); mGemsFound++;
                     mMult *= mMultStep[risk];
                     document.getElementById('m-mult-disp').innerText = mMult.toFixed(2) + '×';
@@ -2758,9 +2866,9 @@
         tiles.forEach((tile, idx) => {
             if(tile.dataset.revealed) return;
             if(mBombs.includes(idx)) {
-                tile.innerHTML = '💣'; tile.classList.add('bomb');
+                tile.innerHTML = '<svg class=\"ic ic-bomb\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"9.5\" r=\"5.5\" fill=\"#cc1f4a\" stroke=\"#ff4d7a\" stroke-width=\"0.6\"/><rect x=\"7\" y=\"3\" width=\"2\" height=\"3.5\" rx=\"1\" fill=\"#ff4d7a\"/><circle cx=\"8\" cy=\"9.5\" r=\"2\" fill=\"#ff4d7a\" opacity=\"0.35\"/><circle cx=\"9.5\" cy=\"3.2\" r=\"1.2\" fill=\"#f39c12\"/></svg>'; tile.classList.add('bomb');
             } else {
-                tile.innerHTML = '💎'; tile.classList.add('gem'); tile.style.opacity = '0.45';
+                tile.innerHTML = '<svg class=\"ic ic-gem\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 14.5,5.5 8,15 1.5,5.5\" fill=\"#1abc9c\" stroke=\"#16a085\" stroke-width=\"0.4\"/><polygon points=\"8,1 14.5,5.5 8,7.5 1.5,5.5\" fill=\"#2ecc71\" opacity=\"0.55\"/></svg>'; tile.classList.add('gem'); tile.style.opacity = '0.45';
             }
         });
         const revealedTiles = Array.from(tiles);
@@ -2779,7 +2887,7 @@
         let b = clampBet(document.getElementById('d-bet').value);
         document.getElementById('d-bet').value = b;
         let n = parseInt(document.getElementById('d-num').value);
-        if(b > userData.chips) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
+        if(b > userData.chips) { toast('Not enough ★!', 'error'); releaseBetLock(); return; }
         countGame(); userData.chips -= b; addProfit('dice', -b); updateUI();
         const btn = document.querySelector('#game-dice .btn-play');
         if(btn) btn.disabled = true;
@@ -2787,14 +2895,21 @@
             let r = Math.floor(Math.random()*6)+1;
             // House edge: if roll matches player's pick, 33% chance to nudge it off
             if(r === n && houseEdge()) { r = r === 6 ? 1 : r + 1; }
-            document.getElementById('d-res').innerText = r;
+            document.getElementById('d-res').innerHTML = (function(n){
+        const dots=[[40],[15,65],[15,40,65],[15,25,55,65],[15,25,40,55,65],[15,25,40,40,55,65]];
+        const pos=[[40,40],[25,40,55,40],[25,25,55,55],[25,25,55,55,25,55],[15,15,55,15,15,55,55,55],[15,15,55,15,35,35,15,55,55,55]];
+        const cx=[40,40,40,40,40,40];const cy=[40,40,40,40,40,40];
+        const pMap=[[[40,40]],[[26,26],[54,54]],[[26,26],[54,54],[40,40]],[[26,26],[54,26],[26,54],[54,54]],[[26,26],[54,26],[40,40],[26,54],[54,54]],[[26,26],[54,26],[26,40],[54,40],[26,54],[54,54]]];
+        const ps=pMap[n-1]||[];
+        return '<svg viewBox="0 0 80 80" width="80" height="80"><rect x="5" y="5" width="70" height="70" rx="14" fill="#1a4db5" stroke="#4d80ff" stroke-width="2.5"/>'+ps.map(p=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="7" fill="#4d80ff"/>').join('')+'</svg>';
+    })(r);
             if(r === n) {
                 let win = b*6; userData.chips += win; play('win');
                 showWinOverlay(6.00, win); addHistory("Dice", b, 6, win); addProfit('dice', win);
-                toast('🎲 Rolled ' + r + '! You win +' + win + ' ⭐', 'success');
+                toast('Rolled ' + r + '! You win +' + win + ' ★', 'success');
             } else {
                 play('boom'); addHistory("Dice", b, 0, -b);
-                toast('🎲 Rolled ' + r + '. Better luck next time!', 'error');
+                toast('Rolled ' + r + '. Better luck next time!', 'error');
             }
             if(btn) btn.disabled = false;
             releaseBetLock(); updateUI();
@@ -2807,18 +2922,26 @@
         let b = clampBet(document.getElementById('cf-bet').value), choice = document.getElementById('cf-choice').value;
         document.getElementById('cf-bet').value = b;
         let btn = document.getElementById('cf-btn'), coin = document.getElementById('coin-obj');
-        if(b > userData.chips || b < MIN_BET) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
+        if(b > userData.chips || b < MIN_BET) { toast('Not enough ★!', 'error'); releaseBetLock(); return; }
         countGame(); userData.chips -= b; addProfit('coinflip', -b); updateUI(); btn.disabled = true; coin.classList.add('flipping');
         setTimeout(() => {
             coin.classList.remove('flipping');
-            let res = houseEdge() ? (choice === 'H' ? 'T' : 'H') : (Math.random() < 0.5 ? choice : (choice === 'H' ? 'T' : 'H')); coin.innerText = (res === 'H') ? '⭐' : '💎';
+            let res = houseEdge() ? (choice === 'H' ? 'T' : 'H') : (Math.random() < 0.5 ? choice : (choice === 'H' ? 'T' : 'H')); coin.innerHTML = (res === 'H') ? `<svg viewBox="0 0 80 80" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="40" cy="40" r="36" fill="#c9a800" stroke="#f1c40f" stroke-width="3"/>
+  <circle cx="40" cy="40" r="28" fill="none" stroke="#f1c40f" stroke-width="1.5" opacity="0.5"/>
+  <polygon points="40,18 44.9,31.2 59,31.2 47.6,39.3 52.4,52.5 40,44.4 27.6,52.5 32.4,39.3 21,31.2 35.1,31.2" fill="#f1c40f"/>
+</svg>` : `<svg viewBox="0 0 80 80" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="40" cy="40" r="36" fill="#155c50" stroke="#1abc9c" stroke-width="3"/>
+  <circle cx="40" cy="40" r="28" fill="none" stroke="#1abc9c" stroke-width="1.5" opacity="0.5"/>
+  <polygon points="40,18 45,30 57,30.5 48,38.5 51,51 40,44 29,51 32,38.5 23,30.5 35,30" fill="#1abc9c"/>
+</svg>`;
             if(res === choice) {
                 let win = b*2; userData.chips += win; play('win');
                 showWinOverlay(2.0, win); addHistory("CoinFlip", b, 2, win); addProfit('coinflip', win);
-                toast((res==='H'?'⭐ Heads':'💎 Tails') + '! You win +' + win + ' ⭐', 'success');
+                toast((res==='H'?'★ Heads':'◆ Tails') + '! You win +' + win + ' ★', 'success');
             } else {
                 play('boom'); addHistory("CoinFlip", b, 0, -b);
-                toast((res==='H'?'⭐ Heads':'💎 Tails') + ' — you lose!', 'error');
+                toast((res==='H'?'★ Heads':'◆ Tails') + ' — you lose!', 'error');
             }
             btn.disabled = false; releaseBetLock(); updateUI();
         }, 1200);
@@ -2854,7 +2977,7 @@
         let win = Math.floor(crashBet * crashMult); userData.chips += win;
         play('win'); showWinOverlay(crashMult, win); addHistory("Crash", crashBet, crashMult, win);
         addProfit('crash', win);
-        toast('✈️ Cashed out at ' + crashMult.toFixed(2) + 'x! +' + win + ' ⭐', 'success');
+        toast('✈️ Cashed out at ' + crashMult.toFixed(2) + 'x! +' + win + ' ★', 'success');
         updateUI();
         document.getElementById('c-start').disabled = false; document.getElementById('c-cash').classList.add('hidden');
     }
@@ -3018,7 +3141,7 @@
         if(!acquireBetLock()) return;
         tBet = clampBet(document.getElementById('t-bet').value);
         document.getElementById('t-bet').value = tBet;
-        if(tBet > userData.chips || tBet < MIN_BET) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
+        if(tBet > userData.chips || tBet < MIN_BET) { toast('Not enough ★!', 'error'); releaseBetLock(); return; }
         tCurrentRisk = document.getElementById('t-risk').value;
         countGame(); userData.chips -= tBet; addProfit('tower', -tBet); updateUI();
         releaseBetLock();
@@ -3028,7 +3151,7 @@
         document.getElementById('t-bet').disabled = true;
         document.getElementById('t-cash').classList.add('hidden');
         document.getElementById('t-mult-disp').textContent = '1.00×';
-        document.getElementById('t-profit-disp').value = '0.00 ⭐';
+        document.getElementById('t-profit-disp').value = '0.00 ★';
         document.getElementById('tower-status').textContent = 'Choose a tile!';
 
         buildTowerBoard();
@@ -3072,7 +3195,7 @@
             play('boom'); tActive = false;
             document.getElementById('tower-status').textContent = '💥 Boom! You lost!';
             document.getElementById('t-mult-disp').textContent = '0×';
-            document.getElementById('t-profit-disp').value = `-${tBet} ⭐`;
+            document.getElementById('t-profit-disp').value = `-${tBet} ★`;
             document.getElementById('t-start').disabled = false;
             document.getElementById('t-risk').disabled = false;
             document.getElementById('t-bet').disabled = false;
@@ -3094,7 +3217,7 @@
                 play('boom'); tActive = false;
                 document.getElementById('tower-status').textContent = '💥 Boom! You lost!';
                 document.getElementById('t-mult-disp').textContent = '0×';
-                document.getElementById('t-profit-disp').value = `-${tBet} ⭐`;
+                document.getElementById('t-profit-disp').value = `-${tBet} ★`;
                 document.getElementById('t-start').disabled = false;
                 document.getElementById('t-risk').disabled = false;
                 document.getElementById('t-bet').disabled = false;
@@ -3102,7 +3225,7 @@
                 addHistory("Tower", tBet, 0, -tBet); clearGameState('tower');
                 return;
             }
-            tile.innerHTML = '💎';
+            tile.innerHTML = '<svg class=\"ic ic-gem\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 14.5,5.5 8,15 1.5,5.5\" fill=\"#1abc9c\" stroke=\"#16a085\" stroke-width=\"0.4\"/><polygon points=\"8,1 14.5,5.5 8,7.5 1.5,5.5\" fill=\"#2ecc71\" opacity=\"0.55\"/></svg>';
             tile.className = 'tw-tile tw-gem';
             tile.onclick = null;
             for(let j = 0; j < tGetCols(); j++) {
@@ -3116,7 +3239,7 @@
             const m = mults[rowIdx];
             const potentialWin = Math.floor(tBet * m);
             document.getElementById('t-mult-disp').textContent = m.toFixed(2) + '×';
-            document.getElementById('t-profit-disp').value = `+${potentialWin} ⭐`;
+            document.getElementById('t-profit-disp').value = `+${potentialWin} ★`;
             if(tLevel === TOWER_ROWS) {
                 cashoutTower();
             } else {
@@ -3182,7 +3305,7 @@
         if(!acquireBetLock()) return;
         bjBet = clampBet(document.getElementById('bj-bet').value);
         document.getElementById('bj-bet').value = bjBet;
-        if(bjBet > userData.chips) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
+        if(bjBet > userData.chips) { toast('Not enough ★!', 'error'); releaseBetLock(); return; }
         countGame(); userData.chips -= bjBet; addProfit('blackjack', -bjBet); updateUI(); bjActive=true; createDeck(); bjWinAmount=0; bjInsurance=0;
         releaseBetLock();
         bjHand = [deck.pop(), deck.pop()]; bjDealer = [deck.pop(), deck.pop()];
@@ -3196,8 +3319,8 @@
         // If dealer shows Ace, offer insurance before anything else
         if(bjDealer[0].v === 'A') {
             const insAmt = Math.floor(bjBet / 2);
-            document.getElementById('bj-insurance-info').textContent = `Side bet: ${insAmt} ⭐ — pays 2:1 if dealer has Blackjack`;
-            document.getElementById('bj-ins-yes').textContent = `INSURE (${insAmt} ⭐)`;
+            document.getElementById('bj-insurance-info').innerHTML = `Side bet: ${insAmt} <svg class=\"ic ic-star\" viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8\" fill=\"#f1c40f\" stroke=\"#c9a800\" stroke-width=\"0.4\"/></svg> — pays 2:1 if dealer has Blackjack`;
+            document.getElementById('bj-ins-yes').innerHTML = `INSURE (${insAmt} <svg class=\"ic ic-star\" viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8\" fill=\"#f1c40f\" stroke=\"#c9a800\" stroke-width=\"0.4\"/></svg>)`;
             document.getElementById('bj-insurance-prompt').classList.remove('hidden');
             // Hide action buttons until insurance decision made
             document.getElementById('bj-hit-btn').classList.add('hidden');
@@ -3240,7 +3363,7 @@
                     document.querySelector('.bj-area')?.classList.remove('lose-shake');
                     document.querySelector('.bj-area')?.classList.add('win-glow');
                     addHistory("Blackjack", bjBet, 2.5, bjWinAmount); addProfit('blackjack', bjWinAmount);
-                    document.getElementById('bj-status').textContent = '🃏 BLACKJACK! +150%!';
+                    document.getElementById('bj-status').innerHTML = '<svg class=\"ic ic-card\" viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"2\" y=\"1\" width=\"12\" height=\"14\" rx=\"2\" fill=\"#f0f0f0\" stroke=\"#bbb\" stroke-width=\"0.5\"/><text x=\"8\" y=\"11\" text-anchor=\"middle\" fill=\"#e74c3c\" font-size=\"9\" font-weight=\"900\" font-family=\"serif\">J</text></svg> BLACKJACK! +150%!';
                 }
                 document.getElementById('bj-deal-btn').classList.remove('hidden');
                 updateUI();
@@ -3249,10 +3372,10 @@
     }
     function bjTakeInsurance() {
         const insAmt = Math.floor(bjBet / 2);
-        if(userData.chips < insAmt) { toast('Not enough ⭐ for insurance!', 'error'); return; }
+        if(userData.chips < insAmt) { toast('Not enough ★ for insurance!', 'error'); return; }
         bjInsurance = insAmt;
         userData.chips -= bjInsurance; addProfit('blackjack', -bjInsurance); updateUI();
-        toast(`Insured for ${insAmt} ⭐!`, 'success');
+        toast(`Insured for ${insAmt} ★!`, 'success');
         document.getElementById('bj-insurance-prompt').classList.add('hidden');
         bjAfterInsuranceDecision();
     }
@@ -3274,7 +3397,7 @@
                 // Insurance pays 2:1
                 const insPayout = bjInsurance * 3; // get back stake + 2x
                 userData.chips += insPayout; addProfit('blackjack', insPayout);
-                toast(`Insurance pays ${insPayout} ⭐!`, 'success');
+                toast(`Insurance pays ${insPayout} ★!`, 'success');
             }
             // Check if player also has blackjack
             const playerBJ = getBJScore(bjHand) === 21 && bjHand.length === 2;
@@ -3360,13 +3483,13 @@
     }
     function bjDouble() {
         if(!bjActive || bjHand.length !== 2) return;
-        if(userData.chips < bjBet) { toast('Not enough ⭐ to double!', 'error'); return; }
+        if(userData.chips < bjBet) { toast('Not enough ★ to double!', 'error'); return; }
         // Deduct the extra bet
         userData.chips -= bjBet;
         addProfit('blackjack', -bjBet);
         bjBet *= 2;
         updateUI();
-        toast(`Bet doubled to ${bjBet} ⭐!`, 'success');
+        toast(`Bet doubled to ${bjBet} ★!`, 'success');
         // Hide double button
         document.getElementById('bj-double-btn').classList.add('hidden');
         // Deal exactly one card then stand
@@ -3390,7 +3513,7 @@
         if(!acquireBetLock()) return;
         const bet = clampBet(document.getElementById('bac-bet').value);
         document.getElementById('bac-bet').value = bet;
-        if(bet > userData.chips || bet < MIN_BET) { toast('Not enough ⭐!', 'error'); releaseBetLock(); return; }
+        if(bet > userData.chips || bet < MIN_BET) { toast('Not enough ★!', 'error'); releaseBetLock(); return; }
         countGame(); userData.chips -= bet; addProfit('baccarat', -bet); updateUI();
         releaseBetLock();
         createDeck();
@@ -3449,7 +3572,7 @@
                     else win = bet * 9;
                     userData.chips += win; play('win'); showWinOverlay(win/bet, win); document.querySelector('.bac-table')?.classList.remove('lose-shake'); document.querySelector('.bac-table')?.classList.add('win-glow');
                     addHistory("Baccarat", bet, win/bet, win); addProfit('baccarat', win);
-                    document.getElementById('bac-status').innerText = `${result === 'P' ? 'PLAYER' : result === 'B' ? 'BANKER' : 'TIE'} WINS! +${win} ⭐`;
+                    document.getElementById('bac-status').innerText = `${result === 'P' ? 'PLAYER' : result === 'B' ? 'BANKER' : 'TIE'} WINS! +${win} ★`;
                 } else {
                     play('boom'); document.querySelector('.bac-table')?.classList.remove('win-glow'); document.querySelector('.bac-table')?.classList.add('lose-shake');
                     addHistory("Baccarat", bet, 0, -bet);
@@ -3584,7 +3707,7 @@
     function playRoyalJelly() {
         const bet = clampBet(document.getElementById('rj-bet').value);
         document.getElementById('rj-bet').value = bet;
-        if(bet > userData.chips || bet < MIN_BET) { alert('Not enough ⭐!'); return; }
+        if(bet > userData.chips || bet < MIN_BET) { alert('Not enough ★!'); return; }
         countGame(); userData.chips -= bet; addProfit('royaljelly', -bet); updateUI();
 
         const btn = document.getElementById('rj-spin-btn');
@@ -3630,13 +3753,13 @@
                 addHistory("Royal Jelly", bet, mult, win);
                 addProfit('royaljelly', win);
                 resultEl.className = 'rj-result win';
-                resultEl.innerHTML = `🌹 YOUR BEE WINS! +${win} ⭐ <span style="color:#aaa;font-size:13px;">(bet × ${playerBee.coins} coins × 0.02 = ${mult.toFixed(2)}×)</span><br><small>${playerBee.name} (${playerBee.coins}) beats ${botBee.name} (${botBee.coins})</small>`;
+                resultEl.innerHTML = `🌹 YOUR BEE WINS! +${win} <svg class=\"ic ic-star\" viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8\" fill=\"#f1c40f\" stroke=\"#c9a800\" stroke-width=\"0.4\"/></svg> <span style="color:#aaa;font-size:13px;">(bet × ${playerBee.coins} coins × 0.02 = ${mult.toFixed(2)}×)</span><br><small>${playerBee.name} (${playerBee.coins}) beats ${botBee.name} (${botBee.coins})</small>`;
             } else if(playerBee.coins === botBee.coins) {
                 const halfBet = Math.floor(bet / 2);
                 userData.chips += halfBet; addProfit('royaljelly', halfBet);
                 resultEl.className = 'rj-result';
                 resultEl.style.background = '#1a1a00'; resultEl.style.border = '2px solid #f1c40f';
-                resultEl.innerHTML = `🤝 TIE! Half bet returned: +${halfBet} ⭐<br><small>${playerBee.name} = ${botBee.name} (${playerBee.coins} coins each)</small>`;
+                resultEl.innerHTML = `🤝 TIE! Half bet returned: +${halfBet} <svg class=\"ic ic-star\" viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8\" fill=\"#f1c40f\" stroke=\"#c9a800\" stroke-width=\"0.4\"/></svg><br><small>${playerBee.name} = ${botBee.name} (${playerBee.coins} coins each)</small>`;
             } else {
                 play('boom');
                 addHistory("Royal Jelly", bet, 0, -bet);
@@ -3717,7 +3840,7 @@
             const iconHtml = bq.img
                 ? `<img src="${bq.img}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;" />`
                 : `<div class="bq-icon">${bq.icon}</div>`;
-            card.innerHTML = `${iconHtml}<div class="bq-name">${bq.name}</div><div class="bq-cost">Cost: ${bq.cost} ⭐</div>`;
+            card.innerHTML = `${iconHtml}<div class="bq-name">${bq.name}</div><div class="bq-cost">Cost: ${bq.cost} <svg class=\"ic ic-star\" viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" xmlns=\"http://www.w3.org/2000/svg\"><polygon points=\"8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8\" fill=\"#f1c40f\" stroke=\"#c9a800\" stroke-width=\"0.4\"/></svg></div>`;
             card.onclick = () => bwBuyBeequip(bq);
             grid.appendChild(card);
         });
@@ -3731,7 +3854,7 @@
 
     function bwBuyBeequip(bq, free=false) {
         if(!free) {
-            if(userData.chips < bq.cost) { bwLog('Not enough ⭐ Stars!', 'bad'); return; }
+            if(userData.chips < bq.cost) { bwLog('Not enough ★ Stars!', 'bad'); return; }
             userData.chips -= bq.cost; updateUI();
         }
         bwState.beequip = bq;
@@ -3742,7 +3865,7 @@
         document.getElementById('bw-shop').classList.add('hidden');
         document.getElementById('bw-main').classList.remove('hidden');
         bwRender();
-        bwLog(free ? 'Free Play Beequip minted! Stats generated.' : `Bought ${bq.name} for ${bq.cost} ⭐. Stats generated.`, 'info');
+        bwLog(free ? 'Free Play Beequip minted! Stats generated.' : `Bought ${bq.name} for ${bq.cost} ★. Stats generated.`, 'info');
     }
 
     function bwBack() {
@@ -3764,7 +3887,7 @@
             const preview = bwGetReward();
             const modeStr = preview.mode ? ` · Mode: ${preview.mode}` : '';
             const scpStr = preview.scp !== null ? ` · SCP: ${preview.scp}` : '';
-            document.getElementById('bq-hive-bonus').innerText = `💰 Est. Sell: ~${preview.reward} ⭐${modeStr}${scpStr}`;
+            document.getElementById('bq-hive-bonus').innerText = `$ Est. Sell: ~${preview.reward} ★${modeStr}${scpStr}`;
         } else {
             document.getElementById('bq-hive-bonus').innerText = `💥 DESTROYED`;
         }
@@ -3813,14 +3936,14 @@
         // Check inventory / cost
         if(type==='soft'){ /* always free */ }
         else if(type==='hard'){
-            if(userData.chips < 2){ bwLog('Not enough ⭐ for Hard Wax (costs 2 ⭐)!','bad'); return; }
+            if(userData.chips < 2){ bwLog('Not enough ★ for Hard Wax (costs 2 ★)!','bad'); return; }
             userData.chips -= 2; updateUI();
         }
         else if(type==='caustic'){
-            if(userData.chips < 20){ bwLog('Not enough ⭐ for Caustic Wax (costs 20 ⭐)!','bad'); return; }
+            if(userData.chips < 20){ bwLog('Not enough ★ for Caustic Wax (costs 20 ★)!','bad'); return; }
             userData.chips -= 20; updateUI();
         } else if(type==='swirled'){
-            if(userData.chips < 20){ bwLog('Not enough ⭐ for Swirled Wax (costs 20 ⭐)!','bad'); return; }
+            if(userData.chips < 20){ bwLog('Not enough ★ for Swirled Wax (costs 20 ★)!','bad'); return; }
             userData.chips -= 20; updateUI();
         }
 
@@ -3972,7 +4095,7 @@
             showWinOverlay(reward/bwState.beequip.cost, reward);
             addHistory("Beequip Waxing", bwState.beequip.cost, reward/bwState.beequip.cost, reward);
             const modeStr = mode ? ` [${mode}, ${scp} SCP]` : '';
-            bwLog(`💰 Sold ${bwState.beequip.name} for ${reward} ⭐!${modeStr}`, 'good');
+            bwLog(`$ Sold ${bwState.beequip.name} for ${reward} ★!${modeStr}`, 'good');
         } else {
             bwLog('No reward — try waxing first!', 'bad');
         }
@@ -4273,11 +4396,58 @@
     //  KILL A BUG GAME
     // ═══════════════════════════════════════════════════════════
     const KAB_BUGS = {
-        ladybug: { emoji:'🐞', name:'LADYBUG', label:'Ladybug', tokens:5, minBet:50, color:'#e74c3c', elimChance:0.20,
+        ladybug: { emoji:`<svg class="kab-bug-svg" viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="24" cy="32" rx="14" ry="12" fill="#e74c3c"/>
+  <line x1="24" y1="20" x2="24" y2="44" stroke="#1a0000" stroke-width="1.8"/>
+  <circle cx="19" cy="27" r="2.8" fill="#1a0000"/>
+  <circle cx="29" cy="27" r="2.8" fill="#1a0000"/>
+  <circle cx="18" cy="36" r="2.8" fill="#1a0000"/>
+  <circle cx="30" cy="36" r="2.8" fill="#1a0000"/>
+  <ellipse cx="24" cy="20" rx="9" ry="5.5" fill="#1a0000"/>
+  <circle cx="19.5" cy="18.5" r="1.8" fill="#555"/>
+  <circle cx="28.5" cy="18.5" r="1.8" fill="#555"/>
+  <line x1="20" y1="14" x2="16" y2="7" stroke="#1a0000" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="28" y1="14" x2="32" y2="7" stroke="#1a0000" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="15.5" cy="6.5" r="1.5" fill="#1a0000"/>
+  <circle cx="32.5" cy="6.5" r="1.5" fill="#1a0000"/>
+</svg>`, name:'LADYBUG', label:'Ladybug', tokens:5, minBet:50, color:'#e74c3c', elimChance:0.20,
             weights:[{mult:0,prob:8},{mult:0.1,prob:38},{mult:0.2,prob:28},{mult:0.3,prob:14},{mult:0.4,prob:9},{mult:0.5,prob:5},{mult:0.6,prob:3},{mult:1,prob:2},{mult:2,prob:0.7},{mult:5,prob:0.28},{mult:10,prob:0.02}] },
-        spider: { emoji:'🕷️', name:'SPIDER', label:'Spider', tokens:7, minBet:100, color:'#9b59b6', elimChance:0.40,
+        spider: { emoji:`<svg class="kab-bug-svg" viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="24" cy="32" rx="9" ry="8" fill="#1a0030"/>
+  <ellipse cx="24" cy="20" rx="6" ry="5.5" fill="#2c0050"/>
+  <circle cx="21.5" cy="18.5" r="2" fill="#e74c3c"/>
+  <circle cx="26.5" cy="18.5" r="2" fill="#e74c3c"/>
+  <line x1="15" y1="28" x2="3" y2="21" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="15" y1="31" x2="2" y2="31" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="15" y1="34" x2="4" y2="41" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="33" y1="28" x2="45" y2="21" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="33" y1="31" x2="46" y2="31" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="33" y1="34" x2="44" y2="41" stroke="#9b59b6" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="21" y1="14" x2="18" y2="7" stroke="#2c0050" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="27" y1="14" x2="30" y2="7" stroke="#2c0050" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="17.5" cy="6.5" r="1.5" fill="#9b59b6"/>
+  <circle cx="30.5" cy="6.5" r="1.5" fill="#9b59b6"/>
+</svg>`, name:'SPIDER', label:'Spider', tokens:7, minBet:100, color:'#9b59b6', elimChance:0.40,
             weights:[{mult:0,prob:15},{mult:0.1,prob:34},{mult:0.2,prob:26},{mult:0.3,prob:15},{mult:0.4,prob:10},{mult:0.5,prob:7},{mult:0.6,prob:4},{mult:1,prob:2.5},{mult:2,prob:1},{mult:5,prob:0.48},{mult:10,prob:0.02}] },
-        beetle: { emoji:'🪲', name:'KING BEETLE', label:'King Beetle', tokens:10, minBet:300, color:'#f39c12', elimChance:0.60,
+        beetle: { emoji:`<svg class="kab-bug-svg" viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="24" cy="31" rx="13" ry="11" fill="#27ae60"/>
+  <line x1="24" y1="20" x2="24" y2="42" stroke="#1a5c30" stroke-width="1.8"/>
+  <ellipse cx="15" cy="31" rx="5.5" ry="7.5" fill="#1a5c30" opacity="0.6"/>
+  <ellipse cx="33" cy="31" rx="5.5" ry="7.5" fill="#1a5c30" opacity="0.6"/>
+  <ellipse cx="24" cy="19" rx="8" ry="5" fill="#145a32"/>
+  <line x1="16" y1="23" x2="7" y2="16" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="32" y1="23" x2="41" y2="16" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="14" y1="29" x2="4" y2="27" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="34" y1="29" x2="44" y2="27" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="14" y1="36" x2="5" y2="39" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="34" y1="36" x2="43" y2="39" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="19.5" cy="17" r="2" fill="#f39c12"/>
+  <circle cx="28.5" cy="17" r="2" fill="#f39c12"/>
+  <line x1="20" y1="14" x2="17" y2="7" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="28" y1="14" x2="31" y2="7" stroke="#145a32" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="16.5" cy="6.5" r="1.5" fill="#f39c12"/>
+  <circle cx="31.5" cy="6.5" r="1.5" fill="#f39c12"/>
+</svg>`, name:'KING BEETLE', label:'King Beetle', tokens:10, minBet:300, color:'#f39c12', elimChance:0.60,
             weights:[{mult:0,prob:20},{mult:0.1,prob:30},{mult:0.2,prob:24},{mult:0.3,prob:16},{mult:0.4,prob:11},{mult:0.5,prob:8},{mult:0.6,prob:5},{mult:1,prob:3.5},{mult:2,prob:1.8},{mult:5,prob:0.68},{mult:10,prob:0.02}] }
     };
     let kabSelectedBug = null;
@@ -4308,13 +4478,13 @@
         document.getElementById('kabArenaIdle').classList.add('hidden');
         document.getElementById('kabArenaKill').classList.add('hidden');
         document.getElementById('kabArenaLive').classList.remove('hidden');
-        document.getElementById('kabArenaBug').textContent = bug.emoji;
+        document.getElementById('kabArenaBug').innerHTML = bug.emoji;
         document.getElementById('kabArenaBugName').textContent = bug.name;
         document.getElementById('kabArenaBugName').style.color = bug.color;
         const arena = document.getElementById('kabArena');
         arena.style.borderColor = bug.color + '44';
         arena.style.boxShadow = `0 0 24px ${bug.color}15`;
-        document.getElementById('kabMinBet').innerHTML = `Min: <span>${bug.minBet}</span> ⭐`;
+        document.getElementById('kabMinBet').innerHTML = `Min: <span>${bug.minBet}</span> <svg class="ic ic-star" viewBox="0 0 16 16" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><polygon points="8,1 10.3,5.8 15.5,6.6 11.5,10.4 12.5,15.5 8,13.0 3.5,15.5 4.5,10.4 0.5,6.6 5.7,5.8" fill="#f1c40f" stroke="#c9a800" stroke-width="0.4"/></svg>`;
         const betVal = parseFloat(document.getElementById('kabBetInput').value);
         if (betVal < bug.minBet) document.getElementById('kabBetInput').value = bug.minBet;
         document.getElementById('kabKillBtn').disabled = false;
@@ -4354,7 +4524,7 @@
         const errEl = document.getElementById('kabError');
         errEl.classList.remove('visible');
         if (isNaN(betRaw) || betRaw < bug.minBet) {
-            errEl.textContent = `Minimum bet for ${bug.label} is ${bug.minBet} ⭐`;
+            errEl.textContent = `Minimum bet for ${bug.label} is ${bug.minBet} ★`;
             errEl.classList.add('visible'); return;
         }
         if (betRaw > userData.chips) {
@@ -4383,7 +4553,7 @@
         if (gotEliminated) {
             // Show the bug striking back
             document.getElementById('kabArenaElim').classList.remove('hidden');
-            document.getElementById('kabElimEmoji').textContent = bug.emoji;
+            document.getElementById('kabElimEmoji').innerHTML = bug.emoji;
             document.getElementById('kabElimSub').textContent = `${bug.label} fought back — bet lost!`;
 
             // Flash arena red
@@ -4399,7 +4569,7 @@
             document.getElementById('kabTokensTotal').innerHTML = `Total multiplier: <span style="color:#e74c3c">0×</span>`;
             const banner = document.getElementById('kabResultBanner');
             banner.className = 'kab-result-banner kab-loss';
-            document.getElementById('kabResultLabel').textContent = '☠️ ELIMINATED';
+            document.getElementById('kabResultLabel').textContent = '☠ ELIMINATED';
             document.getElementById('kabResultAmount').textContent = `-${bet.toLocaleString()}`;
             document.getElementById('kabResultMult').innerHTML = `<span>${bug.label}</span> eliminated you — full bet lost`;
             document.getElementById('kabNewBalance').textContent = userData.chips.toLocaleString();
@@ -4411,7 +4581,7 @@
             kabHistoryRows.unshift({bug, bet, totalMult: 0, reward: 0, bal: userData.chips, isWin: false, eliminated: true});
             if (kabHistoryRows.length > 20) kabHistoryRows.pop();
             document.getElementById('kabHistoryBody').innerHTML = kabHistoryRows.map(row =>
-                `<tr><td>${row.bug.emoji}${row.eliminated ? '⚔️' : ''}</td><td style="font-family:monospace;font-size:12px">${row.bet.toLocaleString()}</td><td class="kab-col-mult">${row.totalMult.toFixed(2)}×</td><td class="${row.isWin?'kab-col-win':'kab-col-loss'}">${row.eliminated ? '☠️ ELIM' : '+'+row.reward.toLocaleString()}</td><td style="font-family:monospace;font-size:12px;color:#555">${row.bal.toLocaleString()}</td></tr>`
+                `<tr><td>${row.bug.emoji}${row.eliminated ? '⚔️' : ''}</td><td style="font-family:monospace;font-size:12px">${row.bet.toLocaleString()}</td><td class="kab-col-mult">${row.totalMult.toFixed(2)}×</td><td class="${row.isWin?'kab-col-win':'kab-col-loss'}">${row.eliminated ? '☠ ELIM' : '+'+row.reward.toLocaleString()}</td><td style="font-family:monospace;font-size:12px;color:#555">${row.bal.toLocaleString()}</td></tr>`
             ).join('');
 
             await new Promise(r => setTimeout(r, 700));
@@ -4466,7 +4636,7 @@
         kabHistoryRows.unshift({bug, bet, totalMult, reward, bal: userData.chips, isWin, eliminated: false});
         if (kabHistoryRows.length > 20) kabHistoryRows.pop();
         document.getElementById('kabHistoryBody').innerHTML = kabHistoryRows.map(row =>
-            `<tr><td>${row.bug.emoji}${row.eliminated ? '⚔️' : ''}</td><td style="font-family:monospace;font-size:12px">${row.bet.toLocaleString()}</td><td class="kab-col-mult">${row.totalMult.toFixed(2)}×</td><td class="${row.isWin?'kab-col-win':'kab-col-loss'}">${row.eliminated ? '☠️ ELIM' : '+'+row.reward.toLocaleString()}</td><td style="font-family:monospace;font-size:12px;color:#555">${row.bal.toLocaleString()}</td></tr>`
+            `<tr><td>${row.bug.emoji}${row.eliminated ? '⚔️' : ''}</td><td style="font-family:monospace;font-size:12px">${row.bet.toLocaleString()}</td><td class="kab-col-mult">${row.totalMult.toFixed(2)}×</td><td class="${row.isWin?'kab-col-win':'kab-col-loss'}">${row.eliminated ? '☠ ELIM' : '+'+row.reward.toLocaleString()}</td><td style="font-family:monospace;font-size:12px;color:#555">${row.bal.toLocaleString()}</td></tr>`
         ).join('');
 
         await new Promise(r => setTimeout(r, 600));
