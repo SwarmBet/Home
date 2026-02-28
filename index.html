@@ -174,8 +174,8 @@
         .bj-hand { display: flex; gap: 10px; min-height: 120px; align-items: center; }
         .card-ui { width: 70px; height: 100px; background: white; border-radius: 8px; color: black; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; font-size: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border: 1px solid #ddd; }
         .card-ui.red { color: #e74c3c; }
-        .card-anim { animation: cardDeal 0.35s ease-out forwards; }
-        .card-flip-anim { animation: cardFlip 0.35s ease-out forwards; }
+        .card-anim { animation: cardDeal 0.8s ease-out forwards; }
+        .card-flip-anim { animation: cardFlip 0.8s ease-out forwards; }
 
         /* Card deal animation */
         @keyframes cardDeal {
@@ -190,11 +190,11 @@
             100% { transform: rotateY(0deg) scale(1); opacity: 1; }
         }
         .card-ui.dealing {
-            animation: cardDeal 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation: cardDeal 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             transform-origin: top center;
         }
         .card-ui.flipping {
-            animation: cardFlip 0.35s ease-out forwards;
+            animation: cardFlip 0.8s ease-out forwards;
             transform-style: preserve-3d;
         }
         .bj-score { font-size: 14px; color: var(--orange); font-weight: bold; margin-top: 5px; }
@@ -3149,11 +3149,11 @@
         const div = document.createElement('div');
         const animClass = flip ? 'card-flip-anim' : 'card-anim';
         div.className = `card-ui ${['♥','♦'].includes(card.s)?'red':''} ${animClass}`;
-        div.style.animationDelay = (cardIndex * 0.12) + 's';
+        div.style.animationDelay = (cardIndex * 0.3) + 's';
         div.innerHTML = `<div>${card.v}</div><div style="font-size:12px">${card.s}</div>`;
         if(container) container.appendChild(div);
         // Remove animation class after it finishes so it doesn't replay
-        setTimeout(() => div.classList.remove('dealing'), 500);
+        setTimeout(() => div.classList.remove('dealing'), 1200);
     }
     function getBJScore(hand) {
         let s = 0, a = 0; for(let c of hand) { if(c.v==='A') a++; else if(['J','Q','K','10'].includes(c.v)) s+=10; else s+=parseInt(c.v); }
